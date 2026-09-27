@@ -1,0 +1,1499 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light dark"><title>実用 音響メタマテリアル入門 — 1000 Hz以下の低周波防音</title><style>:root{--bg:#f5f3ed;--paper:#fffefb;--ink:#223239;--muted:#617278;--line:#d8e0db;--accent:#007b74;--tint:#eaf5ef;--gold:#b36a2d;--soft:#f8f0e4;--sidebar:285px;--body-size:17px;color-scheme:light}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:85px}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans CJK JP","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;font-size:var(--body-size);line-height:1.95;overflow-wrap:anywhere}body.dark{--bg:#131d22;--paper:#1b282e;--ink:#e0e9e6;--muted:#a5b9b8;--line:#3b4d50;--accent:#6ad3bd;--tint:#223d39;--gold:#f1b274;--soft:#39352d;color-scheme:dark}a{color:var(--accent);text-underline-offset:3px}button,input{font:inherit}button{cursor:pointer;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:6px 12px;font-size:14px;line-height:1.5}button:hover{border-color:var(--accent)}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.toolbar{height:64px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:15px;padding:0 24px;background:var(--paper);border-bottom:1px solid var(--line)}.brand{font-weight:700;text-decoration:none;letter-spacing:.04em;font-size:14px}.tools{display:flex;gap:6px;margin-left:auto}#menu{display:none}#progress{height:3px;width:0;background:var(--accent);position:fixed;top:0;z-index:30}#sidebar{position:fixed;top:64px;bottom:0;width:var(--sidebar);padding:24px 18px;overflow:auto;border-right:1px solid var(--line);background:var(--paper);z-index:15}.nav-title{font-size:12px;letter-spacing:.14em;font-weight:800;margin-bottom:20px;color:var(--accent)}.nav-title span{letter-spacing:0;display:block;color:var(--muted)}#sidebar label{font-size:12px;color:var(--muted)}#search{width:100%;padding:8px 10px;border-radius:7px;border:1px solid var(--line);background:var(--bg);font-size:14px;color:var(--ink)}#searchStatus{min-height:28px;font-size:12px;color:var(--muted)}nav a{display:block;padding:8px 9px;font-size:12px;text-decoration:none;color:var(--ink);line-height:1.65;border-radius:5px;border-left:2px solid transparent}nav a:hover,nav a.active{background:var(--tint);border-left-color:var(--accent)}.nav-top{font-size:13px;display:block;margin-top:20px}main{max-width:1190px;margin-left:var(--sidebar);padding:45px 5vw 70px}.hero{padding:36px 0 45px;border-bottom:3px solid var(--accent);margin-bottom:45px}.hero h1{font-family:"Noto Serif CJK JP","Yu Mincho",serif;font-size:clamp(28px,3vw,47px);line-height:1.6;letter-spacing:.035em;margin:12px 0 26px}.hero>p:first-of-type{font-size:17px;color:var(--accent);font-weight:600}.lead{font-size:22px;line-height:1.9;margin:32px 0}.meta{font-size:12px;color:var(--muted)}.chapter{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:34px 38px;margin-bottom:30px;scroll-margin-top:84px}.chapter h2{font-size:27px;line-height:1.65;margin:0 0 28px;letter-spacing:.015em;padding-bottom:17px;border-bottom:2px solid var(--accent)}h3{font-size:19px;line-height:1.7;margin-top:37px;margin-bottom:12px;color:var(--accent);scroll-margin-top:85px}p{margin:14px 0}strong{font-weight:750}h4{font-size:16px;line-height:1.65;margin:6px 0 12px}.part{margin-top:42px;padding:15px 0 0;font-size:15px;letter-spacing:.06em;color:var(--gold);border-top:1px solid var(--line);font-weight:700}.formula{background:var(--tint);border-left:4px solid var(--accent);padding:18px 20px;margin:20px 0;font-family:ui-monospace,"Noto Sans CJK JP",monospace;font-size:16px;line-height:2;overflow-wrap:anywhere}.note,.exercise{background:var(--soft);border-left:3px solid var(--gold);padding:18px 20px;margin:24px 0;font-size:15px}.exercise summary{cursor:pointer;color:var(--accent);padding-top:8px}.table-wrap{overflow-x:auto;margin:22px 0;border:1px solid var(--line);border-radius:8px}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.8;min-width:480px}th{background:var(--tint);text-align:left;font-weight:700}th,td{padding:11px 13px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}tr:nth-child(even) td{background:color-mix(in srgb,var(--tint) 28%,var(--paper))}.cites{white-space:nowrap;font-size:12px;font-weight:700}.cites a{text-decoration:none}.ref{padding:23px 0;border-bottom:1px solid var(--line);scroll-margin-top:86px;font-size:14px}.ref-id{display:inline-block;color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.08em}.ref-meta{color:var(--muted);font-size:12px}.ref a{overflow-wrap:anywhere}.ref:last-child{border-bottom:0}.keywords ol{columns:2;column-gap:32px;font-size:13px;line-height:1.8;padding-left:25px}.keywords li{break-inside:avoid;margin-bottom:6px}pre{padding:15px;background:var(--bg);border:1px solid var(--line);border-radius:5px;overflow:auto;font-size:13px}code{font-family:monospace}.widget{border:1px solid var(--accent);border-radius:10px;margin:30px 0;padding:22px;background:var(--tint)}.widget:empty:before{content:"計算欄：JavaScriptを有効にすると表示されます。";font-size:14px}.widget h4{font-size:19px}.widget .caption{font-size:12px;color:var(--muted);line-height:1.8}.inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.inputs label{font-size:13px;display:flex;flex-direction:column;gap:4px;min-width:0}.inputs input{width:100%;padding:9px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink);font-size:16px;min-width:0}.widget input[type=range]{padding:0;accent-color:var(--accent)}.result{font-size:20px;font-weight:700;color:var(--accent);padding:12px 0}.error{color:var(--gold);font-size:14px}.plot{width:100%;height:auto;display:block;background:var(--paper);border-radius:6px}.plot text,.diagram text{font-family:"Noto Sans CJK JP",Meiryo,sans-serif;fill:var(--ink);font-size:13px}.plot .grid{stroke:var(--line);stroke-width:1}.plot .axis{stroke:var(--muted);stroke-width:1}.diagram{margin:28px 0}.diagram svg{width:100%;height:auto;display:block;background:var(--tint);border:1px solid var(--line);border-radius:8px}.diagram figcaption,.plotcaption{font-size:12px;color:var(--muted);line-height:1.7;margin-top:9px}.check-row{display:flex;gap:12px;align-items:flex-start;border-bottom:1px solid var(--line);padding:11px 0;font-size:14px}.check-row input{margin-top:9px;accent-color:var(--accent);width:18px;height:18px;flex-shrink:0}.check-row:has(input:checked){color:var(--muted)}.check-status{font-size:13px;color:var(--accent)}.colophon{text-align:center;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:25px;margin-top:40px}.noscript{padding:20px;background:var(--soft)}#topButton{position:fixed;bottom:20px;right:18px;border-radius:50%;width:42px;height:42px;box-shadow:0 3px 15px #0002;z-index:12}body.large{--body-size:19px}[hidden]{display:none!important}
+@media(min-width:1600px){main{margin-left:calc(var(--sidebar) + (100vw - 1550px)/2)}}
+@media(max-width:1000px){:root{--sidebar:250px}main{padding:25px 24px}.chapter{padding:28px}.chapter h2{font-size:24px}}
+@media(max-width:760px){#menu{display:block}.toolbar{padding:0 10px;gap:8px}.brand{display:none}#sidebar{transform:translateX(-100%);width:min(88vw,330px);transition:transform .18s;box-shadow:10px 0 40px #0002}body.nav-open #sidebar{transform:translateX(0)}main{margin-left:0;padding:20px 12px 55px}.hero{padding:16px 10px 30px;margin-bottom:25px}.hero h1{font-size:30px}.lead{font-size:19px}.chapter{padding:25px 19px;margin-bottom:19px;border-radius:9px}.chapter h2{font-size:24px}h3{font-size:18px}body{font-size:16px;line-height:1.95}body.large{font-size:18px}.widget{padding:16px 12px;margin:25px -3px}.formula{font-size:14px;padding:13px 14px}.keywords ol{columns:1}.inputs{gap:9px}.table-wrap{margin-left:-5px;margin-right:-5px}table{font-size:13px}.ref{font-size:13px}.part{font-size:14px}.plot text,.diagram text{font-size:14px}}
+@media print{html{scroll-behavior:auto}body,body.dark{--bg:white;--paper:white;--ink:#111;--muted:#555;--accent:#075d54;--line:#ccc;--tint:#f0f5f2;--soft:#f9f5ec;--gold:#794d24;background:white;color:#111;font-size:10pt;line-height:1.65}.toolbar,#sidebar,#progress,#topButton,.widget button,.widget input[type=range]{display:none!important}main{margin:0;max-width:none;padding:0}.hero{break-after:page}.chapter{padding:0;border:0;margin:0 0 30px;break-before:page;border-radius:0}.chapter[hidden]{display:block!important}.chapter h2{font-size:20pt}.chapter h3{font-size:13pt;break-after:avoid}p{orphans:3;widows:3}.table-wrap{overflow:visible;break-inside:auto}table{min-width:0;font-size:9pt}tr{break-inside:avoid}th{background:#eee}.formula,.widget,.diagram,.exercise{break-inside:avoid}.ref{break-inside:avoid;font-size:9pt}.inputs{grid-template-columns:repeat(3,1fr)}.inputs input{border:0;background:transparent;padding:0;font-size:10pt}.keywords ol{columns:2}.ref-meta{font-size:8pt}.cites{font-size:8pt}.part{break-after:avoid}a{text-decoration:none;color:#075d54}.hero h1{font-size:32pt}.lead{font-size:18pt}.widget{padding:10px}.colophon{font-size:9pt}@page{size:A4;margin:18mm 16mm}
+
+.chapter>.part:first-child{margin:0 0 22px;padding:0;border:0}
+</style></head><body><div id="progress"></div><header class="toolbar"><button id="menu" aria-controls="sidebar" aria-expanded="false">☰ 目次</button><a class="brand" href="#top">低周波防音の設計ノート</a><div class="tools"><button id="fontSize" aria-label="文字サイズを切り替える">文字</button><button id="theme" aria-label="配色を切り替える">夜間</button><button id="print">印刷</button></div></header><aside id="sidebar"><div class="nav-title">CONTENTS <span>26章＋付録</span></div><label for="search">章の本文を検索</label><input id="search" type="search" placeholder="例：圧力損失、室外機、BIC"><div id="searchStatus" role="status"></div><nav><a href="#intro" data-id="intro">はじめに — この教科書の使い方</a><a href="#chapter-1" data-id="chapter-1">第1章　音響メタマテリアルとは何か</a><a href="#chapter-2" data-id="chapter-2">第2章　普通の防音材を理解し直す</a><a href="#chapter-3" data-id="chapter-3">第3章　1000 Hz以下という世界</a><a href="#chapter-4" data-id="chapter-4">第4章　共鳴を味方につける</a><a href="#chapter-5" data-id="chapter-5">第5章　「有効物性」という奇妙な考え方</a><a href="#chapter-6" data-id="chapter-6">第6章　バンドギャップで音を止める</a><a href="#chapter-7" data-id="chapter-7">第7章　局所共振型メタマテリアル</a><a href="#chapter-8" data-id="chapter-8">第8章　Helmholtz型メタマテリアル</a><a href="#chapter-9" data-id="chapter-9">第9章　Space-coiling — 音の通り道を折り畳む</a><a href="#chapter-10" data-id="chapter-10">第10章　Ventilated Acoustic Metamaterial</a><a href="#chapter-11" data-id="chapter-11">第11章　Critical Coupling — 完全吸音の基本原理</a><a href="#chapter-12" data-id="chapter-12">第12章　BICとquasi-BICを実用目線で理解する</a><a href="#chapter-13" data-id="chapter-13">第13章　Acoustic Black Holeと勾配構造</a><a href="#chapter-14" data-id="chapter-14">第14章　まず要求仕様を作る</a><a href="#chapter-15" data-id="chapter-15">第15章　方式を選ぶ</a><a href="#chapter-16" data-id="chapter-16">第16章　簡単な設計計算をしてみる</a><a href="#chapter-17" data-id="chapter-17">第17章　CAEで何を見るのか</a><a href="#chapter-18" data-id="chapter-18">第18章　試作品を測る</a><a href="#chapter-19" data-id="chapter-19">第19章　研究室の構造を量産する難しさ</a><a href="#chapter-20" data-id="chapter-20">第20章　250 Hzの機械騒音を下げる</a><a href="#chapter-21" data-id="chapter-21">第21章　500 Hzのファン騒音を通風を保ったまま下げる</a><a href="#chapter-22" data-id="chapter-22">第22章　100～1000 Hzを薄型構造で広帯域吸音する</a><a href="#chapter-23" data-id="chapter-23">第23章　空調機器へ組み込むならどこか</a><a href="#chapter-24" data-id="chapter-24">第24章　従来防音材＋メタマテリアル</a><a href="#chapter-25" data-id="chapter-25">第25章　2020年代の研究最前線を覗く</a><a href="#chapter-26" data-id="chapter-26">第26章　逆設計とAI</a><a href="#closing" data-id="closing">終章　音響メタマテリアルを「珍しい材料」で終わらせない</a><a href="#appendix-A" data-id="appendix-A">付録A　音響メタマテリアル英日用語集</a><a href="#appendix-B" data-id="appendix-B">付録B　1000 Hz以下の波長早見表</a><a href="#appendix-C" data-id="appendix-C">付録C　Helmholtz共鳴周波数計算式</a><a href="#appendix-D" data-id="appendix-D">付録D　dB・吸音率・TLの早見表</a><a href="#appendix-E" data-id="appendix-E">付録E　インピーダンス管測定入門</a><a href="#appendix-F" data-id="appendix-F">付録F　論文のバンド図・吸音率グラフの読み方</a><a href="#appendix-G" data-id="appendix-G">付録G　英語論文を掘るための検索キーワード100</a><a href="#appendix-H" data-id="appendix-H">付録H　実用設計チェックリスト</a><a href="#appendix-I" data-id="appendix-I">付録I　主要レビュー論文・参考文献</a></nav><a class="nav-top" href="#top">↑ 表紙へ</a></aside><main><section class="hero" id="top"><h1>実用 音響メタマテリアル入門</h1>
+<p>1000 Hz以下の低周波騒音を、小さく・軽く・薄く抑えるために</p>
+<div class="lead">低周波の音を、どこで、何によって減らすか。<br>共鳴の理解から、室外機の設計判断まで。</div>
+
+<div class="meta">対象：防音材の基礎を知る初級者・量産開発設計者 ／ 初版 2026年9月28日</div>
+
+</section><section class="chapter" id="intro"><h2>はじめに — この教科書の使い方</h2>
+<p>本書の到達点は、論文に登場する複雑な形をまねることではない。対象の周波数と伝搬経路を特定し、必要な音響インピーダンスを考え、試作品でその仮説を確かめられるようになることである。主対象は空気中の1000 Hz以下、受動構造による実用防音とする。「低周波」は本書での設計上の区切りであり、法令や環境測定の用語定義を置き換えるものではない。</p>
+<p><strong>読み方は三通り。</strong> 初めてなら第1～6章を順に読む。すぐ試作したいなら第14～19章へ進み、分からない機構を第7～13章で補う。空調機の開発へ持ち込むなら第23章の経路診断から始め、第20～24章で評価計画を作る。</p>
+<p>各章の番号は依頼された目次を引き継いだ。説明には次の区別を使う。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>表示</th>
+<th>意味</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基本原理・式</td>
+<td>線形音響・振動モデルの説明。適用条件を併記する</td>
+</tr>
+<tr>
+<td>文献ノート</td>
+<td>実在資料から確認した事実。番号から付録Iへ移動できる</td>
+</tr>
+<tr>
+<td>設計例</td>
+<td>本書で設定した仮想条件と独自計算。性能保証や実測報告ではない</td>
+</tr>
+<tr>
+<td>設計上の判断</td>
+<td>文献・物理モデルを製品に適用するための考察・提案</td>
+</tr>
+</tbody></table></div>
+<p><strong>資料の範囲。</strong> 主な調査対象は2020年9月1日以降に公開された文献。古典は「背景資料」として別枠にした。公開日、巻号年、取得範囲を付録Iに記す。全文を確認できなかった資料は、要旨・書誌から分かる範囲だけを用いた。2020年代の網羅的レビューではなく、設計に必要な論点を選んだ教科書である。</p>
+<p><strong>最初に押さえる五点。</strong> 吸音率と遮音性能は違う。共鳴器のピーク性能と帯域幅は別物である。無限周期系のバンドギャップは実機の減音量ではない。開口率は風量維持率ではない。そして、サブ波長とは寸法比の表現であって、無条件に優秀という意味ではない。</p>
+<div class="note">本文と計算欄は外部ライブラリを読み込まない単一HTML。文献リンクを除いてオフラインで読める。検索は章の絞り込み、印刷は全文出力に対応する。</div>
+
+</section><section class="chapter" id="chapter-1"><div class="part">第1部　なぜ低周波防音は難しいのか</div><h2>第1章　音響メタマテリアルとは何か</h2>
+<h3 id="sub-1">1.1 「材料」ではなく「構造」で音響特性を作る</h3>
+<p>樹脂の板に小さな空洞と首部を設けると、単なる樹脂板とは異なる周波数応答が現れる。音が空洞を圧縮し、首部の空気を往復させるからだ。基本素材が同じでも、空洞の容積や首部の長さを変えれば応答は変わる。音響メタマテリアルは、このような設計された単位構造の共鳴・結合・波動干渉を利用する人工構造の総称である。</p>
+<p>ただし「構造で効く」は従来材にも当てはまる。グラスウールも繊維と空隙の構造を利用している。実務では名称の境界を争うより、<strong>どの寸法が何の特性を決めるか説明できること</strong>が重要だ。</p>
+<h3 id="sub-2">1.2 グラスウール・ウレタン・遮音板との違い</h3>
+<p>多孔質吸音材は空気の往復運動に対する粘性・熱的損失を利用する。重い遮音板は、音圧で動きにくいことを利用する。共鳴型構造は、特定帯域で空気や膜の運動を強めたり、平均的な動きを抑えたりする。したがって同じ「軽いパネル」でも、吸音を狙う設計と反射を狙う設計は違う。構造材の剛性や内部損失が変われば性能も変わるので、形さえ同じなら材質は何でもよい、とはいえない。</p>
+<h3 id="sub-3">1.3 「サブ波長」の考え方</h3>
+<p>単位セルの代表寸法をa、波長をλとすると、a/λが小さい状態をサブ波長と呼ぶ。例えばa＝30 mm、f＝250 Hz、音速343 m/sならλ＝1.372 m、a/λ≈0.022である。一方、厚さ30 mmでも横幅1 mのパネルは、あらゆる方向で小さいわけではない。論文のλ/100が厚さなのか、セル寸法なのか、装置全体なのかを必ず確認する。</p>
+<h3 id="sub-4">1.4 波長を実感する</h3>
+<div class="formula">λ = c / f　　c ≈ 343 m/s（20 ℃付近の空気）</div>
+
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>周波数</th>
+<th align="right">波長</th>
+<th align="right">1/4波長</th>
+<th>製品設計での意味</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100 Hz</td>
+<td align="right">3.43 m</td>
+<td align="right">858 mm</td>
+<td>素直な1/4波長管は長大</td>
+</tr>
+<tr>
+<td>500 Hz</td>
+<td align="right">686 mm</td>
+<td align="right">172 mm</td>
+<td>折り畳み・側枝が候補</td>
+</tr>
+<tr>
+<td>1000 Hz</td>
+<td align="right">343 mm</td>
+<td align="right">85.8 mm</td>
+<td>数cmの構造との差が縮まる</td>
+</tr>
+</tbody></table></div>
+<p>音速を一定として本書で計算した値である。低周波ほど「材料を数mm貼る」という発想と波の空間尺度が離れる。</p>
+<h3 id="sub-5">1.5 低周波で注目される理由</h3>
+<p>製品寸法を波長まで大きくできないとき、内部のばねと質量によって低い固有振動数を作れる価値は大きい。ただし低周波化には、空気容積、柔らかさ、長い音路、付加質量など何らかの資源が必要になる。小型化で消えたように見える長さは、内部経路や面内面積へ移っていることが多い。</p>
+<h3 id="sub-6">1.6 扱うもの・扱わないもの</h3>
+<p>本書は空気伝搬音の吸音・遮音と、必要な範囲の板振動を扱う。超音波、水中音響、地震波、音響レンズの詳細は扱わない。第25章の先端概念は検索の入口として紹介する。<strong>水中で181 Hzの高吸音を示す論文があっても、空気中の薄型吸音器の証拠にはならない。</strong> 媒質が変われば音速、特性インピーダンス、固体との連成が変わる。<span class="cites"><a href="#ref-R16" title="参考文献 R16">[R16]</a></span></p>
+<div class="exercise">考えてみよう：30 mmの厚さだけを示した論文を製品に採用する前に、あと何を調べるか。<details><summary>解答例</summary>面積、内部空気容積、背後空気層、支持枠、測定入射条件、性能帯域、損失と温度依存を調べる。</details></div>
+
+</section><section class="chapter" id="chapter-2"><h2>第2章　普通の防音材を理解し直す</h2>
+<h3 id="sub-7">2.1 遮音・吸音・制振・防振</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>対策</th>
+<th>主な対象</th>
+<th>作用</th>
+<th>室外機での例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>遮音</td>
+<td>透過する空気音</td>
+<td>透過パワーを減らす</td>
+<td>圧縮機室の囲い</td>
+</tr>
+<tr>
+<td>吸音</td>
+<td>空間内の音</td>
+<td>音響エネルギーを熱に変える</td>
+<td>囲い内面の吸音材</td>
+</tr>
+<tr>
+<td>制振</td>
+<td>板などの振動</td>
+<td>振動エネルギーを散逸</td>
+<td>共振するパネルへの損失付与</td>
+</tr>
+<tr>
+<td>防振</td>
+<td>支持部経由の振動</td>
+<td>力の伝達を減らす</td>
+<td>圧縮機支持ゴム</td>
+</tr>
+</tbody></table></div>
+<p>吸音材を貼っても、配管を伝って筐体へ入る振動は直接には止まらない。逆に、防振支持を変えても、ファン開口から放射する音を必ず減らせるわけではない。まず対象の経路を決める。</p>
+<h3 id="sub-8">2.2 質量則</h3>
+<p>無限に広い、曲げ剛性を無視した薄い板を、同じ空気の間に置く理想モデルを考える。面密度m′[kg/m²]、角周波数ω＝2πf、空気の特性インピーダンスZ₀＝ρcなら、垂直入射の透過損失は次の式になる。</p>
+<div class="formula">TL = 10 log₁₀[1 + (ωm′ / 2ρc)²]</div>
+
+<p>慣性支配でωm′≫2ρcなら、面密度または周波数を2倍にすると約6 dB改善する。ρ＝1.20 kg/m³、c＝343 m/s、m′＝5 kg/m²では、100 Hzで約11.9 dB、500 Hzで約25.6 dBとなる。実板には剛性・固有モード・コインシデンス・支持条件・隙間があるため、この値は実測予測ではなく比較基準である。</p>
+<h3 id="sub-9">2.3 多孔質吸音材はなぜ低周波が苦手なのか</h3>
+<p>損失を生むのは主に空隙内の粒子運動である。剛壁のすぐ近くは法線方向の粒子速度が小さいため、薄い多孔質層だけでは低周波音に十分な運動距離と散逸を与えにくい。流れ抵抗を大きくしすぎると、今度は入口で反射が増える。「密度が高いほど低音を吸う」という一変数の比較は不十分だ。</p>
+<h3 id="sub-10">2.4 空気層を厚くすると何が起こるか</h3>
+<p>背後空気層は、吸音材を剛壁から離し、粒子速度が大きい位置へ近づける。1/4波長はこの位置関係の理解に便利だが、必要厚さの厳密な下限ではない。材料内部では複素波数になり、背後空間と材料を合わせた入力インピーダンスが吸音を決める。空気層も製品の占有厚さに含めて比較する。</p>
+<h3 id="sub-11">2.5 共鳴型吸音材というもう一つの方法</h3>
+<p>孔あき板、微細穿孔板、板振動吸音器、Helmholtz共鳴器は古くからある共鳴型の方法である。メタマテリアル研究との連続性は大きい。新しい名称より、従来の共鳴器では難しかった帯域形成、薄型化、結合制御、製造のどこを改善したかを見る。</p>
+<h3 id="sub-12">2.6 TLと吸音率を混同しない</h3>
+<p>入射パワーで規格化した反射率R、透過率τ、吸音率αについて、受動系ではα＋R＋τ＝1。透過損失はTL＝−10 log₁₀τである。剛壁背後の試料ならτ＝0なのでα＝1−Rとなるが、通風構造では一般にτ≠0。透過を測らず「反射しないから吸った」と判断してはいけない。</p>
+<p><strong>数値例：</strong> R＝0.89、τ＝0.01ならTL＝20 dBでもα＝0.10である。よく遮るが、あまり吸わない。逆にα＝0.90でもτ＝0.10ならTL＝10 dBにとどまる。</p>
+<h3 id="sub-13">2.7 「10 dB下がった」の意味</h3>
+<p>同じ媒質・比較条件で、パワー比は10^(−10/10)＝0.1、音圧振幅比は10^(−10/20)≈0.316。体感音量が必ず1/10になる意味ではない。実機の前後差を表す挿入損失ILと、部材の透過損失TLも違う。測定点だけで10 dB下がっていても、別方向へ音が移った可能性がある。</p>
+</section><section class="chapter" id="chapter-3"><h2>第3章　1000 Hz以下という世界</h2>
+<h3 id="sub-14">3.1 低周波騒音源の代表例</h3>
+<p>回転機械、往復動機械、電磁加振、流れの脈動、部屋や空洞のモードが候補になる。同じ周波数ピークでも、励振源と放射面が別の場所にあることは珍しくない。マイクのスペクトルだけで部品名を決めず、回転数、振動、運転状態との対応を見る。</p>
+<h3 id="sub-15">3.2 モーター・ファン・圧縮機・ポンプ</h3>
+<p>ファンでは回転と羽根通過、圧縮機では回転機構や圧力脈動、モーターでは電磁力、ポンプでは脈動・流動が候補になる。ただし機種による違いが大きい。「圧縮機だから250 Hz」と先に決めない。運転マップ上のどこで、その周波数が強いかを記録する。</p>
+<h3 id="sub-16">3.3 回転次数成分と広帯域騒音</h3>
+<div class="formula">回転周波数 fᵣ = n / 60　　q次成分 f = qn / 60　　羽根通過周波数 BPF = Zn / 60</div>
+
+<p>nはrpm、Zは羽根枚数。3枚翼が1000 rpmならBPFは50 Hzであり、500 Hzはその10倍に相当する。高次成分が必ず支配的とは限らない。回転数に比例して移動する線と、回転数が変わっても位置がほぼ変わらない構造・空洞共鳴を、回転数掃引の図で分ける。</p>
+<h3 id="sub-17">3.4 63 / 125 / 250 / 500 / 1000 Hz</h3>
+<p>これらはオクターブバンド中心周波数の代表値である。中心250 Hzの値は「250 Hzの純音」そのものではなく、周辺帯域のエネルギーを合算したもの。狭帯域の共鳴器を設計するときはFFTなどの細かい周波数分解能でも確認する。1/3オクターブのグラフだけでは、数Hz幅の谷や山を見落とす。</p>
+<h3 id="sub-18">3.5 波長と製品寸法の関係</h3>
+<p>小さな開口でも音響的には十分な漏れ道になり得る。低周波は開口や障壁端部を回り込みやすいため、測定管で良かったパネルを室外機前面に置いただけでは同じ結果にならない。パネルの面積、障壁の高さ、側方・上方の迂回経路まで系に含める。</p>
+<h3 id="sub-19">3.6 「厚くできない」が最大の敵になる</h3>
+<p>厚さだけでなく面内面積と空気容積も予算化する。例えば面積0.20 m²、厚さ30 mmの箱の総体積は6 Lだが、リブ・壁・ネックを除く有効容積は小さくなる。低周波セルに容積を割くと、ほかの帯域のセル数や通風断面が減る。設計とはこの予算配分である。</p>
+</section><section class="chapter" id="chapter-4"><div class="part">第2部　メタマテリアルを理解するための最小限の音響学</div><h2>第4章　共鳴を味方につける</h2>
+<h3 id="sub-20">4.1 ばね－質量系から考える</h3>
+<div class="formula">mẍ + bẋ + kx = F(t)</div>
+
+<p>質量mは加速に抵抗し、ばねkは変位に応じて戻す力を生み、減衰bは速度に応じてエネルギーを散逸する。音響構造でも、この三つを「空気の慣性」「空気の圧縮性」「粘性・熱・材料損失」に読み替えられる。共鳴はエネルギーが質量とばねの間で繰り返し交換される状態である。</p>
+<h3 id="sub-21">4.2 固有振動数</h3>
+<p>損失のない1自由度系ではf₀＝(1/2π)√(k/m)。質量を増やすか、ばねを柔らかくすると低周波化する。音圧のピーク、変位のピーク、吸音のピークは損失・境界条件により一致しないことがある。固有値解析だけで吸音ピークを断定しない。</p>
+<h3 id="sub-22">4.3 Helmholtz共鳴器</h3>
+<p>瓶の首に相当するネックと、大きな空洞を組み合わせた共鳴器。ネック内の空気が主な慣性、空洞内の圧縮が主なばねになる。空洞内部の圧力が概ね一様で、ネックが短いという集中定数近似から設計を始める。</p>
+<figure id="hrDiagram" class="diagram"></figure>
+
+<h3 id="sub-23">4.4 ネックとキャビティは何をしているのか</h3>
+<p>体積速度U[m³/s]で記述する音響質量MₐとコンプライアンスCₐは、断面積A、空洞容積V、有効ネック長Lₑについて次式となる。</p>
+<div class="formula">Mₐ = ρLₑ/A　[kg/m⁴]　　Cₐ = V/(ρc²)　[m³/Pa]<br>Zₐ = p/U = Rₐ + j(ωMₐ − 1/(ωCₐ))　[Pa·s/m³]</div>
+
+<p>首部の端の外側も一緒に動くため、Lₑは物理長lより長い。端補正Δlは端の形状、近傍壁、孔間隔、内外の開き方に依存する。</p>
+<h3 id="sub-24">4.5 共鳴周波数の計算</h3>
+<div class="formula">f₀ ≈ c/(2π) √[A/(VLₑ)]　　Lₑ = l + Δl</div>
+
+<p>本書の円孔計算例はΔl＝1.7rを仮定する。これは両端補正の概算を一つ選んだもので、あらゆるネックの正解ではない。寸法がmm、容積がcm³なら必ずm、m³へ換算する。長いネック、浅い空洞、高次モード、強い損失ではこの式からずれる。</p>
+<h3 id="sub-25">4.6 Q値とは何か</h3>
+<p>孤立した弱減衰の共鳴ではQ≈f₀/Δf。Δfは対応する共鳴エネルギー応答の半値全幅である。例えば250 HzでQ＝25なら幅の目安は10 Hz。Q＝5なら50 Hz。吸音曲線の幅を扱う場合は、半値かα≥0.8かなど幅の定義を併記する。</p>
+<h3 id="sub-26">4.7 減衰を増やせばよいとは限らない</h3>
+<p>共鳴運動を失わせるほど損失を大きくすると、音が入る前に反射する場合がある。一方、損失がほぼゼロなら、蓄えたエネルギーを外へ戻すため吸音できない。最大吸音には内部損失と外部への結合の釣り合いが必要になる。詳しくは第11章。</p>
+<h3 id="sub-27">4.8 共鳴器を並べると何が起こるか</h3>
+<p>周波数をずらして並べれば複数ピークが得られるが、ピークの間が自動的に埋まるわけではない。隣接セルとの近接場結合、面積配分、反共鳴によって谷ができる。まず独立並列モデルを計算し、次にセルをまとめたモデルと実測で結合を確認する。<span class="cites"><a href="#ref-R2" title="参考文献 R2">[R2]</a></span></p>
+</section><section class="chapter" id="chapter-5"><h2>第5章　「有効物性」という奇妙な考え方</h2>
+<h3 id="sub-28">5.1 構造全体を一つの材料として見る</h3>
+<p>単位構造を細かく追わず、平均した圧力や速度の関係を一つの物性で表すのが有効媒質の考え方である。均質な空気なら密度ρと体積弾性率Kで十分でも、共鳴構造ではそれらが周波数依存・複素数・方向依存になる。</p>
+<h3 id="sub-29">5.2 有効密度</h3>
+<p>平均的な加速度を生じさせるために、どれだけの圧力勾配が必要かを表す動的な量。付加された内部質量が外枠と違う位相で動くと、同じ外力に対する見かけの慣性が大きく変わる。ここでの密度は、秤で測った質量を外形体積で割る静的密度とは違う。</p>
+<h3 id="sub-30">5.3 有効体積弾性率</h3>
+<p>体積の変化に対する平均圧力の応答を表す。空洞へ流れ込む空気が共鳴すると、圧縮と圧力の位相関係が単純な空気とは異なる。実際の設計では、有効物性を無理に求めず、表面インピーダンスや散乱係数で記述した方が確実な場合も多い。</p>
+<h3 id="sub-31">5.4 負の有効密度</h3>
+<p>説明用の「外側質量M＋内部ばね質量m」の無損失モデルでは、内部自由度を消去すると、外枠の変位に対する動的質量は次のように書ける。</p>
+<div class="formula">M_eff(ω) = M + mω₀²/(ω₀² − ω²)</div>
+
+<p>内部共鳴ω₀を少し超える帯域では第二項が負になり、全体も負になり得る。内部質量の位相反転が、外枠の平均運動に対する力の関係を変えるからだ。この式は理解用のモデルであり、任意の膜や流路にそのまま代入する式ではない。</p>
+<h3 id="sub-32">5.5 密度が本当にマイナスではない</h3>
+<p>重さがなくなったり、物体が重力と逆に落ちたりするわけではない。特定周波数の調和振動に対する関係式で負の係数が現れるだけである。有限の損失があれば物性は複素数となり、負と呼ぶのは通常その実部についてである。</p>
+<h3 id="sub-33">5.6 局所共振と負の動的物性</h3>
+<p>単純な均質モデルならk²＝ω²ρ_eff/K_eff。片方が負、もう片方が正で損失が小さい帯域ではkが虚数になり、伝搬しにくい応答が現れる。ただし両方が負なら、別の伝搬解を持ち得る。したがって「負の密度を作れば何でも遮音できる」は誤りである。</p>
+<h3 id="sub-34">5.7 Effective mediumが成立する条件</h3>
+<p>セルが波長より十分小さいことは出発点だが、それだけでは十分でない。強い非局所結合、方向依存、有限サイズ、高次モード、境界層があると単純なρとKに押し込めにくい。厚さを変えても同じ有効物性で予測できるか、複数角度で整合するかを確認する。「a&lt;λ/10」は便利な初期目安にすぎず、普遍的保証ではない。</p>
+</section><section class="chapter" id="chapter-6"><h2>第6章　バンドギャップで音を止める</h2>
+<h3 id="sub-35">6.1 波が伝わらない周波数帯</h3>
+<p>無限周期構造の固有問題で、対象の方向・モードについて伝搬するBloch波が存在しない帯域をバンドギャップという。有限の数列ではエバネッセントな波が残り、端部や別経路から透過も生じる。だからバンドギャップの有無と、何dB減るかは別の計算になる。</p>
+<h3 id="sub-36">6.2 Bragg散乱</h3>
+<p>周期配列からの散乱が干渉して伝搬を妨げる。単純な1次元の目安は周期a≈λ/2。250 Hzの空気音ではa≈0.686 mとなり、小型製品には大きい。実際のバンド端は充填率や材料差などに依存するため、λ/2は概算である。</p>
+<h3 id="sub-37">6.3 Local resonance bandgap</h3>
+<p>セル内部の固有振動と全体の伝搬波の結合で形成される帯域。周期間隔そのものより低い固有振動数を使えるため、Bragg散乱より小さな構造で低周波へ働きかけられる。構造波を止める局所共振体と空気音用の空洞は、同じ名称でも対象の自由度が異なる。</p>
+<h3 id="sub-38">6.4 なぜサブ波長で低周波を止められるのか</h3>
+<p>長い波長そのものを構造内へ直線状に収納する必要がないからである。空気容積と首部慣性、膜張力と付加質量などで低い固有振動数を作る。一方、その代償として狭帯域、追加質量、容積、公差感度が現れる。波長の制約を別の設計変数へ変換していると理解する。</p>
+<h3 id="sub-39">6.5 分散関係を怖がらずに読む</h3>
+<p>分散関係はωと波数kの関係である。空気中の単純な平面波ならω＝ckで直線。曲線の傾きdω/dkは群速度に対応する。共鳴に近づくと傾きが変わり、平らな枝や避け合う枝が現れる。平らな枝は局在したモードの手掛かりだが、その存在だけで吸音を証明しない。</p>
+<h3 id="sub-40">6.6 バンド図の最低限の読み方</h3>
+<p>縦軸がHzか無次元周波数か、横軸がどの結晶方向をたどるか、対象が空気音か弾性波かを確認する。ある方向に線がない「方向性ギャップ」と、全方向で伝搬しない完全ギャップを分ける。損失のある計算では複素波数の虚部も見る。付録Fに確認順序をまとめた。</p>
+<h3 id="sub-41">6.7 共振吸音とバンドギャップ遮音</h3>
+<p>共振吸音は共鳴で集めたエネルギーを散逸する。バンドギャップ遮音では反射が支配的でもよい。ある通風型ABH着想構造の研究では、主要機構が吸音ではなく共鳴器間結合による反射と説明されている。外観の名前だけで機構を決められない実例である。<span class="cites"><a href="#ref-R6" title="参考文献 R6">[R6]</a></span></p>
+<div class="exercise">確認：損失をゼロにしたCAEでTLが高くなった。吸音材として成功したか。<details><summary>解答</summary>いいえ。受動の無損失系では散逸はなく、低透過は反射などによる。反射・透過・吸音のパワー収支を調べる。</details></div>
+
+</section><section class="chapter" id="chapter-7"><div class="part">第3部　実用音響メタマテリアルの主要方式</div><h2>第7章　局所共振型メタマテリアル</h2>
+<h3 id="sub-42">7.1 Local Resonant Acoustic Metamaterial</h3>
+<p>局所共振型は一つの形状を指す言葉ではない。各セル内に共振自由度を持つ構造群を指し、膜、板、ゴム支持質量、空洞などが含まれる。まず「空気に作用するのか」「板の曲げ波に作用するのか」を区別する。防振用のバンドギャップを、そのまま空気音のTLに読み替えてはいけない。</p>
+<h3 id="sub-43">7.2 質量－ばね共振器</h3>
+<p>筐体板に小さな付加質量を柔らかく支持すると、付加系が特定帯域で大きく動き、母構造の振動を変える。単一の動吸振器と、多数配置する局所共振構造は連続的な関係にある。ただし板上の節に取り付けても対象モードへ結合しにくい。質量の位置と支持剛性は、固有振動数と同じくらい重要である。</p>
+<h3 id="sub-44">7.3 膜型・板型メタマテリアル</h3>
+<p>膜は主に張力、板は主に曲げ剛性で復元力を生む。板の曲げ剛性はD＝Et³/[12(1−ν²)]なので、厚さtの影響が大きい。固定のつもりだった周辺が少し滑る、接着層が柔らかい、といった違いで応答が変わる。単体材料定数だけではモデルを決められない。</p>
+<h3 id="sub-45">7.4 Membrane-type acoustic metamaterial</h3>
+<p>膜の面平均法線速度が小さい帯域は、音を透過させにくい。局所的には膜が大きく動いていても、正負の動きが相殺されれば平均速度が小さくなる。2008年の代表的原著は、二つの固有モードの間で平均法線変位がゼロに近づき、強い反射が生じることを示した。これは背景資料として参照する。<span class="cites"><a href="#ref-B1" title="参考文献 B1">[B1]</a></span></p>
+<h3 id="sub-46">7.5 Decorated membrane resonator</h3>
+<p>膜に小さな剛体質量を付け、質量・位置・膜張力によってモードを調整するものをdecorated membrane resonatorと呼ぶ。質量を偏心させると対称性も変わる。吸音器にするには損失と、必要に応じ背後空間・反射壁を組み合わせる。膜だけの遮音ピークと、膜＋背後空気層の吸音ピークは分けて評価する。</p>
+<h3 id="sub-47">7.6 低周波遮音が成立する仕組み</h3>
+<p>質量則の前提だった「一様に動く慣性板」から外れ、共振・反共振を利用して透過に関わる平均運動を抑える。これは特定帯域の利点であり、共鳴によって透過が増える周波数もあり得る。比較は最大TLだけでなく、使用帯域全体の最小TLと谷の深さで行う。</p>
+<h3 id="sub-48">7.7 重量・厚さ・帯域のトレードオフ</h3>
+<p>軽く柔らかい膜は低周波化しやすいが、張力のばらつき、クリープ、熱、濡れに敏感になり得る。板型は剛性を確保しやすい一方、重量と支持条件の影響が増える。屋外機に使うなら、保護カバーまで含めた音響特性・耐久性・質量を評価する。保護材が膜に触れれば別の系になる。</p>
+</section><section class="chapter" id="chapter-8"><h2>第8章　Helmholtz型メタマテリアル</h2>
+<h3 id="sub-49">8.1 共鳴器を大量に並べる</h3>
+<p>一つの共鳴器は局所的な音響アドミタンスを与える。面として音を受けるには、単位面積当たりの開口数や各セルが受け持つ面積も必要だ。同じ共鳴周波数でも、直径の違う孔と容積の違う空洞を組み合わせれば抵抗・結合強度は変わる。「f₀だけ合った」は設計の途中である。</p>
+<h3 id="sub-50">8.2 単一共鳴型</h3>
+<p>固定回転数で鋭いピークがあり、温度変動も小さいなら、まず単一共鳴型を試す価値がある。最初の試作は首部交換式、または容積スペーサー式にすると調整が速い。中心周波数を合わせた後、損失材や抵抗メッシュでピーク高さと幅を調整する。</p>
+<h3 id="sub-51">8.3 多重共鳴型</h3>
+<p>空洞を隔壁で分けたりネックを入れ子にしたりすると、複数の自由度を一つのセルへ入れられる。長所は容積や面積を共有できる可能性。短所は結合が強くなり、単一Helmholtz式の独立計算から離れることだ。高次モードを「余分な誤差」とせず、狙った帯域に使うか、避けるかを決める。</p>
+<h3 id="sub-52">8.4 Parallel / Series resonator</h3>
+<p>面上に並列配置された独立セルが同じ表面圧力を受ける近似なら、表面アドミタンスを面積比で足す。</p>
+<div class="formula">1/Zs,eq = Σᵢ φᵢ/Zs,i　　Σᵢφᵢ = 1</div>
+
+<p>Zs,iは各セルの占有面積に基づく表面インピーダンス、φᵢは面積比。体積速度基準のZₐを使う場合はZs,i＝SᵢZₐ,iで換算する。直列積層は位相と空気層の変換を含むため、通常は伝達行列で扱う。吸音率を足したり平均したりするだけではない。</p>
+<h3 id="sub-53">8.5 共鳴周波数を少しずつずらす</h3>
+<p>周波数配置は等間隔とは限らない。250 Hz付近に大きな音響エネルギーが集中するなら、そこへセル面積を多く割り当てる選択がある。運転中にピークが移動するなら、移動範囲を覆うように配置する。一定回転数のFFT一枚から、量産機全体の共鳴器配列を決めない。</p>
+<h3 id="sub-54">8.6 狭帯域から広帯域へ</h3>
+<p>帯域を広げる方法は、損失を増やす、異なる共鳴を並べる、モード間の結合を設計する、従来材を併用する、の組合せになる。36個の複合Helmholtzセルを使った研究では、厚さ100 mmで320～6400 Hzにわたる平均吸音率0.93が報告されている。これは100 Hzからの吸音や、厚さ20 mmでの同性能を示すものではない。<span class="cites"><a href="#ref-R3" title="参考文献 R3">[R3]</a></span></p>
+<h3 id="sub-55">8.7 多孔板・MPPとの関係</h3>
+<p>MPP（micro-perforated panel）は微細な孔内の粘性・熱的損失を利用する。孔径、板厚、開孔率、背後容積が、抵抗と慣性とばねを決める。開孔率を増やせば抵抗も慣性も変わるので、穴の数を単なる通風上の数字として扱えない。背面が閉じたMPP吸音器には、正面に穴があっても定常的な通り抜け風路はない。</p>
+<h3 id="sub-56">8.8 製造ばらつきは共鳴周波数をどれだけ動かすか</h3>
+<p>小さな変動ならHelmholtz式を対数微分して見積もれる。</p>
+<div class="formula">δf/f ≈ δc/c + ½δA/A − ½δV/V − ½δLₑ/Lₑ</div>
+
+<p>ただし円孔径を変えるとAだけでなく端補正も変わる。l一定、Lₑ＝l＋βrなら、半径変動の感度はδf/f≈[1−βr/(2Lₑ)]δr/r。損失抵抗の変動はさらに大きくなり得るため、周波数だけで公差を評価しない。穴詰まり、バリ、接着剤のはみ出しも設計変数に含める。</p>
+</section><section class="chapter" id="chapter-9"><h2>第9章　Space-coiling — 音の通り道を折り畳む</h2>
+<h3 id="sub-57">9.1 長い音路を小さな空間へ入れる</h3>
+<p>管内で位相が進む距離を長くしながら、外形厚さを抑える。一本の管を平面内で蛇行させたり、渦巻き状にしたりする。ただし流路を長くした分だけ内部容積と壁面積を使う。正面から薄く見えても、平面寸法が大きい場合がある。</p>
+<h3 id="sub-58">9.2 Labyrinthine metamaterial</h3>
+<p>迷路状の構造という幾何学の呼び名であり、反射型にも吸音型にもなり得る。行き止まりの迷路、貫通する迷路、中央通路に接続する側枝迷路では境界条件が違う。まず入口と出口を線でたどり、どこに圧力腹・速度腹ができるか考える。</p>
+<h3 id="sub-59">9.3 Coiled-space resonator</h3>
+<p>片側閉端・片側開口の管の基本共鳴はf₀≈c/(4Lₑ)。両端の条件が違えば1/2波長型などになる。論文中のFabry–Pérotという名称だけから境界条件を決めず、背後端が閉じているか確認する。開口端補正と断面変化も有効長に影響する。</p>
+<h3 id="sub-60">9.4 低周波化と小型化</h3>
+<p>250 Hzでは約343 mmの1/4波長音路が必要である。これを30 mm厚へ折り畳めても、通路断面と壁厚を入れた容積が必要だ。細い通路で無理に詰め込むと、粘性損失が増えて共鳴が弱くなり、単純な音路長計算からずれる。</p>
+<h3 id="sub-61">9.5 曲がり・断面積・流路長</h3>
+<p>流路長はまず中心線で見積もり、急な断面変化や狭窄部は局所インピーダンスとして追加する。狭い管では熱粘性による複素波数を使う。直線管の無損失モデルと3Dの損失モデルを比較して、どの要因がピークを動かすかを順に調べる。</p>
+<h3 id="sub-62">9.6 圧力損失との戦い</h3>
+<p>行き止まりの側枝には、通常、主流を通す必要がない。その場合の主な問題は音響的損失である。主流まで迷路へ通す設計では定常圧力損失と風切り音が大きな問題になる。<strong>音響粒子速度の往復運動と、冷却用の平均流を分ける</strong>と、長い側枝と短い主風路を両立する発想が得られる。</p>
+<h3 id="sub-63">9.7 3Dプリンタから量産部品へ</h3>
+<p>造形できる形と金型から抜ける形は違う。量産を見据えるなら、浅い溝のトレー＋蓋、分割コア、二枚合わせ板金などで音路を再構成する。分割線を音路のシール線にすると、溶着不良が短絡経路を作る。試作時から量産相当の合わせ面で評価する。</p>
+</section><section class="chapter" id="chapter-10"><h2>第10章　Ventilated Acoustic Metamaterial</h2>
+<h3 id="sub-64">10.1 風を通して音を止める難題</h3>
+<p>空気音も冷却風も同じ開口を利用するため、穴を塞ぐだけでは目的を満たせない。しかし定常流と音の往復運動は異なる。主風路を残し、側枝の共鳴器で特定周波数の音響インピーダンスだけを変える設計が可能になる。</p>
+<h3 id="sub-65">10.2 開口率と遮音性能</h3>
+<p>幾何開口率σ＝開口面積/全断面積、風量比Qv/Qv,0、圧力損失Δpは別々の量である。同じ開口率でも、入口形状、厚さ、表面粗さ、曲がりでΔpは違う。論文の「ventilation ratio」が幾何学的な開口比なのか、実測流速比なのかを確認する。</p>
+<h3 id="sub-66">10.3 中央流路＋周囲共鳴器</h3>
+<p>主風路の壁に共鳴器の口を開けると、主流の通り道と音響的な側枝を分けられる。共鳴周波数付近で側枝へ体積速度が流れ、反射または吸音を作る。ただし主風路を拡大すると音と共鳴器の結合が弱くなる場合があり、周囲の容積も減る。</p>
+<h3 id="sub-67">10.4 バイパス流路</h3>
+<p>共鳴器を避けて流れる経路は風量に有利でも、音にも抜け道を与える。非干渉な面積平均モデルなら、完全透過する開口の割合εが残るだけで、τ_total≈ε＋(1−ε)τ_panelとなる。これは複雑な共鳴開口の普遍的上限ではなく、漏れの厳しさを理解する簡易モデルである。</p>
+<h3 id="sub-68">10.5 Ventilated absorber</h3>
+<p>通風状態でエネルギー散逸を増やすもの。α＝1−R−τを使い、Rとτの両方を評価する。二つの開放側を持つ系では、背後剛壁の一ポート系の完全吸音条件をそのまま使えない。入射方向によって吸音が違う場合もある。</p>
+<h3 id="sub-69">10.6 Ventilated sound barrier</h3>
+<p>音を反射して透過を減らすもの。音源側の音圧が上がる、別方向の放射が増えるなどの影響を確認する。有限障壁の端部回折もあり、ダクト内の良いTLが屋外の受音点で同じILになるとは限らない。</p>
+<h3 id="sub-70">10.7 ファン騒音への適用</h3>
+<p>無流のスピーカー試験、送風中のスピーカー試験、ファン自身を音源とする試験を段階的に行う。最初は部品の音響性能、次は流れによる変化、最後は音源の変化も含む実機性能を見る。自動車HVACで、スピーカー試験から流れのあるHVAC試験へ進めた研究があるが、これを室外機の500 Hz性能と読み替えない。<span class="cites"><a href="#ref-R8" title="参考文献 R8">[R8]</a></span></p>
+<h3 id="sub-71">10.8 換気・冷却性能とのトレードオフ</h3>
+<p>固定回転数で静かになっても、風量が低下しただけかもしれない。同じ回転数、同じ風量、同じ冷暖房能力という三つの比較条件を分ける。風量回復のため回転数が上がると騒音も変わる。最終判断は熱性能、入力電力、騒音、圧損を合わせて行う。</p>
+</section><section class="chapter" id="chapter-11"><div class="part">第4部　「薄いのに吸う」を理解する</div><h2>第11章　Critical Coupling — 完全吸音の基本原理</h2>
+<h3 id="sub-72">11.1 入ってきた音はどこへ行くのか</h3>
+<p>背後が剛壁の一ポート吸音器では透過がない。入射音が反射せずに内部へ入り、入ったエネルギーが散逸すればα＝1となる。共鳴器内の音圧が大きいだけでは十分でなく、エネルギーを熱へ変える仕組みが必要である。</p>
+<h3 id="sub-73">11.2 放射損失と内部損失</h3>
+<p>放射漏洩率γeは共鳴器から外へ音が逃げる速さ、内部損失率γiは内部で散逸する速さ。外へ逃げる結合は、相反的な受動系では外から入る結合とも関係する。外へ逃がさないよう入口を極端に狭くすると、音を取り込むことも難しくなる。</p>
+<h3 id="sub-74">11.3 二つが一致する臨界結合</h3>
+<p>共鳴付近を一つのモードで表す理想的な一ポートモデルでは、振幅減衰率の定義をそろえると次式となる。</p>
+<div class="formula">α(ω) = 4γeγi / [(ω−ω₀)² + (γe+γi)²]<br>α(ω₀) = 4η/(1+η)²　　η = γi/γe</div>
+
+<p>η＝1でα＝1。η＝0.25または4ならα＝0.64である。損失を増やす過程には最適点がある。<span class="cites"><a href="#ref-R2" title="参考文献 R2">[R2]</a></span></p>
+<h3 id="sub-75">11.4 Perfect absorption</h3>
+<p>「完全」はモデルまたは実験条件における特定周波数・特定入射状態での表現である。全天候、全角度、全周波数で100%吸う意味ではない。表面インピーダンスZs＝p/平均法線速度を使えば、剛壁背後・垂直入射でZs＝ρcが整合条件となる。抵抗成分だけでなく、リアクタンスがゼロに近いことも必要だ。</p>
+<h3 id="sub-76">11.5 共鳴器だけでは完全吸音にならない</h3>
+<p>共鳴周波数を合わせることは、主にリアクタンスを相殺する操作である。抵抗値が外部と釣り合わなければ反射が残る。さらに二ポート系の対称な単一モードへ片側から入射する場合は、典型的に吸音率50%の制約が現れる。複数モード、非対称性、両側の位相制御入射などで条件が変わるので、50%をあらゆる通風構造の限界とはしない。<span class="cites"><a href="#ref-R2" title="参考文献 R2">[R2]</a></span></p>
+<h3 id="sub-77">11.6 吸音材を入れすぎると性能が落ちる理由</h3>
+<p>メッシュを厚くする、多孔質材を詰める、細孔を狭くする操作は、抵抗だけでなく慣性や容積にも影響する。最初は吸音が上がっても、さらに増やすと入口のインピーダンスが大きくなり反射が増え得る。量を変える実験では、中心周波数と曲線全体も記録する。</p>
+<h3 id="sub-78">11.7 実用品としての損失設計</h3>
+<p>ピークα＝1を狙うだけでなく、温度・公差・音源移動後の最低吸音率を狙う。単一共鳴のピーク最大化と、多モードの広帯域最適化では損失の最適条件が異なる。多モード研究で用いられる「over-damped」という設計方針を、単純な機械1自由度の減衰比ζ&gt;1と無条件に同一視しない。<span class="cites"><a href="#ref-R3" title="参考文献 R3">[R3]</a></span></p>
+<div class="widget" id="couplingWidget"></div>
+
+</section><section class="chapter" id="chapter-12"><h2>第12章　BICとquasi-BICを実用目線で理解する</h2>
+<h3 id="sub-79">12.1 Bound State in the Continuumとは</h3>
+<p>外部には伝搬できる波が存在する周波数なのに、ある固有モードが放射チャネルと結合せず局在する状態をBICと呼ぶ。閉じた箱の固有モードとは違い、開いた系で放射が抑えられる点が特徴である。</p>
+<h3 id="sub-80">12.2 外へ逃げない共振</h3>
+<p>理想的な無損失BICでは放射Qが無限大になる。ただし実構造には材料損失、熱粘性損失、寸法誤差があり、全Qは有限になる。放射しないモードは遠方から励起しにくいので、「逃げないなら音を何でも吸い込む」と考えると逆になる。</p>
+<h3 id="sub-81">12.3 Friedrich–Wintgen BIC</h3>
+<p>複数の共鳴が同じ外部チャネルへ放射し、その放射が干渉して打ち消し合う機構である。二つの空洞を橋渡し管で結ぶ音響系で、近接場結合を調整してBICとquasi-BICを実現した原著がある。<span class="cites"><a href="#ref-R5" title="参考文献 R5">[R5]</a></span></p>
+<h3 id="sub-82">12.4 quasi-BIC</h3>
+<p>理想的なBICから形状や結合を少しずらし、有限の放射漏洩を持たせた状態。これによって外から励起できるようにする。どのパラメータでどれだけ放射Qが変わるかは系ごとの問題であり、非対称量の二乗則などを普遍的な加工則にしない。</p>
+<h3 id="sub-83">12.5 高Q共振と吸音</h3>
+<p>高Qなら共鳴近傍の場を大きくできるが、帯域は狭くなりやすい。音源の周波数が動く製品では、ピークが高くても時間平均の効果が小さい可能性がある。高Qが役立つ計測・選択吸収と、広帯域防音は目標が異なる。</p>
+<h3 id="sub-84">12.6 quasi-BIC × critical coupling</h3>
+<p>quasi-BICで外部への漏洩を調整し、その値を内部損失と一致させると、適切なポート条件で高Qの強い吸音を狙える。原著<span class="cites"><a href="#ref-R5" title="参考文献 R5">[R5]</a></span>の公開要旨は、理論・数値・実験による確認を報告している。本書では全文未確認のため、寸法や数値性能を補って紹介しない。</p>
+<h3 id="sub-85">12.7 完全吸音器への応用</h3>
+<p>一般のHelmholtz吸音器と比べて得られる設計自由度が何かを考える。非常に狭い周波数を選別したい、外部結合だけを細かく調整したい、といった目的なら検討価値がある。単に250 Hzを数十Hz幅で下げたいなら、通常の共鳴器が簡単な場合もある。</p>
+<h3 id="sub-86">12.8 高Qすぎることの弱点</h3>
+<p>例えばf₀＝250 Hz、Q＝100なら幅の目安は2.5 Hz。音源の変動や温度変化が数Hzあるだけで中心を外れる。ピーク性能のグラフと並べて、周波数ずれを入れた性能分布を見る。</p>
+<h3 id="sub-87">12.9 製造ばらつきと温度変化</h3>
+<p>結合用細管のわずかなずれ、非対称寸法の誤差、汚れによる損失増加を、公称値周辺で掃引する。低い漏洩を狙うほど予期しない損失が相対的に効きやすい。BICの名前より、出荷公差で目標帯域を維持できるかが採用基準になる。</p>
+</section><section class="chapter" id="chapter-13"><h2>第13章　Acoustic Black Holeと勾配構造</h2>
+<h3 id="sub-88">13.1 Acoustic Black Holeとは何か</h3>
+<p>少なくとも二つの文脈を分ける。薄板・梁の厚さを徐々に減らして曲げ波を遅くする<strong>構造ABH</strong>と、空気音の導波路に側枝やリング列などを設ける<strong>空気音のABH／sonic black hole</strong>である。板の結果をそのまま空気音へ使わない。</p>
+<h3 id="sub-89">13.2 基本原理</h3>
+<p>構造ABHの理想化では、厚さh(x)をべき乗状に減らし、曲げ波の速度を低下させる。実物は先端をゼロ厚にできないため打切り厚さが残り、反射や局所共振も生じる。通常は減衰材との組合せを考える。宇宙のブラックホールと同じ物理現象ではない。</p>
+<h3 id="sub-90">13.3 Gradual impedance matching</h3>
+<p>急な境界は反射を生みやすい。インピーダンスを徐々に変えれば入口反射を小さくできる可能性がある。ただし損失のない構造で反射が減っただけなら、エネルギーは透過するか蓄積して戻る。広帯域吸音には、勾配と散逸の両方が必要である。</p>
+<h3 id="sub-91">13.4 厚さ・断面を徐々に変える</h3>
+<p>板なら厚さ、空気導波路なら主流路断面・側枝容積・共鳴周波数を変える。低周波で短い装置では変化が十分に緩やかとは限らず、分布定数モデルやFEMが必要になる。「勾配を付ければ常に無反射」は成り立たない。</p>
+<h3 id="sub-92">13.5 共鳴器とのハイブリッド</h3>
+<p>空気音のABH着想構造では、リング間空洞の共鳴と熱粘性損失、さらに壁面での損失の位置が重要になる場合がある。波速が落ちるという説明だけでなく、損失を切った解析、共鳴器を外した解析、形状の順序を逆にした解析を比較すると機構を見分けやすい。<span class="cites"><a href="#ref-R7" title="参考文献 R7">[R7]</a></span></p>
+<h3 id="sub-93">13.6 広帯域化の可能性</h3>
+<p>異なる位置で異なる周波数を遅くする、複数共鳴を密に配置するなどが候補になる。しかし帯域、最低周波数、外形容積、有限セル数、散逸の競合は残る。広帯域の低透過が反射によるケースもあるため、αとTLを分けて確認する。<span class="cites"><a href="#ref-R6" title="参考文献 R6">[R6]</a></span></p>
+<h3 id="sub-94">13.7 従来吸音材との組み合わせ</h3>
+<p>強い粒子速度が生じる位置に適量の多孔質材や抵抗要素を置けば、散逸を加えられる。一方、流路を塞ぐほど入れれば共鳴周波数も風量も変わる。ABHは初心者の最初の試作より、単純共鳴器で制約を把握した後の候補とするのが進めやすい。</p>
+</section><section class="chapter" id="chapter-14"><div class="part">第5部　1000 Hz以下を本当に設計する</div><h2>第14章　まず要求仕様を作る</h2>
+<h3 id="sub-95">14.1 「低周波を下げたい」では設計できない</h3>
+<p>性能の主語を決める。「部材の垂直入射吸音率」「ダクトの透過損失」「室外機の音響パワー」「隣地測定点の音圧」では合格条件が異なる。部材性能を最終目標の代理として使う場合は、両者の関係を実機試験で確認する。</p>
+<h3 id="sub-96">14.2 目標周波数を決める</h3>
+<p>冷房・暖房、低負荷・高負荷、立上がり・定常、温度、回転数ごとに狭帯域スペクトルを取得する。ピーク中心だけでなく、移動範囲と強度を記録する。例えば「250 Hz」より「主要運転域で230～275 Hzにある線スペクトル」の方が設計に使える。</p>
+<h3 id="sub-97">14.3 NarrowbandかBroadbandか</h3>
+<p>狭帯域なら最大値と許容離調幅、広帯域なら帯域内最小値・帯域平均・音源重み付きの効果を決める。α≥0.8の幅と半値幅は同じではない。「広帯域」をHz幅と比帯域のどちらで評価するかも明記する。</p>
+<h3 id="sub-98">14.4 吸音か遮音か</h3>
+<p>囲い内部の多重反射が問題なら吸音、隔壁の透過が支配的なら遮音、開口からの直接放射なら消音器や配置変更を考える。構造伝搬が支配的なら防振・制振へ戻る。先に方式名を指定すると、測るべき量が後付けになる。</p>
+<h3 id="sub-99">14.5 寸法制約</h3>
+<p>外形幅×高さ×奥行、使用できる正味空気容積、保守時の取り外し空間、熱交換器や可動部との距離を指定する。公称厚さに背後空気層と支持枠を加える。空いて見える場所が、実は組立工具や配線の必要空間ということもある。</p>
+<h3 id="sub-100">14.6 重量制約</h3>
+<p>音響素子だけでなく、支持具、蓋、シール、保護網を含めた追加質量を管理する。重量増加は振動モードや輸送時の荷重も変える。質量則との比較には面密度、製品全体の比較には総質量を使い分ける。</p>
+<h3 id="sub-101">14.7 通風量・圧力損失</h3>
+<p>風量Qvを指定したΔp、ファン回転数、空気密度をセットで記す。定格点だけでなく低速・高速も確認する。許容Δpは製品の送風・熱設計から決めるもので、本書が一律の合格値を与えることはしない。</p>
+<h3 id="sub-102">14.8 コスト・寿命・環境条件</h3>
+<p>部品単価のほか、溶着・検査・不良率・清掃の費用がある。結露、雨水、粉塵、油、温度サイクル、紫外線、振動により、どの寸法・物性が変わるかを考える。音響効果に効く寸法を、製造図面の管理寸法へ翻訳する。</p>
+<h3 id="sub-103">14.9 要求仕様表を作る</h3>
+<p>以下は第20章につながる<strong>仮想の記入例</strong>であり、製品の実測や推奨規格値ではない。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>項目</th>
+<th>仮想仕様</th>
+<th>確認方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>対象</td>
+<td>圧縮機室からの空気伝搬音、230～275 Hz</td>
+<td>回転数掃引＋経路診断</td>
+</tr>
+<tr>
+<td>最終目標</td>
+<td>規定運転点・測定配置でIL≥3 dB</td>
+<td>実機A/B試験</td>
+</tr>
+<tr>
+<td>部材の目安</td>
+<td>垂直入射でα≥0.7、240～265 Hz</td>
+<td>インピーダンス管</td>
+</tr>
+<tr>
+<td>外形</td>
+<td>200×150×35 mm以下</td>
+<td>CAD・実装確認</td>
+</tr>
+<tr>
+<td>重量</td>
+<td>固定部品込み250 g以下</td>
+<td>質量測定</td>
+</tr>
+<tr>
+<td>風路</td>
+<td>主冷却風路へ突き出さない</td>
+<td>実装・熱性能確認</td>
+</tr>
+<tr>
+<td>環境</td>
+<td>製品で定める温湿度・結露・振動条件</td>
+<td>暴露前後の性能比較</td>
+</tr>
+<tr>
+<td>量産</td>
+<td>二部品成形＋接合を第一候補</td>
+<td>製造検討・漏れ検査</td>
+</tr>
+</tbody></table></div>
+</section><section class="chapter" id="chapter-15"><h2>第15章　方式を選ぶ</h2>
+<h3 id="sub-104">15.1 100～200 Hzを狙う場合</h3>
+<p>波長が長く、薄型・広帯域・軽量の同時達成が特に厳しい。狭帯域なら大きめの空洞を持つHelmholtz、柔らかい膜、長い折返し側枝が候補。小さな外形へ全て押し込む前に、騒音源対策、支持構造、利用できる筐体内空間も比較する。</p>
+<h3 id="sub-105">15.2 200～500 Hzを狙う場合</h3>
+<p>数百cm³程度の空洞とネックの組合せを初期検討しやすい帯域だが、必要容積は開口と長さによって大きく変わる。首部差し替え式のHelmholtzセルを試作し、成立性を確かめてから複数セルへ広げると因果関係を追いやすい。</p>
+<h3 id="sub-106">15.3 500～1000 Hzを狙う場合</h3>
+<p>1/4波長長さが172～86 mm程度になるため、折返し側枝、MPP、複合空洞、多孔質とのハイブリッドを比較しやすい。高い周波数ほど、同じ厚さの従来吸音材も競争相手になる。メタマテリアル化の費用に見合う差を確認する。</p>
+<h3 id="sub-107">15.4 純音・回転次数音なら</h3>
+<p>純音には同調型を当てやすい。ただしインバーター機では音源周波数が移動する。固定式複数セル、調整式容積、運転点ごとに効く配置を比較する。動く機構は耐久・コストを増すので、固定式で許容できる帯域を先に評価する。</p>
+<h3 id="sub-108">15.5 広帯域音なら</h3>
+<p>単一高Qセルより、適切な損失を持つ多共鳴・多孔質・空気層の組合せを考える。帯域の低端をわずかに上げるだけで容積負担が減ることがある。音源エネルギーの小さい帯域まで均等な完全吸音を要求しない。</p>
+<h3 id="sub-109">15.6 通風が必要なら</h3>
+<p>直進主流路＋側枝、開放セル配列、音響ライナーなどから選ぶ。主流路を曲げる方法は圧損・再生騒音を早期に測る。吸音目標か反射による透過抑制かで構造と評価法が異なる。</p>
+<h3 id="sub-110">15.7 薄さ最優先なら</h3>
+<p>面内の長さと容積を使う折返し構造、膜＋背後空間、埋込みネックを比較する。ただし「板厚2 mm」と「装置総厚30 mm」を同列に並べない。支持枠、保護材、背後容積を含む総占有体積で順位を付ける。</p>
+<h3 id="sub-111">15.8 メタマテリアルを使わない方がよい場合</h3>
+<p>漏れが支配的ならシール、薄板の共振なら制振や剛性変更、支持経路なら防振、ファン流入の乱れなら流路改善を優先する。十分な厚さが使える広帯域用途では従来多孔質材が簡便な場合もある。名称ではなく、同じ性能・寸法・コスト条件の比較で選ぶ。</p>
+</section><section class="chapter" id="chapter-16"><h2>第16章　簡単な設計計算をしてみる</h2>
+<h3 id="sub-112">16.1 500 Hz Helmholtz吸音器</h3>
+<p><strong>設計例。</strong> c＝343 m/s、円孔径d＝10 mm、物理ネック長l＝10 mm、端補正Δl＝1.7r＝8.5 mmとする。A＝π(0.005)²＝7.854×10⁻⁵ m²、Lₑ＝0.0185 m。求める容積は次式である。</p>
+<div class="formula">V = A / [Lₑ(2πf₀/c)²]<br>500 Hzでは V ≈ 5.06×10⁻⁵ m³ = 50.6 cm³</div>
+
+<p>例えば正味断面40×40 mmなら、容積だけから決まる空洞深さは約31.6 mm。壁厚、ネック体積、接合代は別に足す。これは周波数同調の計算であって、吸音率はまだ決まっていない。</p>
+<h3 id="sub-113">16.2 250 Hz共鳴器</h3>
+<p>同じネックなら周波数を半分にするにはVを4倍にし、約202.4 cm³が必要となる。正味断面80×80 mmなら深さは同じ約31.6 mm。厚さを守って低周波化する代わりに、面積を4倍使ったことが分かる。</p>
+<h3 id="sub-114">16.3 キャビティ容積を半分にしたら</h3>
+<p>AとLₑが一定ならf∝V⁻¹/²。250 Hzの容積を半分にすると約353.6 Hzへ上がる。内部リブや溶着代によって正味容積が減った場合も同じ方向へ動く。外形容積を使った計算は、これを見落とす。</p>
+<h3 id="sub-115">16.4 ネック径を変えたら</h3>
+<p>250 Hzの例でdを10 mmから8 mmにすると、Aは0.64倍、Lₑは18.5 mmから16.8 mmになる。V一定ならf≈250√(0.64×18.5/16.8)≈210 Hz。断面積だけを変えて200 Hzと計算すると、端補正の変化を無視している。</p>
+<h3 id="sub-116">16.5 Space-coilingで音路を稼ぐ</h3>
+<p>片端閉鎖管の概算長は500 Hzで171.5 mm、250 Hzで343 mm。折返し部を含む中心線長をCADで確認する。その後、開口端補正、断面変化、熱粘性の効果を加える。細い管を長くすると単純なc＝343 m/sの位相計算からずれるため、最後は実測で同定する。</p>
+<h3 id="sub-117">16.6 共鳴器を4種類並べて広帯域化する</h3>
+<p>同じd＝10 mm、l＝10 mmで中心周波数を220、250、280、315 Hzへ配分すると、正味容積は概ね261、202、161、127 cm³、合計約751 cm³。隣接セルの結合と入口抵抗はこの計算に含まれない。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="right">f₀</th>
+<th align="right">正味容積V</th>
+<th>初期検討で確認すること</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">220 Hz</td>
+<td align="right">約261 cm³</td>
+<td>低端を受け持つ容積が大きい</td>
+</tr>
+<tr>
+<td align="right">250 Hz</td>
+<td align="right">約202 cm³</td>
+<td>音源ピークへ面積を配分</td>
+</tr>
+<tr>
+<td align="right">280 Hz</td>
+<td align="right">約161 cm³</td>
+<td>前後セルとの谷を確認</td>
+</tr>
+<tr>
+<td align="right">315 Hz</td>
+<td align="right">約127 cm³</td>
+<td>高端と次の対策のつなぎ</td>
+</tr>
+</tbody></table></div>
+<p>下の計算欄は面積比を等しくした独立並列の表面インピーダンスモデルである。各セルの無次元インピーダンスをzᵢ＝r＋jμ(f/fᵢ−fᵢ/f)と置く。μはリアクタンスの傾き、rは抵抗。実寸からμとrを求めたモデルではなく、<strong>吸音率の足し算ではないことを学ぶためのモデル</strong>である。</p>
+<div class="widget" id="arrayWidget"></div>
+
+<h3 id="sub-118">16.7 Excelでもできる初期設計</h3>
+<p>セルB2に音速[m/s]、B3に孔径[mm]、B4に物理ネック長[mm]、B5に容積[cm³]を入れる。端補正1.7rの仮定なら、共鳴周波数[Hz]は次式で計算できる。</p>
+<pre><code class="language-text">=B2/(2*PI())*SQRT((PI()*(B3/2000)^2)/((B5*1E-6)*(B4/1000+1.7*B3/2000)))
+</code></pre>
+<p>温度、孔径、長さ、容積をそれぞれ上下限へ振った表を作る。抵抗と吸音率の算出には追加モデルが必要である。狙いのf₀だけでなく、公差に対する感度を見つけるのが初期表計算の役割だ。</p>
+<div class="widget" id="helmholtzWidget"></div>
+
+<div class="exercise">計算問題：250 Hzセルの容積だけが＋10%になったら？<details><summary>解答</summary>250/√1.10≈238.4 Hz。約−4.65%。微小変動式なら約−5%で、概算として一致する。</details></div>
+
+</section><section class="chapter" id="chapter-17"><div class="part">第6部　シミュレーション・試作・評価</div><h2>第17章　CAEで何を見るのか</h2>
+<h3 id="sub-119">17.1 まず1自由度モデルから</h3>
+<p>最初のモデルは、どこが質量・ばね・損失かを説明できる程度に単純にする。実測からf₀と幅を合わせ、容積変更やネック交換で予測した方向へ動くか確認する。最初から細部まで3D化すると、外れた原因を追いにくい。</p>
+<h3 id="sub-120">17.2 伝達マトリクス法</h3>
+<p>体積速度Uを用いた一様管の状態を[p, U]ᵀで表す。上流を下流から計算する規約、時間依存e^(jωt)では、長さLの管は次の行列となる。</p>
+<div class="formula">Tduct = [ cos(kL), jZc sin(kL) ; j sin(kL)/Zc, cos(kL) ]<br>Zc = ρc/S　　[p₁,U₁]ᵀ = Tduct [p₂,U₂]ᵀ</div>
+
+<p>側枝のインピーダンスZbは、接続点でTbranch＝[1,0;1/Zb,1]と表せる。複数区間を順に掛け合わせれば、管・側枝・空気層の応答を計算できる。断面基準、速度の正方向、時間規約を統一する。損失管ではkとZcが複素数になる。</p>
+<h3 id="sub-121">17.3 FEM</h3>
+<p>形が複雑、壁が振動する、局所流れや高次モードが重要ならFEMが有効である。圧力音響だけの無損失モデル、熱粘性音響、構造連成を必要性に応じて追加する。熱粘性を無視した細孔モデルの巨大なTLピークを、そのまま実物性能として採用しない。</p>
+<h3 id="sub-122">17.4 音圧分布</h3>
+<p>空洞内の圧力が一様かを見れば、集中定数近似の妥当性を判断できる。局所的な圧力腹はモード理解に役立つが、赤く表示された領域が多いから吸音が高いとは限らない。表示スケールを固定し、入力パワーで規格化する。</p>
+<h3 id="sub-123">17.5 粒子速度</h3>
+<p>ネックや細隙の高速度域は損失と非線形の候補になる。粘性境界層厚さはδv≈√[2η/(ρω)]。η＝1.8×10⁻⁵ Pa·s、ρ＝1.20 kg/m³なら100 Hzで約0.22 mm、1000 Hzで約0.069 mmとなる。細孔寸法と同程度なら境界層を無視しにくい。これは静かな空気の概算で、平均流の乱流境界層とは別である。</p>
+<h3 id="sub-124">17.6 固有モード</h3>
+<p>共鳴周波数とモードの対称性を調べる。ただし固有モードがあっても、実際の音源がそれを励起できなければ効果は小さい。励振位置・方向を含む周波数応答解析で確認する。BICのようなモードはこの違いが特に大きい。</p>
+<h3 id="sub-125">17.7 Transmission Loss</h3>
+<p>入射・透過パワーの比で計算する。圧力振幅比だけで計算できるのは媒質・断面・モードなどの条件が整う場合。ダクトの高次モードが立つなら、全伝搬モードのパワーを合算する。定常流がある場合も無流と同じ式の適用条件を確認する。</p>
+<h3 id="sub-126">17.8 吸音率</h3>
+<p>反射・透過パワーを引いてαを出し、散逸パワーの体積・境界積分とも照合する。受動系の計算でα&lt;0やα&gt;1が大きく出るなら、符号、ポート、規格化、収束を疑う。図がもっともらしいことはエネルギー保存の代わりにならない。</p>
+<h3 id="sub-127">17.9 パラメータスタディ</h3>
+<p>周波数刻み、メッシュ、ポート距離、PML距離を変えて、ピーク値と帯域幅の収束を見る。次に製造・温度・支持条件の範囲を掃引する。最大αだけで最適化すると、公差で崩れる極端な形が選ばれやすい。帯域内最小性能、平均性能、質量・圧損を合わせて評価する。</p>
+</section><section class="chapter" id="chapter-18"><h2>第18章　試作品を測る</h2>
+<h3 id="sub-128">18.1 インピーダンス管</h3>
+<p>小さな試料へ平面波を垂直入射させ、反射や透過を調べる装置。剛壁に背を接した吸音試料と、両側に管のある透過試料では取付けが異なる。最初の測定計画で測りたい量を指定する。</p>
+<h3 id="sub-129">18.2 2マイクロホン法</h3>
+<p>二点の複素音圧から進行波と後退波を分離し、反射係数と表面インピーダンスを求める。現行資料として確認したISO 10534-2:2023はこの方法を扱い、公式ページには2025年8月の英語版訂正情報もある。本書は規格本文全条項を再現するものではなく、正式試験には適用版を入手する。<span class="cites"><a href="#ref-R10" title="参考文献 R10">[R10]</a></span></p>
+<h3 id="sub-130">18.3 4マイクロホン法</h3>
+<p>試料前後の各二点を測り、進行波・後退波を分離する。伝達行列を同定するには、必要に応じ複数終端条件などを用いる。ASTM E2611-24は垂直入射・伝達行列法の参照先である。硬い周期構造を測るときは、試料が管断面を代表しているかなど、対象に対する適用性も確認する。<span class="cites"><a href="#ref-R11" title="参考文献 R11">[R11]</a></span></p>
+<h3 id="sub-131">18.4 吸音率測定</h3>
+<p>試料背後の剛壁、空気層、端面位置、周囲のシールを記録する。膜型では支持枠と張力も試料の一部。垂直入射吸音率を残響室の拡散入射吸音率と同一視しない。反射係数rを測り、背後透過がゼロの条件でα＝1−|r|²を計算する。</p>
+<h3 id="sub-132">18.5 Transmission Loss測定</h3>
+<p>試料の前後で入射と透過の成分を区別する。単に上流マイクと下流マイクのdBを引くと、反射場や定在波が混ざる。透過が非常に小さい帯域では背景騒音・漏れ・測定器のダイナミックレンジが上限を決める。測定下限を越えた値は、精密なTLとして表示しない。</p>
+<h3 id="sub-133">18.6 実機測定</h3>
+<p>A/B比較は同じ据付、運転条件、マイク位置、背景条件で行う。定常運転のばらつきを把握し、試料を外して戻す再現性も確認する。複数方向と必要に応じ音響パワーを評価し、一点の指向性変化と総放射の低下を分ける。</p>
+<h3 id="sub-134">18.7 CAEと実測が合わない典型原因</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>症状</th>
+<th>最初に疑うもの</th>
+<th>切り分け</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ピーク周波数がずれる</td>
+<td>容積・端補正・温度・支持</td>
+<td>実寸測定とネック交換</td>
+</tr>
+<tr>
+<td>実測ピークが低い</td>
+<td>損失・漏れ・測定下限</td>
+<td>シール変更、無損失比較</td>
+</tr>
+<tr>
+<td>実測が広帯域になる</td>
+<td>粗さ、複数セルのばらつき</td>
+<td>単セルと配列の比較</td>
+</tr>
+<tr>
+<td>管では効き実機で効かない</td>
+<td>入射・経路・回折・流れ</td>
+<td>部分囲いと経路別試験</td>
+</tr>
+<tr>
+<td>流れを入れると悪化</td>
+<td>インピーダンス変化・渦</td>
+<td>流速掃引、自己騒音測定</td>
+</tr>
+</tbody></table></div>
+<h3 id="sub-135">18.8 漏れ・シール・境界条件</h3>
+<p>薄い隙間は余計なネックや短絡流路になる。シールを増やすと効く場合は、形状の物理より接合が支配している可能性がある。治具だけ、剛体栓、基準試料を測り、測定系を点検する。接着・締付けが振動境界を変える試料では、締付け条件まで保存する。</p>
+</section><section class="chapter" id="chapter-19"><h2>第19章　研究室の構造を量産する難しさ</h2>
+<h3 id="sub-136">19.1 寸法公差</h3>
+<p>音響性能に効くのは図面上の全寸法が均等ではない。首部断面、ネック長、薄い隙間、膜張力、シール隙間を優先し、感度解析で管理項目を絞る。公差の最悪組合せと統計的な分布を分けて評価する。</p>
+<h3 id="sub-137">19.2 樹脂成形</h3>
+<p>抜き勾配、反り、収縮、リブ、ゲート位置が空洞や流路を変える。解析上の空洞を金型形状へ置換した後、正味容積を再計算する。高温で壁が柔らかくなる場合は、音響剛壁の前提を見直す。</p>
+<h3 id="sub-138">19.3 板金</h3>
+<p>孔径公差、バリ、絞り、板の曲げ剛性、接合点が重要。板金だから必ず剛壁ではない。面積の大きい薄板は空洞圧力で振動し、別の共鳴を作り得る。必要ならビードや支持を加え、追加した形状まで再評価する。</p>
+<h3 id="sub-139">19.4 3Dプリント</h3>
+<p>積層方向、表面粗さ、微小漏れ、除去しきれない支持材が影響する。研究<span class="cites"><a href="#ref-R4" title="参考文献 R4">[R4]</a></span>では造形粗さが実測と解析の帯域差の説明に挙げられている。プリンタ試作で効いた損失が、滑らかな量産成形品で減る可能性もある。「同じCAD」だけでは同等性を保証しない。</p>
+<h3 id="sub-140">19.5 接着・溶着</h3>
+<p>はみ出しは首部を狭め、接合不良は漏れを作る。機械強度の検査に加え、漏れ経路を検出する方法を考える。意図した開口まで塞ぐ気密検査と、製品状態の音響検査は目的が異なる。工程で検出できる故障モードに分解する。</p>
+<h3 id="sub-141">19.6 表面粗さ</h3>
+<p>粗さは損失を増やす場合があるが、ピーク性能が良くなるとは限らない。寸法・汚れ・流れと組み合わさるので、造形品と金型品の比較で同定する。意図しない粗さを安定した設計抵抗として頼りにしない。</p>
+<h3 id="sub-142">19.7 温度による音速変化</h3>
+<p>乾燥空気の概算c≈331.3＋0.606T[℃]を使うと、20 ℃で343.4 m/s、0 ℃で331.3 m/s、40 ℃で355.5 m/s。形が一定の空気共鳴器ではfがcに比例するため、20 ℃で250 Hzなら0 ℃で約241 Hz、40 ℃で約259 Hzとなる。音速の変化だけの計算で、湿度や材料の変化は含まない。</p>
+<h3 id="sub-143">19.8 水・埃・油・結露</h3>
+<p>水が空洞へ入ると空気容積が減り、首部の水滴は断面と損失を変える。排水孔を追加すると、それ自身が新たな音響開口になる。下向き開口、排水経路、保護網を初期CADから入れ、濡れた状態と乾いた後の両方を測る。熱交換器や既存の排水を妨げない配置にする。</p>
+<h3 id="sub-144">19.9 経年劣化</h3>
+<p>膜張力の緩和、接着劣化、シール硬化、腐食、埃の蓄積が候補になる。初期と劣化後でf₀、ピーク、帯域幅を比較すると、容積変化・剛性変化・抵抗変化の手掛かりが得られる。寿命を外観合格だけで判定しない。</p>
+<h3 id="sub-145">19.10 「論文では効いたのに」を防ぐ</h3>
+<p>文献の形状・試料サイズ・背後条件・温度・入射・平均流・指標を一枚に転記し、自社用途との差を列挙する。単セル再現、量産相当試作、実機、耐久後の順で証拠を積む。論文の最大値は開発目標の参考であって、製品の合格保証ではない。</p>
+</section><section class="chapter" id="chapter-20"><div class="part">第7部　ケーススタディ</div><h2>第20章　250 Hzの機械騒音を下げる</h2>
+<h3 id="sub-146">20.1 問題を数値にする</h3>
+<p><strong>設計演習・未実測。</strong> 第14章の200×150×35 mmの空間で、圧縮機室内の240～265 Hzを吸音したいと仮定する。使える総外形容積は1.05 L。壁やリブを除く正味容積をCADで求める。受音点の目標ILは3 dBとするが、吸音率から直接3 dBを保証することはできない。</p>
+<h3 id="sub-147">20.2 従来多孔質材を基準にする</h3>
+<p>同じ外形厚さで従来材の試料を作る。30 mm程度の剛壁背後多孔質材は、250 Hzの1/4波長343 mmよりかなり薄い。ただしこの比較だけでαを決めつけず、実測または妥当な材料モデルで調べる。材料の流れ抵抗、圧縮率、表面フィルムを記録する。</p>
+<h3 id="sub-148">20.3 単一Helmholtzセル</h3>
+<p>第16章のd＝10 mm、l＝10 mm、V≈202 cm³が250 Hz同調の出発点になる。表面に何個のセルを置けるか、各セルの占有面積はいくらかを決め、Zsを計算する。試作ではV、ネック、入口抵抗を別々に変え、どの操作で何が変わるか確認する。</p>
+<h3 id="sub-149">20.4 Multi-resonatorへ広げる</h3>
+<p>220、250、280、315 Hzの四つなら容積の合計は約751 cm³。外形1.05 Lに理論上収まりそうでも、壁・首部・排水・取付けを入れた残量確認が必要になる。実際の目標が240～265 Hzだけなら、四周波数をこのように広く振るより、狭い範囲へ面積を集中する方がよい場合もある。</p>
+<h3 id="sub-150">20.5 何を比較して採否を決めるか</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>案</th>
+<th>期待する利点</th>
+<th>未確定項目</th>
+<th>比較指標</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>従来多孔質材</td>
+<td>安価・加工容易</td>
+<td>厚さ内での低周波性能</td>
+<td>実測α(f)、コスト</td>
+</tr>
+<tr>
+<td>単一HR</td>
+<td>250 Hzに集中</td>
+<td>帯域・温度ずれ</td>
+<td>αのピークと最低値</td>
+</tr>
+<tr>
+<td>複数HR</td>
+<td>周波数変動に対応</td>
+<td>結合による谷・容積</td>
+<td>帯域内最小α、実機IL</td>
+</tr>
+<tr>
+<td>従来材＋HR</td>
+<td>帯域の補完</td>
+<td>過大抵抗・重量</td>
+<td>全帯域、耐久後性能</td>
+</tr>
+</tbody></table></div>
+<p><strong>音源重み付きの考え方。</strong> 入射エネルギーの割合wᵢが分かる場合、剛壁背後試料の反射残量はΣwᵢ(1−αᵢ)、反射損失は−10 log₁₀[Σwᵢ(1−αᵢ)]。dBや吸音率を無条件に算術平均するより、目的に沿った比較になる。ただし実機の経路変化はこの計算に含まれない。</p>
+<h3 id="sub-151">20.6 実在研究から得る示唆</h3>
+<p>Yang・Shengの2023年論文では、110～560 Hzへ騒音エネルギーが集中する変圧器の例に、60本の折返し管を持つ厚さ10 cmの試料を設計し、インピーダンス管で評価している。音源で重み付けした反射損失は11.5 dB、同厚の比較用フォームでは約3.6 dBと報告された。<strong>変圧器全体の音響パワーが11.5 dB減った実機試験ではない。</strong> 学ぶべき点は、騒音スペクトルに吸音能力を配分したことである。<span class="cites"><a href="#ref-R1" title="参考文献 R1">[R1]</a></span></p>
+</section><section class="chapter" id="chapter-21"><h2>第21章　500 Hzのファン騒音を通風を保ったまま下げる</h2>
+<h3 id="sub-152">21.1 仮想要求と構造案</h3>
+<p><strong>設計演習・未実測。</strong> 500 Hz付近に明確なピークを持つファン系を想定し、断面200×200 mm、風量0.08 m³/s、開口率70%を仮定する。主風路を直進させ、周囲に複数のHelmholtz側枝を置く。狙う帯域は450～550 Hz、目標は同風量でのIL≥5 dBと仮置きする。これらは例題の数字であり推奨仕様ではない。</p>
+<h3 id="sub-153">21.2 圧力損失を同時に見積もる</h3>
+<p>全断面平均速度は0.08/0.04＝2.0 m/s。開口内の平均速度は0.08/(0.70×0.04)≈2.86 m/s。ρ＝1.20 kg/m³なら開口内の動圧は約4.90 Pa。局所損失係数Kを仮に2と置けばΔp≈Kρv²/2≈9.8 Paとなる。</p>
+<p><strong>K＝2は仮定であって文献値ではない。</strong> 実際は入口・出口・網・曲がりなどを含めた流量－圧損曲線が必要である。70%開口だから風量も70%になる、とはいえない。ファン曲線と系統抵抗の交点で運転風量が決まる。</p>
+<h3 id="sub-154">21.3 側枝の寸法を決める</h3>
+<p>第16章の500 Hz、V≈50.6 cm³を起点に、全流路へ十分な結合を与える個数と位置を検討する。側枝を増やすだけで主流路が狭くなる設計は避けたい。ネックを壁面へ埋め、主流に突き出す段差や鋭い縁を減らす案を比較する。口の丸みは音響端補正も変えるので、流体と音響を交互に更新する。</p>
+<h3 id="sub-155">21.4 試験を三段階に分ける</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>段階</th>
+<th>音源・流れ</th>
+<th>分かること</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>① 無流</td>
+<td>外部スピーカーのみ</td>
+<td>基本のTL・吸音・共鳴位置</td>
+</tr>
+<tr>
+<td>② 流れあり</td>
+<td>送風＋独立スピーカー</td>
+<td>平均流による伝達特性変化</td>
+</tr>
+<tr>
+<td>③ 実ファン</td>
+<td>ファン音＋実際の風量</td>
+<td>音源変化・再生騒音込みのIL</td>
+</tr>
+</tbody></table></div>
+<p>③だけでは、風量低下で音源が変わったのか、消音器が効いたのかを分けにくい。反対に①だけでは製品性能を保証できない。</p>
+<h3 id="sub-156">21.5 近い実在研究と、外挿できない部分</h3>
+<p>2024年のVAML研究は、折り畳んだ側枝を持つ通風構造を解析し、管内実験のピーク約330 Hzに対して解析約328 Hzを報告した。流れの影響は別途数値モデルで調べている。要旨中の誤差0.6%は、このピーク周波数の対応として読むべきで、すべてのTL値や実流試験の誤差を意味しない。<span class="cites"><a href="#ref-R9" title="参考文献 R9">[R9]</a></span></p>
+<p>自動車HVACの2022年研究では、入口の曲面化と少量の吸音材を組み合わせ、流れあり試験の750～1200 Hzで減音を確認し、最大約5 dBAと報告している。これは帯域内の最大差であり総合値ではない。形状によっては650～750 Hzで騒音が増えた。500 Hzへの適用には寸法再設計と再試験が必要である。<span class="cites"><a href="#ref-R8" title="参考文献 R8">[R8]</a></span></p>
+</section><section class="chapter" id="chapter-22"><h2>第22章　100～1000 Hzを薄型構造で広帯域吸音する</h2>
+<h3 id="sub-157">22.1 まず要求の厳しさを認識する</h3>
+<p>100～1000 Hzは約3.32オクターブの帯域である。これを薄い受動構造で高い吸音率に保つ要求は、単一ピークよりはるかに厳しい。最低周波数、吸音率、厚さ、静的な圧縮性などに関係する因果律上の制約があり、複雑な形にすれば消えるものではない。<span class="cites"><a href="#ref-R1" title="参考文献 R1">[R1]</a> <a href="#ref-R3" title="参考文献 R3">[R3]</a></span></p>
+<h3 id="sub-158">22.2 段階的な要求へ分ける</h3>
+<p><strong>検討例。</strong> 100～200 Hzは狭帯域の機械次数、200～500 Hzは複数共鳴、500～1000 HzはMPPや多孔質とのハイブリッド、と役割分担する。すべての帯域を同じαにする必要があるか、実際の音源エネルギーで確認する。必要なら厚さ・面積・最低周波数のいずれかを緩和する。</p>
+<h3 id="sub-159">22.3 複数共鳴器・折返し・損失材</h3>
+<p>面内の折返しで低い共鳴を作り、容積の違うセルで帯域を分担する。中高域の損失材が低周波セルの口を過大に塞がないよう、別経路に配置する案もある。相互結合は谷を作ることも埋めることもあるため、完成配列で測る。</p>
+<h3 id="sub-160">22.4 実証値を正しく並べる</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>文献</th>
+<th>構造・総厚さ</th>
+<th>確認できた結果</th>
+<th>本書の範囲との関係</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="cites"><a href="#ref-R3" title="参考文献 R3">[R3]</a></span></td>
+<td>36複合HR、100 mm</td>
+<td>320～6400 Hzで平均α≈0.93、理論と実験</td>
+<td>100～320 Hzはこの結果で保証されない</td>
+</tr>
+<tr>
+<td><span class="cites"><a href="#ref-R4" title="参考文献 R4">[R4]</a></span></td>
+<td>微細穿孔板＋フラクタル空洞、約20 mm</td>
+<td>試験・解析の吸音ピークは約700 Hzと1000 Hz付近</td>
+<td>100～500 Hz全体の高吸音例ではない</td>
+</tr>
+<tr>
+<td><span class="cites"><a href="#ref-R1" title="参考文献 R1">[R1]</a></span></td>
+<td>60折返し管、100 mm</td>
+<td>110～560 Hzに集中する音源に合わせた吸音</td>
+<td>全帯域一様吸音ではない</td>
+</tr>
+</tbody></table></div>
+<p>R4の複数セル拡張は数値検討の結果と単セルの実験検証を区別して読む。帯域の定義や平均方法が異なるので、この表をそのまま性能ランキングにしない。</p>
+<h3 id="sub-161">22.5 達成不能を早く見極める</h3>
+<p>例えば「厚さ10 mm、100～1000 Hzでα≥0.9」を要求されたとき、根拠のない迷路を描いて承諾しない。背後空間、能動要素、柔らかい構造、面内容積、許容帯域の変更を含む設計自由度を確認する。本書はその条件の達成を実証していない。薄さの広告表現を、空気容積を含む公平な比較に戻すことが設計者の仕事である。</p>
+</section><section class="chapter" id="chapter-23"><h2>第23章　空調機器へ組み込むならどこか</h2>
+<h3 id="sub-162">23.1 最初に音源・経路・放射面を分ける</h3>
+<p>室外機の受音点にある250 Hzのピークを、直ちに「250 Hz吸音器の課題」としない。圧縮機の空気放射が外装の隙間を通る場合、支持脚の振動が筐体を鳴らす場合、配管が別の板を励振する場合で対策は異なる。加速度・音圧・回転数の同時計測と、部分的な対策のA/B比較で仮説を絞る。相関があるだけでは因果関係は確定しない。</p>
+<figure id="unitDiagram" class="diagram"></figure>
+
+<h3 id="sub-163">23.2 吸込口</h3>
+<p>広い面積を使える可能性はあるが、熱交換器への流入分布が変わりやすい。共鳴器を置くなら、単なる正面開口率だけでなく、フィン全面の流速分布と吸込抵抗を見る。既存の周辺余白に側枝を置く案、外周にモジュールを配置する案を比較する。埃や落葉で詰まりやすい小口は保守条件に合うか確認する。</p>
+<h3 id="sub-164">23.3 吹出口</h3>
+<p>放射経路に直接作用できる一方、流速、乱流、濡れ、ファンとの干渉が問題になる。保護グリルと一体化すると部品数は減るが、グリルの圧損と音源変化が重なる。音響効果のために回転数を上げることになれば利点が失われ得るため、同能力・同風量で評価する。</p>
+<h3 id="sub-165">23.4 ダクト・導風路</h3>
+<p>明確な境界を持つので、側枝やライナーをモデル化しやすい。既存製品に長いダクトがなければ、消音器を加えるための導風路そのものがサイズ・熱性能を変える。ダクトを新設する案と、既存の空間で共鳴を利用する案を同じ条件で比べる。</p>
+<h3 id="sub-166">23.5 ファン周辺</h3>
+<p>回転翼のすぐ近傍は、簡単な平面波モデルが成立しにくい。翼先端隙間、ベルマウス、支持リブなどの変更で音源自体が変わる。固定構造を加える案は、干渉、風切り音、着氷、変形時の接触まで確認する。共鳴器を置いた結果の良否を、吸音だけで説明しない。</p>
+<h3 id="sub-167">23.6 圧縮機周辺</h3>
+<p>空気放射が支配的なら、囲い内面の吸音、遮音カバーと共鳴セルの組合せが候補になる。背後容積や側面空間を利用できる可能性がある。放熱、点検、配線、配管、排水、製品として必要な安全条件を満たすことが前提である。支持ゴムや配管からの構造伝搬には別の対策が必要だ。</p>
+<h3 id="sub-168">23.7 筐体パネル</h3>
+<p>振動する板には制振、剛性・支持変更、動吸振、構造波用の局所共振体が候補になる。板の内面へ空気音用共鳴器を付けると、追加質量と剛性も変わる。音が下がった原因が吸音か、板モードの移動かを区別するため、振動と音圧を両方測る。</p>
+<h3 id="sub-169">23.8 設置場所を比較する</h3>
+<p>以下は<strong>本書の設計判断用マトリクス</strong>であり、特定機種の実証結果ではない。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>候補</th>
+<th>狙う経路</th>
+<th>方式の候補</th>
+<th>優先して確かめること</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>圧縮機室の内壁</td>
+<td>囲い内部の空気音</td>
+<td>HR、MPP、ハイブリッド</td>
+<td>空間内の音場、放熱、シール</td>
+</tr>
+<tr>
+<td>圧縮機カバー</td>
+<td>直接放射・透過</td>
+<td>遮音層＋吸音共鳴セル</td>
+<td>透過・漏れ・支持・耐久</td>
+</tr>
+<tr>
+<td>吸込外周</td>
+<td>開口からの空気音</td>
+<td>側枝・開放共鳴配列</td>
+<td>熱交換器流入分布、汚れ</td>
+</tr>
+<tr>
+<td>吹出口外周</td>
+<td>開口放射</td>
+<td>通風型側枝</td>
+<td>同風量騒音、圧損、再生音</td>
+</tr>
+<tr>
+<td>既存導風路</td>
+<td>管内伝搬</td>
+<td>メタサイレンサ、ライナー</td>
+<td>モード、流れ、端部条件</td>
+</tr>
+<tr>
+<td>大面積パネル</td>
+<td>構造放射</td>
+<td>制振・動吸振・板型</td>
+<td>モード、接合、重量増</td>
+</tr>
+<tr>
+<td>脚・配管支持</td>
+<td>構造伝搬</td>
+<td>防振・支持見直し</td>
+<td>振動伝達、共振、強度</td>
+</tr>
+</tbody></table></div>
+<h3 id="sub-170">23.9 実際の開発順序</h3>
+<p>まず問題運転点とピークを特定し、簡易囲い、仮吸音材、支持変更などの診断試験で経路を絞る。次に一つの候補位置へ、交換可能な小規模試作を置く。無対策・従来材・共鳴構造・両者併用を比較し、熱性能を同時に確認する。成立後に量産形状へ移し、公差・環境・コストの評価へ進む。</p>
+<p><strong>仮想的な上限計算。</strong> 受音点の対象帯域エネルギーの60%が開口経路、40%が独立した構造伝搬経路だと仮定する。開口経路だけを10 dB下げても、残量は0.6×0.1＋0.4＝0.46、総低減は約3.37 dBである。無限に開口を止めても約3.98 dBが上限。この簡易計算は非干渉な経路と不変な音源を仮定しており、同位相の純音経路へはそのまま使えない。</p>
+<h3 id="sub-171">23.10 室外機を直接扱う実在文献</h3>
+<p>Dandsenaらの2021年論文は、室外機騒音へHelmholtz共鳴器配列を持つ周期散乱体を適用する題材を扱う。書誌は著者所属大学でも確認できた。今回は出版社本文を取得できず、要旨の範囲でのみ紹介する。低周波用の局所共鳴散乱体という候補の存在は確認できるが、量産機内への組込み、圧損、長期耐久、具体的な減音量を本書では断定しない。<span class="cites"><a href="#ref-R17" title="参考文献 R17">[R17]</a></span></p>
+</section><section class="chapter" id="chapter-24"><h2>第24章　従来防音材＋メタマテリアル</h2>
+<h3 id="sub-172">24.1 役割分担で設計する</h3>
+<p>低域の狭いピークをHR、中高域の残響を多孔質材、透過を遮音層、板共振を制振材、支持経路を防振材が受け持つ。すべてを新材料へ置き換える必要はない。小さな共鳴部品で残った問題だけを減らせるなら、量産移行しやすい。</p>
+<h3 id="sub-173">24.2 重ねれば性能が足されるわけではない</h3>
+<p>多孔質層を入口に置くと抵抗も位相も変わり、遮音板を加えると背後条件が変わる。複数層の空気層は別の共鳴を作ることもある。各部品単独のαやTLを合算せず、完成積層のインピーダンスと透過を計算する。</p>
+<h3 id="sub-174">24.3 最小の比較試験</h3>
+<p>従来材のみ、共鳴構造のみ、両者併用、同重量・同厚さの対照案を用意する。併用の差が追加質量だけで説明できないかを見る。付加物による音源の変化も測る。設計の成功は「メタマテリアルを使った」ではなく、要求を満たす追加コストが最小になったことで判断する。</p>
+<h3 id="sub-175">24.4 知識を次の機種へ残す</h3>
+<p>有効だった形状だけでなく、音源スペクトル、経路仮説、合わなかった案、境界条件、公差感度、測定の生データを残す。次の製品で再利用しやすいのはCAD形状より、<strong>どの条件で何が効いたかという対応関係</strong>である。</p>
+</section><section class="chapter" id="chapter-25"><div class="part">第8部　ここから先の音響メタマテリアル</div><h2>第25章　2020年代の研究最前線を覗く</h2>
+<h3 id="sub-176">25.1 Willis coupling</h3>
+<p>圧力と速度に対する散乱応答を別々に扱う単純なモデルへ、交差する結合項を加える考え方。非対称な構造や時間反転対称性を破る仕組みが、散乱の制御自由度を増やす。2021年の原著は角運動量でバイアスした音響散乱体におけるodd Willis couplingを実験で扱った。単に形を非対称にするだけで非相反透過が得られる、という意味ではない。<span class="cites"><a href="#ref-R12" title="参考文献 R12">[R12]</a></span></p>
+<h3 id="sub-177">25.2 非エルミート音響</h3>
+<p>損失、外部への漏洩、場合によっては利得を含む開いた系を、複素固有値のモデルで扱う。共鳴器の共鳴位置だけでなく、寿命や結合まで設計変数になる。非エルミートという言葉自体が能動素子を意味するわけではなく、受動損失だけでも現れる。</p>
+<h3 id="sub-178">25.3 Exceptional Point</h3>
+<p>通常の縮退は固有値が一致するが、例外点では固有ベクトルも合流する。結合強度と損失の釣り合いで特殊な散乱応答が現れる。ただし大きな感度は製造や環境の変動感度にもなり得る。2021年には局所損失とトポロジカル界面状態を組み合わせた音響結晶の研究がある。<span class="cites"><a href="#ref-R13" title="参考文献 R13">[R13]</a></span></p>
+<h3 id="sub-179">25.4 Topological acoustics</h3>
+<p>バンドの大域的な性質と界面・端のモードの関係を利用する。特定の欠陥に対して伝搬が頑健になる場合があるが、あらゆる加工誤差や損失に無敵ではない。音をよく運ぶ設計も多く、防音・吸音への有用性は目的ごとに検討する。</p>
+<h3 id="sub-180">25.5 Floquet acoustics</h3>
+<p>周期的に変わる系の応答を扱う。時間変調で通常の静的系にない状態を作る研究のほか、空間方向を時間発展になぞらえて模型を実装する研究もある。2022年の音響導波路配列の原著は、周期駆動模型を模擬するπ/2モードを報告した。本書ではこれを受動の室外機防音部品の実証とは扱わない。<span class="cites"><a href="#ref-R14" title="参考文献 R14">[R14]</a></span></p>
+<h3 id="sub-181">25.6 Acoustic magic angle</h3>
+<p>重ねた異方的メタサーフェスのねじれ角で分散や伝搬方向を変える研究。2024年の原著は1575 Hz付近などで実験を行い、音の指向的伝搬とねじれ角の関係を調べた。本書の1000 Hz以下の範囲外の例を、用語理解のために紹介している。特定の角度を使えば低周波騒音が消える技術ではない。<span class="cites"><a href="#ref-R15" title="参考文献 R15">[R15]</a></span></p>
+<h3 id="sub-182">25.7 なぜ発展編なのか</h3>
+<p>これらの概念は波を制御する設計自由度を増やすが、製品に必要な厚さ、帯域、通風、コストを自動的に満たさない。まず単純な共鳴器で何が足りないかを数値化し、その不足を新しい自由度で解けるか考えると、研究を読む目的が明確になる。</p>
+</section><section class="chapter" id="chapter-26"><h2>第26章　逆設計とAI</h2>
+<h3 id="sub-183">26.1 「性能→形状」へ</h3>
+<p>通常の順設計は形状を入力してα(f)やTL(f)を得る。逆設計は目標曲線から形状候補を求める。異なる形が似たスペクトルを作るので、解は一意とは限らない。製造条件と公差を同時に与えることが重要である。</p>
+<h3 id="sub-184">26.2 Topology optimization</h3>
+<p>領域のどこを固体・空気にするかを最適化する。抜き方向、最小肉厚、排水、閉じた空洞の製造可否を制約に入れないと、数値上は優秀でも作れない形になる。バンドの位相構造を扱うtopological acousticsと、形状配置のtopology optimizationは別の概念である。</p>
+<h3 id="sub-185">26.3 Machine-learning inverse design</h3>
+<p>多数の解析結果から順モデルを近似し、逆問題の探索を速くする。2025年のMPP＋多孔質材の研究は、解析式から作った6万件のデータを使い、順・逆ネットワークと多目的最適化を検討した。検証の中心は解析・数値モデルとの整合であり、室外機の量産実測による保証ではない。<span class="cites"><a href="#ref-R18" title="参考文献 R18">[R18]</a></span></p>
+<h3 id="sub-186">26.4 多目的最適化</h3>
+<p>吸音率を最大化すると、体積や重量が増える場合がある。目的を一つへ無理にまとめず、他の目的を悪化させずには改善できないパレート候補群を比較する。設計者は候補から、製品条件に合う点を選ぶ。</p>
+<h3 id="sub-187">26.5 音響・圧損・重量・コストを同時に解く</h3>
+<p>最初は安い集中定数計算で候補を絞り、次に損失音響FEM、流体計算、少数試作へ進む。目的の例は「対象運転点での音源重み付き透過率」「所定風量のΔp」「追加質量」「推定工程費」。未知の量産費を細かい小数値で最適化するより、部品数や接合長など確かな代理指標を使う。</p>
+<p>公差を入れた多数の候補を評価し、平均だけでなく下側性能を制約にする。学習モデルの範囲外の形や材料へ外挿した予測は、再解析・試作で確かめる。</p>
+<h3 id="sub-188">26.6 生成AI時代の音響設計</h3>
+<p>生成AIは文献候補の整理、式の実装、パラメータ表の生成、試験計画の下書きに使える。一方、未確認のDOI、境界条件の取り違え、単位変換の誤り、吸音とTLの混同を検出する工程が必要である。本書のような初期計算も、寸法案を作る道具であって実機の代替ではない。</p>
+</section><section class="chapter" id="closing"><h2>終章　音響メタマテリアルを「珍しい材料」で終わらせない</h2>
+<p>開発の入口は困っている音を特定することだ。周波数、運転点、経路が分かれば、どの機構へ設計資源を使うべきかを判断できる。次に簡単なモデルを作り、試作で一つずつ仮説を確かめる。CAEと実測の差は、損失や境界を学ぶ材料になる。</p>
+<p>量産へ進むと、幾何学は図面公差、損失は工程・材料、境界条件は接合・取付け、音響安定性は温度・汚れ・寿命の課題へ変わる。そこまで含めて初めて、論文の構造が製品部品になる。</p>
+<p><strong>最終的に残したいのは、形状の珍しさではなく、再現できる設計判断である。</strong> 何Hzのどの経路を、どの機構で、どの条件なら下げられたのか。その記録が次の製品へ持ち運べる知識になる。</p>
+</section><section class="chapter" id="appendix-A"><div class="part">付録　設計の机に置く資料</div><h2>付録A　音響メタマテリアル英日用語集</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>英語</th>
+<th>日本語・実務での意味</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Acoustic metamaterial</td>
+<td>音響メタマテリアル。人工構造で波動応答を設計するもの</td>
+</tr>
+<tr>
+<td>Acoustic metasurface</td>
+<td>音響メタサーフェス。薄い面として波を制御</td>
+</tr>
+<tr>
+<td>Meta-atom / unit cell</td>
+<td>メタ原子／単位セル。構造の基本単位</td>
+</tr>
+<tr>
+<td>Subwavelength</td>
+<td>サブ波長。対象寸法が波長より小さい</td>
+</tr>
+<tr>
+<td>Deep-subwavelength</td>
+<td>波長より非常に小さい。統一的な数値閾値ではない</td>
+</tr>
+<tr>
+<td>Local resonance</td>
+<td>局所共振。セル内部にある固有応答</td>
+</tr>
+<tr>
+<td>Effective density</td>
+<td>有効密度。平均場に対する動的慣性</td>
+</tr>
+<tr>
+<td>Effective bulk modulus</td>
+<td>有効体積弾性率。平均圧縮に対する動的応答</td>
+</tr>
+<tr>
+<td>Homogenization</td>
+<td>均質化。細部を平均物性へ置き換える</td>
+</tr>
+<tr>
+<td>Spatial dispersion</td>
+<td>空間分散。応答が波数・周辺場に依存すること</td>
+</tr>
+<tr>
+<td>Nonlocal coupling</td>
+<td>非局所結合。セルを独立には扱えない相互作用</td>
+</tr>
+<tr>
+<td>Bandgap</td>
+<td>バンドギャップ。特定の伝搬波が存在しない帯域</td>
+</tr>
+<tr>
+<td>Stop band</td>
+<td>阻止帯域。有限試料などで低透過となる帯域</td>
+</tr>
+<tr>
+<td>Bragg scattering</td>
+<td>ブラッグ散乱。周期性に由来する散乱干渉</td>
+</tr>
+<tr>
+<td>Dispersion relation</td>
+<td>分散関係。周波数と波数の関係</td>
+</tr>
+<tr>
+<td>Bloch wave</td>
+<td>ブロッホ波。周期構造の波動解</td>
+</tr>
+<tr>
+<td>Helmholtz resonator, HR</td>
+<td>ヘルムホルツ共鳴器。首部と空洞の共鳴</td>
+</tr>
+<tr>
+<td>Neck / cavity</td>
+<td>ネック／キャビティ。首部／空洞</td>
+</tr>
+<tr>
+<td>End correction</td>
+<td>端補正。首部外側の空気慣性を長さに換算</td>
+</tr>
+<tr>
+<td>Quarter-wave resonator</td>
+<td>1/4波長共鳴器。典型的には開口－閉端管</td>
+</tr>
+<tr>
+<td>Space coiling</td>
+<td>音路を折り畳む構造設計</td>
+</tr>
+<tr>
+<td>Labyrinthine</td>
+<td>迷路状。外形の呼称で機構は一意でない</td>
+</tr>
+<tr>
+<td>MPP</td>
+<td>微細穿孔板。微細孔の抵抗と慣性を利用</td>
+</tr>
+<tr>
+<td>Decorated membrane resonator</td>
+<td>付加質量を持つ膜共鳴器</td>
+</tr>
+<tr>
+<td>Antiresonance</td>
+<td>反共振。対象応答が抑制される点・帯域</td>
+</tr>
+<tr>
+<td>Surface impedance Zs</td>
+<td>表面インピーダンスp/v̄。単位Pa·s/m</td>
+</tr>
+<tr>
+<td>Acoustic impedance Za</td>
+<td>体積速度基準のp/U。単位Pa·s/m³</td>
+</tr>
+<tr>
+<td>Admittance</td>
+<td>アドミタンス。インピーダンスの逆数</td>
+</tr>
+<tr>
+<td>Resistance / reactance</td>
+<td>抵抗／リアクタンス。インピーダンスの実部／虚部</td>
+</tr>
+<tr>
+<td>Critical coupling</td>
+<td>臨界結合。内部損失と外部結合が釣り合う条件</td>
+</tr>
+<tr>
+<td>Intrinsic loss</td>
+<td>内部損失。系の中で散逸するエネルギー</td>
+</tr>
+<tr>
+<td>Radiation leakage</td>
+<td>放射漏洩。外部へ波として出るエネルギー</td>
+</tr>
+<tr>
+<td>Quality factor, Q</td>
+<td>共振の鋭さや蓄積寿命の指標</td>
+</tr>
+<tr>
+<td>One-port / two-port</td>
+<td>一ポート／二ポート。外部へつながる側の区別</td>
+</tr>
+<tr>
+<td>Coherent perfect absorption</td>
+<td>コヒーレント完全吸収。入射波間の位相・振幅も指定</td>
+</tr>
+<tr>
+<td>BIC / quasi-BIC</td>
+<td>連続体中の束縛状態／有限漏洩を持つ近似状態</td>
+</tr>
+<tr>
+<td>Acoustic black hole</td>
+<td>音響ブラックホール。構造波と空気音の文脈を区別</td>
+</tr>
+<tr>
+<td>Thermoviscous loss</td>
+<td>熱粘性損失。細隙や壁近傍で重要</td>
+</tr>
+<tr>
+<td>Grazing flow / bias flow</td>
+<td>開口に沿う平均流／開口を通過する平均流</td>
+</tr>
+<tr>
+<td>Flow resistivity</td>
+<td>流れ抵抗率。多孔質の静的流動抵抗の材料指標</td>
+</tr>
+<tr>
+<td>Transmission loss, TL</td>
+<td>透過損失。入射対透過パワーのdB比</td>
+</tr>
+<tr>
+<td>Insertion loss, IL</td>
+<td>挿入損失。対策の前後のレベル差</td>
+</tr>
+<tr>
+<td>Absorption coefficient</td>
+<td>吸音率。入射パワー中で散逸した割合</td>
+</tr><tr>
+<td>Open area ratio</td>
+<td>開口率。幾何学的な空き面積の比率</td>
+</tr>
+<tr>
+<td>Pressure drop</td>
+<td>圧力損失。定常流で失う圧力</td>
+</tr>
+<tr>
+<td>Regenerated noise</td>
+<td>再生騒音。消音構造の流れなどが新たに作る音</td>
+</tr>
+<tr>
+<td>Transfer matrix method, TMM</td>
+<td>伝達行列法。区間ごとの音響状態を接続</td>
+</tr>
+<tr>
+<td>Impedance tube</td>
+<td>インピーダンス管。平面波・垂直入射の測定系</td>
+</tr>
+<tr>
+<td>Order tracking</td>
+<td>次数解析。回転周波数に対する成分を追う</td>
+</tr>
+<tr>
+<td>Blade passing frequency</td>
+<td>羽根通過周波数。羽根枚数×回転周波数</td>
+</tr>
+<tr>
+<td>Robust design</td>
+<td>ロバスト設計。公差や環境変動後の性能も確保</td>
+</tr>
+<tr>
+<td>Inverse design</td>
+<td>逆設計。目標性能から構造候補を求める</td>
+</tr>
+</tbody></table></div>
+</section><section class="chapter" id="appendix-B"><h2>付録B　1000 Hz以下の波長早見表</h2>
+<p>音速343 m/sでの独自計算。1/4波長は設計尺度であり、吸音材の一律の必要厚さではない。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="right">f [Hz]</th>
+<th align="right">λ [m]</th>
+<th align="right">λ/4 [mm]</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">50</td>
+<td align="right">6.860</td>
+<td align="right">1715</td>
+</tr>
+<tr>
+<td align="right">63</td>
+<td align="right">5.444</td>
+<td align="right">1361</td>
+</tr>
+<tr>
+<td align="right">80</td>
+<td align="right">4.288</td>
+<td align="right">1072</td>
+</tr>
+<tr>
+<td align="right">100</td>
+<td align="right">3.430</td>
+<td align="right">858</td>
+</tr>
+<tr>
+<td align="right">125</td>
+<td align="right">2.744</td>
+<td align="right">686</td>
+</tr>
+<tr>
+<td align="right">160</td>
+<td align="right">2.144</td>
+<td align="right">536</td>
+</tr>
+<tr>
+<td align="right">200</td>
+<td align="right">1.715</td>
+<td align="right">429</td>
+</tr>
+<tr>
+<td align="right">250</td>
+<td align="right">1.372</td>
+<td align="right">343</td>
+</tr>
+<tr>
+<td align="right">315</td>
+<td align="right">1.089</td>
+<td align="right">272</td>
+</tr>
+<tr>
+<td align="right">400</td>
+<td align="right">0.858</td>
+<td align="right">214</td>
+</tr>
+<tr>
+<td align="right">500</td>
+<td align="right">0.686</td>
+<td align="right">172</td>
+</tr>
+<tr>
+<td align="right">630</td>
+<td align="right">0.544</td>
+<td align="right">136</td>
+</tr>
+<tr>
+<td align="right">800</td>
+<td align="right">0.429</td>
+<td align="right">107</td>
+</tr>
+<tr>
+<td align="right">1000</td>
+<td align="right">0.343</td>
+<td align="right">85.8</td>
+</tr>
+</tbody></table></div>
+</section><section class="chapter" id="appendix-C"><h2>付録C　Helmholtz共鳴周波数計算式</h2>
+<div class="formula">f₀ = c/(2π)√[A/(VLₑ)]<br>V = Ac²/(4π²f₀²Lₑ)<br>Lₑ = Ac²/(4π²f₀²V)<br>A = πd²/4　（円孔）</div>
+
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>記号</th>
+<th>内容</th>
+<th>SI単位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>c</td>
+<td>媒質の音速</td>
+<td>m/s</td>
+</tr>
+<tr>
+<td>A</td>
+<td>首部の開口面積</td>
+<td>m²</td>
+</tr>
+<tr>
+<td>V</td>
+<td>正味空気容積</td>
+<td>m³</td>
+</tr>
+<tr>
+<td>l</td>
+<td>物理ネック長</td>
+<td>m</td>
+</tr>
+<tr>
+<td>Δl</td>
+<td>両端を合わせた端補正</td>
+<td>m</td>
+</tr>
+<tr>
+<td>Lₑ</td>
+<td>l＋Δl</td>
+<td>m</td>
+</tr>
+<tr>
+<td>ρ</td>
+<td>空気密度</td>
+<td>kg/m³</td>
+</tr>
+</tbody></table></div>
+<p>前提は小振幅、集中定数近似、壁の変形が小さい、平均流の影響を無視できること。複数首部、細孔の大きな損失、浅い広い空洞、温度勾配、強い音圧では別のモデルが必要になる。首部が空洞へ突き出していれば、その占有体積をVから引く。</p>
+</section><section class="chapter" id="appendix-D"><h2>付録D　dB・吸音率・TLの早見表</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="right">減少量 [dB]</th>
+<th align="right">パワー残率</th>
+<th align="right">同条件の音圧振幅残率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">1</td>
+<td align="right">0.794</td>
+<td align="right">0.891</td>
+</tr>
+<tr>
+<td align="right">3</td>
+<td align="right">0.501</td>
+<td align="right">0.708</td>
+</tr>
+<tr>
+<td align="right">5</td>
+<td align="right">0.316</td>
+<td align="right">0.562</td>
+</tr>
+<tr>
+<td align="right">6</td>
+<td align="right">0.251</td>
+<td align="right">0.501</td>
+</tr>
+<tr>
+<td align="right">10</td>
+<td align="right">0.100</td>
+<td align="right">0.316</td>
+</tr>
+<tr>
+<td align="right">20</td>
+<td align="right">0.010</td>
+<td align="right">0.100</td>
+</tr>
+<tr>
+<td align="right">30</td>
+<td align="right">0.001</td>
+<td align="right">0.0316</td>
+</tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="right">剛壁背後試料のα</th>
+<th align="right">反射パワー1−α</th>
+<th align="right">反射損失−10log₁₀(1−α)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">0.50</td>
+<td align="right">0.50</td>
+<td align="right">3.01 dB</td>
+</tr>
+<tr>
+<td align="right">0.80</td>
+<td align="right">0.20</td>
+<td align="right">6.99 dB</td>
+</tr>
+<tr>
+<td align="right">0.90</td>
+<td align="right">0.10</td>
+<td align="right">10.0 dB</td>
+</tr>
+<tr>
+<td align="right">0.95</td>
+<td align="right">0.05</td>
+<td align="right">13.0 dB</td>
+</tr>
+<tr>
+<td align="right">0.99</td>
+<td align="right">0.01</td>
+<td align="right">20.0 dB</td>
+</tr>
+</tbody></table></div>
+<p>右の値は反射損失でありTLではない。背後が開いている場合は、反射残率を1−αと置けない。異なる周波数のレベルを合成する場合はLsum＝10log₁₀Σ10^(Lᵢ/10)を使う。純音同士がコヒーレントなら位相を含む扱いが必要になる。</p>
+</section><section class="chapter" id="appendix-E"><h2>付録E　インピーダンス管測定入門</h2>
+<p>測定前に、周波数範囲と試料断面、背後条件を決める。マイク間隔が半波長の整数倍へ近づくと二点法が不安定になり、低周波では位相差が小さすぎても精度が悪化する。位置の精度、位相校正、必要に応じマイク交換校正が重要になる。</p>
+<p>円管の最初の非平面モードの遮断周波数の目安はf_c≈0.586c/D。D＝100 mmなら約2010 Hz。ただし実際の使用上限は規格と装置の条件に従う。1000 Hz以下だから、どんな太い管でも平面波になるわけではない。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>保存するもの</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>試料写真・実寸・取付け方向</td>
+<td>空洞・面・方向の取り違え防止</td>
+</tr>
+<tr>
+<td>マイク位置・管径・校正結果</td>
+<td>波分離の再現性</td>
+</tr>
+<tr>
+<td>温度・湿度・気圧</td>
+<td>音速・密度の対応</td>
+</tr>
+<tr>
+<td>シール方法・締付け・背後距離</td>
+<td>音響・振動境界の再現性</td>
+</tr>
+<tr>
+<td>背景レベル・コヒーレンス・繰返し</td>
+<td>測定の信頼範囲</td>
+</tr>
+<tr>
+<td>複素伝達関数・生波形</td>
+<td>後日の再解析</td>
+</tr>
+</tbody></table></div>
+<p>ISO 10534-2:2023とASTM E2611-24の公式概要は確認したが、本書は規格適合を判定する手順書ではない。<span class="cites"><a href="#ref-R10" title="参考文献 R10">[R10]</a> <a href="#ref-R11" title="参考文献 R11">[R11]</a></span></p>
+</section><section class="chapter" id="appendix-F"><h2>付録F　論文のバンド図・吸音率グラフの読み方</h2>
+<p><strong>バンド図を読む順序。</strong> 媒質と波の種類、縦軸の単位、横軸の波数経路、無限周期の仮定、損失の扱い、モードの偏極、有限試料の透過との対応を確認する。斜線で塗られた領域を見つけるだけでは不十分だ。低透過の実験と同じ周波数にあるかを照合する。</p>
+<p><strong>吸音率を読む順序。</strong> 背後壁の有無、αの算出法、入射角、試料面積・厚さ・背後空気層、ピーク値、帯域の閾値、理論線と実験点、誤差・再現性、測定下限を見る。「α≈1が一か所」と「α≥0.8が300 Hz幅」は別の結果だ。</p>
+<p><strong>性能表へ転記する最低項目。</strong> f_low、f_high、評価閾値、平均方法、総厚さ、正味容積、開口率、平均流、Δp、指標、実験／数値、試料数。空欄は推測で埋めず「記載未確認」とする。</p>
+<p><strong>批判的な読み方。</strong> Shenらの2023年プレプリントは、メタマテリアルの名称や薄さの強調だけでは吸音性能の優位性を示せないと論じる。これは著者らの主張であり、「あらゆるメタマテリアルは無意味」という確定事項として扱わない。同じ容積、静的特性、帯域、目的指標で比較するという観点は有用である。<span class="cites"><a href="#ref-R19" title="参考文献 R19">[R19]</a></span></p>
+</section><section class="chapter" id="appendix-G"><h2>付録G　英語論文を掘るための検索キーワード100</h2>
+<p>以下は<strong>検索語の提案</strong>であり、100件の文献の実在を主張するリストではない。各語に対象周波数、airborne、experimental、pressure drop、manufacturing toleranceなどを加えると目的を絞りやすい。水中・弾性波・空気音の混在に注意する。</p>
+<div class="keywords">
+
+<ol>
+<li>acoustic metamaterial low frequency</li>
+<li>airborne acoustic metamaterial</li>
+<li>deep subwavelength absorber</li>
+<li>practical acoustic metamaterial</li>
+<li>acoustic metamaterial commercialization</li>
+<li>locally resonant acoustic metamaterial</li>
+<li>local resonance bandgap</li>
+<li>Bragg bandgap acoustic</li>
+<li>effective dynamic mass density</li>
+<li>negative effective bulk modulus</li>
+<li>acoustic homogenization</li>
+<li>spatial dispersion acoustics</li>
+<li>nonlocal acoustic metamaterial</li>
+<li>acoustic surface impedance</li>
+<li>acoustic impedance matching</li>
+<li>acoustic admittance boundary</li>
+<li>sound absorption causality limit</li>
+<li>thickness bandwidth tradeoff acoustics</li>
+<li>acoustic absorption sum rule</li>
+<li>causally optimal broadband absorption</li>
+<li>Helmholtz resonator absorber</li>
+<li>neck embedded Helmholtz resonator</li>
+<li>extended neck Helmholtz resonator</li>
+<li>cascade Helmholtz resonator</li>
+<li>coupled Helmholtz resonators</li>
+<li>parallel Helmholtz resonators</li>
+<li>multi resonance acoustic absorber</li>
+<li>resonator array area ratio</li>
+<li>Helmholtz end correction</li>
+<li>Helmholtz resonator thermoviscous loss</li>
+<li>micro perforated panel absorber</li>
+<li>MPP Maa model</li>
+<li>multilayer microperforated panel</li>
+<li>micro slit absorber</li>
+<li>perforated panel acoustic impedance</li>
+<li>porous resonator hybrid absorber</li>
+<li>metaporous material</li>
+<li>flow resistivity porous absorber</li>
+<li>Johnson Champoux Allard model</li>
+<li>limp frame equivalent fluid model</li>
+<li>membrane type acoustic metamaterial</li>
+<li>decorated membrane resonator</li>
+<li>membrane antiresonance sound insulation</li>
+<li>plate type acoustic metamaterial</li>
+<li>mass loaded membrane</li>
+<li>membrane pretension acoustic</li>
+<li>membrane creep sound insulation</li>
+<li>locally resonant panel vibration</li>
+<li>acoustic vibration absorber array</li>
+<li>acoustic structural coupling</li>
+<li>space coiling acoustic metamaterial</li>
+<li>labyrinthine acoustic metamaterial</li>
+<li>coiled space resonator</li>
+<li>folded quarter wave resonator</li>
+<li>acoustic Fabry Perot resonator</li>
+<li>slow sound absorber</li>
+<li>acoustic rainbow trapping</li>
+<li>acoustic black hole waveguide</li>
+<li>sonic black hole absorber</li>
+<li>tapered plate acoustic black hole</li>
+<li>ventilated acoustic metamaterial</li>
+<li>ventilated sound absorber</li>
+<li>ultra open acoustic metamaterial</li>
+<li>ventilated sound barrier</li>
+<li>acoustic metasilencer</li>
+<li>metamuffler</li>
+<li>duct side branch resonator</li>
+<li>acoustic liner grazing flow</li>
+<li>bias flow resonator impedance</li>
+<li>flow induced noise silencer</li>
+<li>ventilated metamaterial pressure drop</li>
+<li>silencer regenerated noise</li>
+<li>fan blade passing frequency noise</li>
+<li>outdoor unit air conditioner noise metamaterial</li>
+<li>HVAC metamaterial experimental</li>
+<li>critical coupling acoustic absorption</li>
+<li>one port acoustic absorber</li>
+<li>two port acoustic absorption limit</li>
+<li>coherent perfect absorption acoustics</li>
+<li>Friedrich Wintgen acoustic BIC</li>
+<li>acoustic quasi BIC absorption</li>
+<li>Fano resonance acoustic transmission</li>
+<li>Willis coupling acoustic</li>
+<li>non Hermitian acoustics</li>
+<li>exceptional point acoustic absorption</li>
+<li>topological acoustic edge state</li>
+<li>Floquet acoustic metamaterial</li>
+<li>acoustic magic angle</li>
+<li>acoustic transfer matrix method</li>
+<li>thermoviscous finite element acoustics</li>
+<li>impedance tube two microphone method</li>
+<li>four microphone transmission loss</li>
+<li>acoustic metamaterial oblique incidence</li>
+<li>finite size acoustic metamaterial</li>
+<li>acoustic metamaterial manufacturing tolerance</li>
+<li>acoustic metamaterial temperature sensitivity</li>
+<li>acoustic metamaterial inverse design</li>
+<li>topology optimization acoustic absorber</li>
+<li>machine learning acoustic metamaterial</li>
+<li>robust multiobjective acoustic optimization</li>
+</ol>
+</div>
+
+</section><section class="chapter" id="appendix-H"><h2>付録H　実用設計チェックリスト</h2>
+<p>画面ではチェックを付けられる。保存機能が使える環境では、このブラウザ内に状態を保存する。ファイルを別の端末へ移しても状態は引き継がれない。印刷時にも項目を利用できる。</p>
+<div id="checklist"></div>
+
+<h3 id="sub-189">判断記録のひな形</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>欄</th>
+<th>記入内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>課題</td>
+<td>運転点、周波数、測定指標、要求差分</td>
+</tr>
+<tr>
+<td>支配経路の仮説</td>
+<td>音源→伝達→放射面→受音点</td>
+</tr>
+<tr>
+<td>選択方式と理由</td>
+<td>HR／膜／側枝／従来材等、比較して選んだ理由</td>
+</tr>
+<tr>
+<td>初期計算</td>
+<td>寸法、式、端補正、損失の仮定</td>
+</tr>
+<tr>
+<td>文献との対応</td>
+<td>確認資料、同じ条件、違う条件</td>
+</tr>
+<tr>
+<td>試作条件</td>
+<td>材料、加工、シール、取付け、実寸</td>
+</tr>
+<tr>
+<td>結果</td>
+<td>α、TL、IL、Δp、風量、温度、振動</td>
+</tr>
+<tr>
+<td>量産上の課題</td>
+<td>公差、接合、耐久、検査、費用</td>
+</tr>
+<tr>
+<td>次の判断</td>
+<td>採用／条件変更／中止とその理由</td>
+</tr>
+</tbody></table></div>
+</section><section class="chapter" id="appendix-I"><h2>付録I　主要レビュー論文・参考文献</h2>
+<h3 id="sub-190">確認方法と記載のルール</h3>
+<p>確認日：2026年9月28日（日本時間）。本文の[R番号]から該当文献へ移動できる。「全文」は主要本文・方法・結論を確認したものを指し、補足資料の全データや解析コードの追試を意味しない。日付は本文ヘッダー、出版社の書誌、著者所属機関の書誌を優先した。書誌年と先行公開日が異なる場合は併記する。</p>
+<p>論文の図は転載していない。本書の模式図・計算曲線・数値例は独自作成であり、文献の実験データではない。比較表で同じ事実を再掲している場合も、新たな独立した実証として数えない。</p>
+<article class="ref" id="ref-R1"><span class="ref-id">R1</span><h4><a href="https://doi.org/10.1063/5.0147941" target="_blank" rel="noopener noreferrer">Acoustic metamaterial absorbers: The path to commercialization</a></h4><p>Min Yang; Ping Sheng<br><i>Applied Physics Letters 122, 260504</i></p><p class="ref-meta"><b>公開・更新：</b>2023-06-29（出版社の公開日。巻号上の引用日2023-06-26と区別）<br><b>確認範囲：</b>全文：出版社本文、特にIV節とV節</p><p>実用化を論じるPerspective。変圧器音に合わせた厚さ100 mm・60折返し管の実測は、音源重み付き反射損失の比較。製品全体の減音量とは別。</p></article><article class="ref" id="ref-R2"><span class="ref-id">R2</span><h4><a href="https://doi.org/10.3389/fphy.2022.998253" target="_blank" rel="noopener noreferrer">Coupled acoustic resonance for wave control and sensing</a></h4><p>Taehwa Lee; Xiaopeng Li; Ziqi Yu; Tsuyoshi Nomura; Ercan M. Dede; Hideo Iizuka<br><i>Frontiers in Physics 10, 998253</i></p><p class="ref-meta"><b>公開・更新：</b>2022-10-12（本文）<br><b>確認範囲：</b>全文：Theory、Critical coupling、関連図の説明</p><p>共振器の集中定数モデルと結合モード理論を整理するレビュー。放射・内部損失の定義、モデル間の係数差、一ポートと二ポートの条件を読む入口。</p></article><article class="ref" id="ref-R3"><span class="ref-id">R3</span><h4><a href="https://doi.org/10.1093/nsr/nwab171" target="_blank" rel="noopener noreferrer">Broadband impedance modulation via non-local acoustic metamaterials</a></h4><p>Zhiling Zhou; Sibo Huang; Dongting Li; Jie Zhu; Yong Li<br><i>National Science Review 9(8), nwab171</i></p><p class="ref-meta"><b>公開・更新：</b>先行公開2021-09-11／巻号2022-08（本文・PMC記事履歴）<br><b>確認範囲：</b>全文：Results and Discussion、Fig. 3説明</p><p>36セル・100 mm厚、320～6400 Hzで平均吸音率0.93を報告。多モード、近接場結合、損失調整を組み合わせる原著。100 Hzまで高吸音という結果ではない。</p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9440717/" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-R4"><span class="ref-id">R4</span><h4><a href="https://doi.org/10.1038/s41598-022-24621-8" target="_blank" rel="noopener noreferrer">Hybrid fractal acoustic metamaterials for low-frequency sound absorber based on cross mixed micro-perforated panel mounted over the fractals structure cavity</a></h4><p>Sanjeet Kumar Singh; Om Prakash; Shantanu Bhattacharya<br><i>Scientific Reports 12, 20444</i></p><p class="ref-meta"><b>公開・更新：</b>2022-11-28（出版社本文）<br><b>確認範囲：</b>全文：Theoretical model、Results、Methods、Fig. 2・5説明</p><p>MPPとフラクタル状空洞の組合せ。単位構造の理論・数値・実験と、複数セルの数値拡張を区別。20 mm厚だから100 Hzから効くという論文ではない。</p></article><article class="ref" id="ref-R5"><span class="ref-id">R5</span><h4><a href="https://doi.org/10.1103/PhysRevApplied.20.044075" target="_blank" rel="noopener noreferrer">Observation of acoustic Friedrich-Wintgen bound state in the continuum with bridging near-field coupling</a></h4><p>Shanshan Liuほか<br><i>Physical Review Applied 20, 044075</i></p><p class="ref-meta"><b>公開・更新：</b>2023-10-27（出版社）<br><b>確認範囲：</b>出版社の要旨・記事履歴。全文未確認</p><p>橋渡し管で結合する非対称二空洞のBIC／quasi-BIC。公開要旨は臨界結合での高Q吸音と実験を報告する。具体的寸法・性能数値は本書に転記しない。</p></article><article class="ref" id="ref-R6"><span class="ref-id">R6</span><h4><a href="https://arxiv.org/abs/2409.02731" target="_blank" rel="noopener noreferrer">Ventilated noise-insulating metamaterials inspired by sonic black holes</a></h4><p>Farid Bikmukhametovほか<br><i>arXiv:2409.02731v1</i></p><p class="ref-meta"><b>公開・更新：</b>2024-09-04（arXiv投稿履歴）<br><b>確認範囲：</b>プレプリント全文・補足記述。査読版との同一性は未確認</p><p>主要な低透過機構を共鳴結合による反射と説明。送風試験の流速比と阻止帯域は条件依存で、低周波全体や無圧損の実証として扱わない。</p><a href="https://arxiv.org/html/2409.02731v1" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-R7"><span class="ref-id">R7</span><h4><a href="https://doi.org/10.1121/10.0011788" target="_blank" rel="noopener noreferrer">How the waveguide acoustic black hole works: A study of possible damping mechanisms</a></h4><p>Abbas Mousavi; Martin Berggren; Eddie Wadbro<br><i>Journal of the Acoustical Society of America 151, 4279–4290</i></p><p class="ref-meta"><b>公開・更新：</b>2022-06-29（著者機関公開PDFのPublished online）<br><b>確認範囲：</b>全文PDF：モデルとIV節の結論</p><p>リング型導波路の損失機構を数値的に検討。高周波側の低反射を熱粘性だけで説明せず、外周壁付近の損失が重要との仮説を示す。ABHは単一の万能機構ではない。</p><a href="https://www.diva-portal.org/smash/get/diva2%3A1688342/FULLTEXT01.pdf" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-R8"><span class="ref-id">R8</span><h4><a href="https://doi.org/10.3390/app122211322" target="_blank" rel="noopener noreferrer">Development of a Metasilencer Considering Flow in HVAC Systems</a></h4><p>Hyunsu Kim; Yoonjung Kwon; Sangwoo Lee; Juin Kim; Dongchul Park<br><i>Applied Sciences 12(22), 11322</i></p><p class="ref-meta"><b>公開・更新：</b>2022-11-08（本文のPublished）<br><b>確認範囲：</b>全文：設計、スピーカー試験、HVAC試験、Fig. 15説明</p><p>自動車HVACの実流試験。曲面入口と少量吸音材の効果を比較。最大約5 dBAという帯域内差を、500 Hz・室外機全体の性能へ外挿しない。</p><a href="https://www.mdpi.com/2076-3417/12/22/11322" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-R9"><span class="ref-id">R9</span><h4><a href="https://doi.org/10.1038/s41598-024-78454-8" target="_blank" rel="noopener noreferrer">Model analysis and experiment study for effects of thermal viscous and fluid flow on ventilated acoustic metamaterials labyrinth</a></h4><p>Shengnan Du; Dacheng Zhang; Xianming Sun; Xiaoping Chen; Guowei Zhang<br><i>Scientific Reports 14, 27200</i></p><p class="ref-meta"><b>公開・更新：</b>2024-11-08（本文・PMC）<br><b>確認範囲：</b>全文：モデル、管内実験、熱粘性・流速の比較</p><p>解析ピーク328 Hz、実験330 Hzの対応。流れの影響は数値モデルで検討され、無流の音響検証と区別する。損失は吸音を生む一方、反射型TLの鋭いピークを下げ得る。</p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11549374/" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-R10"><span class="ref-id">R10</span><h4><a href="https://www.iso.org/standard/81294.html" target="_blank" rel="noopener noreferrer">ISO 10534-2:2023 — Acoustics — Determination of acoustic properties in impedance tubes — Part 2: Two-microphone technique for normal sound absorption coefficient and normal surface impedance</a></h4><p>ISO<br><i>国際規格・第2版</i></p><p class="ref-meta"><b>公開・更新：</b>2023-10／英語訂正版2025-08（公式書誌）<br><b>確認範囲：</b>公式概要と版・訂正情報。規格本文全条項は未確認</p><p>二点法・垂直入射吸音率の参照先。正式試験では購入・保有する適用版の要求事項を確認する。</p></article><article class="ref" id="ref-R11"><span class="ref-id">R11</span><h4><a href="https://store.astm.org/e2611-24.html" target="_blank" rel="noopener noreferrer">ASTM E2611-24 — Standard Test Method for Normal Incidence Determination of Porous Material Acoustical Properties Based on the Transfer Matrix Method</a></h4><p>ASTM International<br><i>試験規格</i></p><p class="ref-meta"><b>公開・更新：</b>2024-06-13更新（公式ページ）<br><b>確認範囲：</b>公式概要・適用範囲・書誌。規格本文全条項は未確認</p><p>伝達行列法による垂直入射測定の参照先。周期的な硬質試料へ適用する際には、代表寸法・モード条件と規格の対象範囲を確認する。</p></article><article class="ref" id="ref-R12"><span class="ref-id">R12</span><h4><a href="https://doi.org/10.1038/s41467-021-22745-5" target="_blank" rel="noopener noreferrer">Odd Willis coupling induced by broken time-reversal symmetry</a></h4><p>Li Quan; Simon Yves; Yugui Peng; Hussein Esfahlani; Andrea Alù<br><i>Nature Communications 12, 2615</i></p><p class="ref-meta"><b>公開・更新：</b>2021-05-10（出版社本文）<br><b>確認範囲：</b>全文：Introduction、Results、実験の説明</p><p>時間反転対称性を破るバイアスと交差結合を扱う。Willis結合と非相反性を無条件に同義としない。</p></article><article class="ref" id="ref-R13"><span class="ref-id">R13</span><h4><a href="https://doi.org/10.1103/PhysRevApplied.15.014025" target="_blank" rel="noopener noreferrer">Topologically Protected Exceptional Point with Local Non-Hermitian Modulation in an Acoustic Crystal</a></h4><p>Zhongming Guほか<br><i>Physical Review Applied 15, 014025</i></p><p class="ref-meta"><b>公開・更新：</b>2021-01-14（出版社）<br><b>確認範囲：</b>出版社の要旨・記事履歴。全文未確認</p><p>局所的な非エルミート変調による界面状態の結合・例外点の研究。室外機用の定量性能を示す資料としては用いない。</p></article><article class="ref" id="ref-R14"><span class="ref-id">R14</span><h4><a href="https://arxiv.org/abs/2207.09831" target="_blank" rel="noopener noreferrer">Observation of pi/2 modes in an acoustic Floquet system</a></h4><p>Zheyu Cheng; Raditya Weda Bomantara; Haoran Xue; Weiwei Zhu; Jiangbin Gong; Baile Zhang<br><i>arXiv:2207.09831</i></p><p class="ref-meta"><b>公開・更新：</b>2022-07-20初回投稿（arXiv）<br><b>確認範囲：</b>著者公開要旨・投稿履歴。本文の詳細未確認</p><p>音響導波路配列で周期駆動模型を模擬する研究。用語への入口として紹介し、実用低周波消音の根拠にはしない。</p></article><article class="ref" id="ref-R15"><span class="ref-id">R15</span><h4><a href="https://doi.org/10.1002/adma.202311350" target="_blank" rel="noopener noreferrer">Nonlocal Acoustic Moiré Hyperbolic Metasurfaces</a></h4><p>Chenglin Han; Shida Fan; Changyou Li; Li-Qun Chen; Tianzhi Yang; Cheng-Wei Qiu<br><i>Advanced Materials, article 2311350</i></p><p class="ref-meta"><b>公開・更新：</b>2024-01-14先行公開（出版社本文）<br><b>確認範囲：</b>全文：理論、Fig. 3・4、実験条件</p><p>ねじれ角と分散を制御する原著。1575 Hzなどでの実験は本書の周波数範囲外。防音実証ではなく発展用語の説明用。</p></article><article class="ref" id="ref-R16"><span class="ref-id">R16</span><h4><a href="https://doi.org/10.1038/s41598-023-34993-0" target="_blank" rel="noopener noreferrer">Ultrathin acoustic metamaterial as super absorber for broadband low-frequency underwater sound</a></h4><p>Xindong Zhou; Xiaochen Wang; Fengxian Xin<br><i>Scientific Reports 13, 7983</i></p><p class="ref-meta"><b>公開・更新：</b>2023-05-17（PMC記事ヘッダー）<br><b>確認範囲：</b>公開要旨・導入の取得範囲</p><p>水中音響の理論・数値研究。本書は空気中の実用品の性能例から除外した。検索結果の『低周波』『薄型』だけで採用しないための例。</p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10192347/" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-R17"><span class="ref-id">R17</span><h4><a href="https://doi.org/10.1016/j.apacoust.2021.108054" target="_blank" rel="noopener noreferrer">Noise control of outdoor unit of split type air-conditioner using periodic scatterers made with array of Helmholtz resonators</a></h4><p>J. Dandsena; K. Mohapatra; A. K. Satapathy; D. P. Jena<br><i>Applied Acoustics 179, 108054</i></p><p class="ref-meta"><b>公開・更新：</b>2021-08巻号（出版社要旨・著者所属大学の書誌）。先行公開日の詳細未確認<br><b>確認範囲：</b>出版社要旨の取得範囲・著者所属大学の書誌。全文未確認</p><p>室外機を直接題材とする重要な追読候補。具体的な減音量や量産性は本書で確認できておらず、他論文の紹介文から数値を借用しない。</p><a href="https://www.nitrkl.ac.in/FacultyStaff/AllPublications/?id=jenad" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-R18"><span class="ref-id">R18</span><h4><a href="https://doi.org/10.1038/s41598-025-86077-w" target="_blank" rel="noopener noreferrer">Reverse design of broadband sound absorption structure based on deep learning method</a></h4><p>Yihong Zhou; Lifeng Ma; Xi Kang; Zhiyuan Zhu<br><i>Scientific Reports 15, 1946</i></p><p class="ref-meta"><b>公開・更新：</b>2025-01-14（本文・PMC記事ヘッダー）<br><b>確認範囲：</b>全文：データ生成、モデル、設計検証、結論</p><p>解析式で生成したデータによる逆設計とNSGA-II最適化。広い周波数域を扱うモデル研究であり、実機製品や1000 Hz以下だけの結果と区別する。</p><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11733262/" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-R19"><span class="ref-id">R19</span><h4><a href="https://arxiv.org/abs/2310.14638" target="_blank" rel="noopener noreferrer">Forget metamaterial: It does not improve sound absorption performance as it claims</a></h4><p>Chao Shen; Yu Liu; Tianquan Tang; Lixi Huang<br><i>arXiv:2310.14638v1</i></p><p class="ref-meta"><b>公開・更新：</b>2023-10-23（arXiv投稿履歴）<br><b>確認範囲：</b>プレプリント本文・要旨。査読済み最終版としては扱わない</p><p>体積と帯域を基準とした性能比較を求める批判的論考。強いタイトルを分野全体の合意とせず、比較条件を点検する材料とする。</p><a href="https://arxiv.org/html/2310.14638v1" target="_blank" rel="noopener noreferrer">確認した公開本文・書誌を開く ↗</a></article><article class="ref" id="ref-B1"><span class="ref-id">B1・背景資料</span><h4><a href="https://doi.org/10.1103/PhysRevLett.101.204301" target="_blank" rel="noopener noreferrer">Membrane-Type Acoustic Metamaterial with Negative Dynamic Mass</a></h4><p>Z. Yang; Jun Mei; Min Yang; N. H. Chan; Ping Sheng<br><i>Physical Review Letters 101, 204301</i></p><p class="ref-meta"><b>公開・更新：</b>2008-11-14（出版社）。期間外の背景資料<br><b>確認範囲：</b>出版社の要旨・書誌。全文未確認</p><p>膜の二モード間の平均法線変位と強い反射を説明する古典的原著。期間内の新しい成果として数えない。</p></article>
+
+<h3 id="sub-191">読む順序</h3>
+<p>実用品を知りたいなら<span class="cites"><a href="#ref-R1" title="参考文献 R1">[R1]</a></span>、共鳴モデルの整理には<span class="cites"><a href="#ref-R2" title="参考文献 R2">[R2]</a></span>、広帯域化には<span class="cites"><a href="#ref-R3" title="参考文献 R3">[R3]</a></span>、実流と製品試験には<span class="cites"><a href="#ref-R8" title="参考文献 R8">[R8]</a></span><span class="cites"><a href="#ref-R9" title="参考文献 R9">[R9]</a></span>、測定には<span class="cites"><a href="#ref-R10" title="参考文献 R10">[R10]</a></span><span class="cites"><a href="#ref-R11" title="参考文献 R11">[R11]</a></span>を先に読む。膜は<span class="cites"><a href="#ref-B1" title="参考文献 B1">[B1]</a></span>、BICは<span class="cites"><a href="#ref-R5" title="参考文献 R5">[R5]</a></span>、ABHは<span class="cites"><a href="#ref-R7" title="参考文献 R7">[R7]</a></span>を追加し、必要になった段階で先端概念と逆設計へ進む。</p>
+<h3 id="sub-192">文献同士で表現が違うとき</h3>
+<p>「損失を増やすと吸音が良くなる」「損失を増やすとTLが悪化する」は両立する。前者は散逸、後者は反射による遮音ピークを見ている場合がある。「広帯域最適系はover-damped」という議論と、単一モードの臨界結合も、評価目的とモデルの定義をそろえて比較する。<span class="cites"><a href="#ref-R2" title="参考文献 R2">[R2]</a> <a href="#ref-R3" title="参考文献 R3">[R3]</a> <a href="#ref-R9" title="参考文献 R9">[R9]</a></span></p>
+<p>「commercialization」と書かれた論文があっても、すべての周波数・環境で従来材より安く優れるという結論にはならない。逆に、体積制約を強調する批判があっても、狙った帯域に吸音能力を配分する設計の価値まで消えるわけではない。<span class="cites"><a href="#ref-R1" title="参考文献 R1">[R1]</a> <a href="#ref-R19" title="参考文献 R19">[R19]</a></span></p>
+<div class="colophon">実用 音響メタマテリアル入門 ／ 初版 2026-09-28<br>資料に基づく解説と、明示した仮定による設計演習。計算欄は初期検討・学習用。</div>
+</section></main><button id="topButton" aria-label="ページ先頭へ">↑</button><noscript><p class="noscript">本文・目次・参考文献はJavaScriptなしでも読めます。計算欄・検索・チェック保存はJavaScriptを有効にすると使えます。</p></noscript><script>(()=>{
+'use strict';
+const $=s=>document.querySelector(s);
+const storage={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v);return true}catch{return false}}};
+if(storage.get('acoustic-theme')==='dark')document.body.classList.add('dark');
+if(storage.get('acoustic-large')==='true')document.body.classList.add('large');
+function themeLabel(){$('#theme').textContent=document.body.classList.contains('dark')?'昼間':'夜間'}themeLabel();
+$('#theme').onclick=()=>{document.body.classList.toggle('dark');storage.set('acoustic-theme',document.body.classList.contains('dark')?'dark':'light');themeLabel()};
+$('#fontSize').onclick=()=>{document.body.classList.toggle('large');storage.set('acoustic-large',String(document.body.classList.contains('large')))};
+$('#menu').onclick=()=>{const open=document.body.classList.toggle('nav-open');$('#menu').setAttribute('aria-expanded',String(open))};
+function closeMenu(){document.body.classList.remove('nav-open');$('#menu').setAttribute('aria-expanded','false')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+const chapters=[...document.querySelectorAll('.chapter')],navLinks=[...document.querySelectorAll('nav a')];
+function filter(){const q=$('#search').value.trim().toLocaleLowerCase();let n=0;chapters.forEach(c=>{let hit=!q||c.textContent.toLocaleLowerCase().includes(q);c.hidden=!hit;if(hit)n++;let a=navLinks.find(a=>a.dataset.id===c.id);if(a)a.hidden=!hit});$('#searchStatus').textContent=q?`${n} / ${chapters.length} 項目が該当`:'全章を表示中';document.querySelector('.hero').hidden=!!q;updateProgress()}
+$('#search').addEventListener('input',filter);filter();
+function revealAnchor(hash){let el;try{el=document.getElementById(decodeURIComponent(hash.slice(1)))}catch{return}if(!el)return;if(el.closest('[hidden]')){$('#search').value='';filter()}closeMenu()}
+document.addEventListener('click',e=>{let a=e.target.closest('a[href^="#"]');if(a)revealAnchor(a.getAttribute('href'))});
+window.addEventListener('hashchange',()=>revealAnchor(location.hash));if(location.hash)revealAnchor(location.hash);
+let printQuery='';window.addEventListener('beforeprint',()=>{printQuery=$('#search').value;$('#search').value='';filter()});window.addEventListener('afterprint',()=>{$('#search').value=printQuery;filter()});$('#print').onclick=()=>window.print();$('#topButton').onclick=()=>{window.scrollTo({top:0,behavior:'smooth'})};
+function updateProgress(){const h=document.documentElement.scrollHeight-innerHeight;$('#progress').style.width=(h>0?Math.max(0,Math.min(100,scrollY/h*100)):0)+'%'}
+window.addEventListener('scroll',updateProgress,{passive:true});window.addEventListener('resize',updateProgress);
+if('IntersectionObserver'in window){const obs=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){navLinks.forEach(a=>a.classList.toggle('active',a.dataset.id===e.target.id))}},{rootMargin:'-80px 0px -65% 0px'});chapters.forEach(c=>obs.observe(c))}
+const num=(id,min,max)=>{let v=Number($(id).value);return $(id).value.trim()!==''&&Number.isFinite(v)&&v>=min&&v<=max?v:NaN};
+const fmt=(v,n=1)=>Number(v).toLocaleString('ja-JP',{maximumFractionDigits:n,minimumFractionDigits:n});
+function plot(target,curves,xmin,xmax){const W=640,H=280,L=58,R=18,T=20,B=48;const X=f=>L+(f-xmin)/(xmax-xmin)*(W-L-R),Y=a=>H-B-a*(H-T-B);let s=`<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="簡易モデルによる周波数と吸音率のグラフ"><title>横軸：周波数 Hz、縦軸：吸音率。実測ではなく簡易モデル。</title>`;for(let i=0;i<=4;i++){let a=i/4;s+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${Y(a)}" y2="${Y(a)}"/><text x="${L-10}" y="${Y(a)+4}" text-anchor="end">${a.toFixed(2)}</text>`}for(let i=0;i<=5;i++){let f=xmin+i*(xmax-xmin)/5;s+=`<line class="grid" x1="${X(f)}" x2="${X(f)}" y1="${T}" y2="${H-B}"/><text x="${X(f)}" y="${H-B+23}" text-anchor="middle">${Math.round(f)}</text>`}s+=`<text x="12" y="15">α</text><text x="${W/2}" y="${H-6}" text-anchor="middle">周波数 [Hz]</text>`;for(const c of curves){let d='';for(let i=0;i<=600;i++){let f=xmin+(xmax-xmin)*i/600,a=c.fn(f);d+=(i?'L':'M')+X(f).toFixed(2)+','+Y(Math.min(1,Math.max(0,a))).toFixed(2)}s+=`<path d="${d}" fill="none" stroke="${c.color}" stroke-width="3" ${c.dash?'stroke-dasharray="6 5"':''}/>`}s+='</svg>';$(target).innerHTML=s;}
+$('#couplingWidget').innerHTML=`<h4>実験室 01 ／ 臨界結合を動かす</h4><p class="caption">一ポート・孤立モードの共鳴近傍モデル。外部漏洩を固定して内部損失を変える。幾何形状からの予測ではない。</p><div class="inputs"><label>中心周波数 f₀ [Hz]<input id="ccF" type="number" min="100" max="1000" step="10" value="250"></label><label>放射Q：Qe<input id="ccQ" type="number" min="4" max="100" step="1" value="40"></label><label style="grid-column:1/-1">損失比 η＝γi/γe：<output id="ccEtaLabel">1.00</output><input id="ccEta" type="range" min="0.05" max="5" step="0.05" value="1"></label></div><div id="ccResult" class="result" aria-live="polite"></div><div id="ccPlot"></div><p class="plotcaption">η＝1でピークが最大。γe＝ω₀/(2Qe)、全Q＝Qe/(1＋η)。大きな損失では共鳴近傍近似の精度が低下する。</p>`;
+function coupling(){let f=num('#ccF',100,1000),q=num('#ccQ',4,100),eta=num('#ccEta',.05,5);if(![f,q,eta].every(Number.isFinite)){$('#ccResult').textContent='周波数100～1000 Hz、放射Q 4～100で入力してください。';$('#ccPlot').innerHTML='';return}$('#ccEtaLabel').textContent=fmt(eta,2);let ge=2*Math.PI*f/(2*q),gi=eta*ge,a=4*eta/(1+eta)**2;$('#ccResult').textContent=`ピーク α＝${fmt(a,3)} ／ 全Q ≈ ${fmt(q/(1+eta),1)} ／ 半値幅 ≈ ${fmt(f*(1+eta)/q,1)} Hz`;plot('#ccPlot',[{color:'#007b74',fn:x=>4*ge*gi/((2*Math.PI*(x-f))**2+(ge+gi)**2)}],Math.max(20,f*.6),Math.min(1200,f*1.4))}
+['#ccF','#ccQ','#ccEta'].forEach(s=>$(s).addEventListener('input',coupling));coupling();
+$('#arrayWidget').innerHTML=`<h4>実験室 02 ／ 4種類を並列に並べる</h4><p class="caption">各セルの占有面積比は25%。zᵢ＝r＋jμ(f/fᵢ−fᵢ/f)、1/z_eq＝Σ0.25/zᵢ、α＝4Re(z_eq)/|1＋z_eq|²。セル間の近接場結合・実寸・平均流は含まない。</p><div class="inputs">${[220,250,280,315].map((v,i)=>`<label>セル${i+1} f₀ [Hz]<input id="arF${i}" type="number" min="50" max="1000" value="${v}"></label>`).join('')}<label>各セルの無次元抵抗 r<input id="arR" type="number" min="0.05" max="20" step="0.05" value="1"></label><label>リアクタンス係数 μ<input id="arMu" type="number" min="0.2" max="60" step="0.2" value="8"></label></div><div id="arResult" class="result" aria-live="polite"></div><div id="arPlot"></div><p class="plotcaption"><span style="color:#007b74">━━ 4セル並列</span> ／ <span style="color:#bd7037">┄┄ セル2の単一面</span>。表示区間の平均は周波数に対する等間隔算術平均。帯域を変えた案同士を平均値だけで比較しない。</p>`;
+function array(){let fs=[0,1,2,3].map(i=>num('#arF'+i,50,1000)),r=num('#arR',.05,20),mu=num('#arMu',.2,60);if(![...fs,r,mu].every(Number.isFinite)){$('#arResult').textContent='f₀は50～1000、rは0.05～20、μは0.2～60で入力してください。';$('#arPlot').innerHTML='';return}let fn=f=>{let yr=0,yi=0;for(let fi of fs){let x=mu*(f/fi-fi/f),d=r*r+x*x;yr+=.25*r/d;yi-=.25*x/d}let dd=yr*yr+yi*yi,zr=yr/dd,zi=-yi/dd;return 4*zr/((1+zr)**2+zi*zi)},single=f=>{let x=mu*(f/fs[1]-fs[1]/f);return 4*r/((1+r)**2+x*x)};let lo=Math.max(20,Math.min(...fs)*.6),hi=Math.min(1200,Math.max(...fs)*1.4);let avg=0;for(let i=0;i<=1000;i++)avg+=fn(lo+(hi-lo)*i/1000);avg/=1001;$('#arResult').textContent=`表示区間 ${fmt(lo,0)}～${fmt(hi,0)} Hz ／ 平均 α ≈ ${fmt(avg,3)}`;plot('#arPlot',[{fn:single,color:'#bd7037',dash:true},{fn,color:'#007b74'}],lo,hi)}
+['#arF0','#arF1','#arF2','#arF3','#arR','#arMu'].forEach(s=>$(s).addEventListener('input',array));array();
+$('#helmholtzWidget').innerHTML=`<h4>設計計算 ／ Helmholtz共鳴器</h4><p class="caption">集中定数・剛壁・無流の初期計算。端補正はΔl＝βrと仮定。βは両端の合計係数であり、形状ごとに妥当性を確認する。吸音率・TLは計算しない。</p><div class="inputs"><label>音速 c [m/s]<input id="hrC" type="number" min="250" max="450" step="0.1" value="343"></label><label>孔径 d [mm]<input id="hrD" type="number" min="0.1" max="100" step="0.1" value="10"></label><label>物理ネック長 l [mm]<input id="hrL" type="number" min="0" max="500" step="0.1" value="10"></label><label>正味容積 V [cm³]<input id="hrV" type="number" min="0.01" max="100000" step="0.1" value="202.4"></label><label>端補正係数 β<input id="hrBeta" type="number" min="0" max="3" step="0.05" value="1.7"></label><label>逆算目標 f₀ [Hz]<input id="hrTarget" type="number" min="20" max="1000" step="1" value="250"></label></div><div id="hrResult" class="result" aria-live="polite"></div><div id="hrDetail"></div><button id="hrSetVolume">逆算容積を入力へ反映</button><p class="caption">有効長、空洞の代表寸法が波長に比べて大きいと集中定数近似は悪くなる。非円孔、多孔、柔壁、強い損失には別モデルが必要。</p>`;
+let targetVolume=NaN;
+function helmholtz(){let c=num('#hrC',250,450),d=num('#hrD',.1,100)/1000,l=num('#hrL',0,500)/1000,v=num('#hrV',.01,100000)*1e-6,b=num('#hrBeta',0,3),tar=num('#hrTarget',20,1000);let le=l+b*d/2;targetVolume=NaN;if(![c,d,l,v,b,tar].every(Number.isFinite)||le<=0){$('#hrResult').textContent='範囲内の数値を入力し、有効ネック長を0より大きくしてください。';$('#hrDetail').innerHTML='';$('#hrSetVolume').disabled=true;return}const A=Math.PI*d*d/4,f=c/(2*Math.PI)*Math.sqrt(A/(v*le));targetVolume=A/(le*(2*Math.PI*tar/c)**2)*1e6;$('#hrResult').textContent=`共鳴周波数 ≈ ${fmt(f,1)} Hz`;$('#hrDetail').innerHTML=`<p>有効ネック長：<b>${fmt(le*1000,2)} mm</b><br>目標 ${fmt(tar,0)} Hz に必要な容積：<b>${fmt(targetVolume,2)} cm³</b><br>容積を半分にした場合：<b>${fmt(f*Math.SQRT2,1)} Hz</b><br>現在周波数の1/4波長：<b>${fmt(c/(4*f)*1000,1)} mm</b></p>${f>1000?'<p class="error">計算結果は本書の主対象1000 Hz以下の範囲外です。</p>':''}`;$('#hrSetVolume').disabled=!(targetVolume>=.01&&targetVolume<=100000)}
+['#hrC','#hrD','#hrL','#hrV','#hrBeta','#hrTarget'].forEach(s=>$(s).addEventListener('input',helmholtz));$('#hrSetVolume').onclick=()=>{if(Number.isFinite(targetVolume)){$('#hrV').value=targetVolume.toFixed(4);helmholtz()}};helmholtz();
+const checks=['運転点ごとの狭帯域スペクトルを確認した','音源・伝達経路・放射面を仮説として記録した','吸音率・TL・ILのどれを目標にするか決めた','目標帯域、閾値、平均方法を明記した','従来材・シール・防振などの比較案を用意した','総厚さ、面積、正味空気容積を計算した','音速・端補正・損失・壁剛性の仮定を記録した','単一セルの実測で共鳴と損失を確かめた','配列の結合と有限サイズを確認した','反射・透過・散逸のエネルギー収支を確認した','通風時の圧損・風量・再生騒音を測った','同回転数・同風量・同能力の比較を区別した','実機の複数方向または音響パワーを評価した','温度・寸法公差・支持条件の感度を調べた','量産相当の材質・粗さ・接合で試作した','結露・排水・汚れ・清掃を検討した','耐久前後の周波数・ピーク・帯域を比較した','検査で検出する故障モードを決めた','部品費・工程費・検査費を見積もった','失敗案を含む条件と生データを保存した'];
+$('#checklist').innerHTML='<p class="check-status" id="checkStatus"></p>'+checks.map((t,i)=>`<label class="check-row"><input type="checkbox" id="check${i}"><span>${i+1}. ${t}</span></label>`).join('');
+function checkStatus(){let n=checks.filter((_,i)=>$('#check'+i).checked).length;$('#checkStatus').textContent=`${n} / ${checks.length} 項目を確認`}
+checks.forEach((t,i)=>{let el=$('#check'+i);el.checked=storage.get('acoustic-check-'+i)==='true';el.onchange=()=>{storage.set('acoustic-check-'+i,String(el.checked));checkStatus()}});checkStatus();
+$('#hrDiagram').innerHTML=`<svg viewBox="0 0 680 300" role="img" aria-label="ヘルムホルツ共鳴器の断面模式図。首部の空気が質量、空洞内の空気がばねに対応する。"><title>Helmholtz共鳴器：本書作成の模式図、縮尺なし</title><defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10z" fill="#007b74"/></marker></defs><path d="M235 75H305V125H430V265H120V125H235Z" fill="var(--paper)" stroke="var(--ink)" stroke-width="9"/><path d="M239 75H301" stroke="var(--paper)" stroke-width="12"/><rect x="244" y="80" width="52" height="50" fill="#c0e5dc"/><path d="M270 28V150" stroke="#007b74" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/><text x="315" y="42">音の往復運動</text><text x="470" y="102">ネック：慣性</text><path d="M455 98H310" stroke="var(--muted)"/><text x="470" y="129">断面積 A ／ 有効長 Lₑ</text><text x="195" y="201">キャビティ：ばね</text><text x="220" y="230">正味容積 V</text><text x="21" y="36">断面模式図</text></svg><figcaption>図1　本書作成。首部の空気が動き、空洞の空気が圧縮される。有効長は端の外側の慣性も含む。壁・支持・背後条件は実物ごとに指定する。</figcaption>`;
+$('#unitDiagram').innerHTML=`<svg viewBox="0 0 680 430" role="img" aria-label="室外機の空気伝搬と構造伝搬の模式図。圧縮機とファンから、開口と筐体へ至る経路を区別する。"><title>室外機の経路診断：本書作成の模式図、縮尺なし</title><defs><marker id="arrAir" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#007b74"/></marker><marker id="arrVib" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#bd7037"/></marker></defs><rect x="75" y="65" width="470" height="270" rx="8" fill="var(--paper)" stroke="var(--ink)" stroke-width="3"/><rect x="95" y="97" width="35" height="207" fill="var(--tint)" stroke="var(--muted)"/><text x="78" y="45">吸込・熱交換器</text><rect x="200" y="205" width="90" height="102" rx="20" fill="var(--tint)" stroke="var(--ink)" stroke-width="2"/><text x="209" y="248">圧縮機</text><text x="205" y="275">空気音＋振動</text><circle cx="436" cy="167" r="62" fill="var(--tint)" stroke="var(--ink)" stroke-width="2"/><path d="M436 113V221M382 167H490" stroke="var(--ink)" stroke-width="8"/><text x="415" y="172">ファン</text><path d="M20 156H70M137 156H345M502 156H636" stroke="#007b74" stroke-width="4" marker-end="url(#arrAir)"/><text x="565" y="128">吹出口</text><path d="M245 203V140H345" stroke="#007b74" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#arrAir)"/><path d="M243 310V335H540V274" stroke="#bd7037" stroke-width="4" marker-end="url(#arrVib)"/><path d="M285 285H327V90H527" stroke="#bd7037" stroke-width="3" stroke-dasharray="6 5" marker-end="url(#arrVib)"/><text x="346" y="287">配管・支持→筐体</text><rect x="158" y="337" width="45" height="19" fill="var(--muted)"/><rect x="441" y="337" width="45" height="19" fill="var(--muted)"/><path d="M80 390H120" stroke="#007b74" stroke-width="4"/><text x="132" y="395">空気伝搬・主風路</text><path d="M365 390H405" stroke="#bd7037" stroke-width="4"/><text x="418" y="395">構造伝搬</text></svg><figcaption>図2　配置を簡略化した概念図。実機の構成や流れを再現する図ではない。空気音対策と支持・配管・板の振動対策を分けて診断する。</figcaption>`;
+updateProgress();
+})();
+</script></body></html>
