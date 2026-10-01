@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>仕事にはフローとループの2種類がある</title>
+<style>
+:root{
+  --bg:#f5f7f8;
+  --paper:#ffffff;
+  --text:#1d252c;
+  --muted:#66727d;
+  --line:#dce3e8;
+  --accent:#176b87;
+  --accent2:#0f4c5c;
+  --soft:#eef7fa;
+  --warn:#fff7e8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.9;
+}
+main{
+  width:min(920px, calc(100% - 32px));
+  margin:42px auto;
+  background:var(--paper);
+  padding:clamp(28px,6vw,72px);
+  box-shadow:0 8px 28px rgba(20,35,45,.08);
+  border-radius:18px;
+}
+header{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:38px}
+h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.22;margin:0 0 16px;letter-spacing:.01em}
+.subtitle{font-size:1.08rem;color:var(--muted);margin:0}
+h2{font-size:1.6rem;line-height:1.4;margin:52px 0 18px;padding-left:14px;border-left:5px solid var(--accent)}
+h3{font-size:1.18rem;margin:30px 0 10px}
+p{margin:0 0 1.15em}
+strong{color:#102f39}
+blockquote{
+  margin:28px 0;
+  padding:18px 22px;
+  background:var(--soft);
+  border-left:5px solid var(--accent);
+  font-size:1.08rem;
+}
+.key{
+  margin:28px 0;
+  padding:22px;
+  background:linear-gradient(135deg,#eff8fb,#f8fbfc);
+  border:1px solid #cfe4eb;
+  border-radius:14px;
+}
+.key p:last-child{margin-bottom:0}
+.diagram{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:18px;
+  margin:28px 0;
+}
+.box{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:20px;
+  background:#fbfcfd;
+}
+.box h3{margin-top:0;color:var(--accent2)}
+.flowline{
+  font-weight:700;
+  letter-spacing:.02em;
+  color:#273943;
+  padding:10px 0;
+}
+table{border-collapse:collapse;width:100%;margin:25px 0;font-size:.96rem}
+th,td{border:1px solid var(--line);padding:12px 14px;vertical-align:top}
+th{background:#f0f5f7;text-align:left}
+.note{
+  background:var(--warn);
+  border:1px solid #efdeb4;
+  padding:16px 20px;
+  border-radius:12px;
+  margin:24px 0;
+}
+.small{font-size:.91rem;color:var(--muted)}
+.refs{padding-left:1.2em}
+.refs li{margin-bottom:14px}
+a{color:var(--accent);word-break:break-word}
+footer{margin-top:50px;border-top:1px solid var(--line);padding-top:22px;color:var(--muted);font-size:.9rem}
+@media(min-width:760px){
+  .diagram{grid-template-columns:1fr 1fr}
+}
+@media print{
+  body{background:white}
+  main{box-shadow:none;margin:0;width:100%;border-radius:0}
+  a{color:inherit}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>仕事にはフローとループの2種類がある</h1>
+  <p class="subtitle">設計変更から考える、「前へ送る仕事」と「結果を戻して閉じる仕事」</p>
+</header>
+
+<p>仕事の手順を整理しようとすると、私たちはまず「フロー」を描く。</p>
+
+<p>申請する。承認する。次の部署へ回す。処理する。そして完了する。</p>
+
+<p>業務フロー、承認フロー、開発フロー、出荷フロー。会社の中には無数のフローがある。フローは便利だ。誰が何をするか、どの順番で進めるか、今どこまで進んでいるかを明確にできる。</p>
+
+<p>しかし、実際の仕事を眺めていると、それだけでは説明できない仕事がある。</p>
+
+<blockquote>仕事には「前へ送る仕事」と、「結果を戻して収束させる仕事」がある。</blockquote>
+
+<p>この記事では、前者を<strong>フロー</strong>、後者を<strong>ループ</strong>と呼ぶ。</p>
+
+<div class="note">
+<strong>先に断っておく。</strong>「仕事はフロー型とループ型に二分できる」という分類自体が、経営学や品質管理で確立された正式な二分類というわけではない。本稿は、業務プロセス管理、PDCA、フィードバック制御、Engineering Change Management、Lean Product Development、System Dynamicsなどに存在する考え方を、実務上使いやすい一つの軸に再整理したものである。
+</div>
+
+<h2>1. フローは仕事を前へ進める</h2>
+
+<p>フロー型の仕事は基本的に一方向である。</p>
+
+<div class="box">
+  <div class="flowline">起案 → 確認 → 承認 → 実行 → 完了</div>
+</div>
+
+<p>経費精算などは分かりやすい。本人が申請し、上司が承認し、経理が処理する。差し戻しはあり得るが、基本的な目的は処理を前へ送り、最終状態へ到達させることである。</p>
+
+<p>この種の仕事で重要なのは、「今どこにあるか」だ。申請中なのか、承認待ちなのか、処理済みなのか。つまり状態遷移の管理である。</p>
+
+<p>もちろんフローは悪くない。定型業務には非常に強い。順番、責任者、入口と出口、承認条件を明確にすることによって、仕事を安定して流せる。</p>
+
+<h2>2. ループは結果を戻す</h2>
+
+<p>一方、ループ型の仕事では、何かを相手へ渡した時点では終わらない。</p>
+
+<div class="box">
+  <div class="flowline">行動 → 結果 → フィードバック → 判断修正 → 再行動 → … → 収束</div>
+</div>
+
+<p>相手から結果が返ってくる。その結果によって、こちらの判断や行動が変わる。必要ならもう一度実行する。それを問題が閉じるまで繰り返す。</p>
+
+<p>品質管理の代表的なPDCAも、この構造を持っている。ISO/TC 176によるISO 9001のプロセスアプローチ解説では、PDCAをプロセスとシステムを管理する道具とし、Plan、Do、Check、Actを継続的改善のサイクルとして説明している。ASQもPDCAについて、円に終わりがないように、継続的改善のため繰り返すものとしている。<sup><a href="#ref1">[1]</a></sup><sup><a href="#ref2">[2]</a></sup></p>
+
+<p>重要なのは、単なる「反復」ではない。</p>
+
+<p><strong>結果を観測し、その結果によって次の行動を変える。</strong></p>
+
+<p>ここにループの本質がある。</p>
+
+<h2>3. 設計変更は典型的なループ型業務である</h2>
+
+<p>設計変更を考えると、この違いがはっきりする。</p>
+
+<p>たとえば開発部門が「この部品を変更します」と品質保証、調達、製造、サービスへ連絡する。</p>
+
+<p>これをフローだけで表せば、</p>
+
+<div class="box">
+  <div class="flowline">開発 → 品質保証 → 調達 → 製造 → サービス</div>
+</div>
+
+<p>となるかもしれない。</p>
+
+<p>しかし現実には、そこで終わらない。</p>
+
+<p>調達から「旧品在庫が300個残っている」と返ってくる。製造から「この変更では治具も変更する必要がある」と返ってくる。品質保証から「追加の耐久評価が必要だ」と返ってくる。サービスから「旧品との互換性を確認してほしい」と返ってくる。</p>
+
+<p>すると開発側も動く。</p>
+
+<p>切替時期を変える。設計を修正する。試験条件を追加する。旧品の処置方法を決める。そして再び関係部門へ確認する。</p>
+
+<p>これは一方向の伝達ではない。</p>
+
+<p><strong>変更によって組織の各所に生じた影響が戻ってきて、その情報によって変更計画そのものが更新される。</strong></p>
+
+<p>まさにループである。</p>
+
+<h2>4. 設計変更研究でも「feedback is essential」</h2>
+
+<p>この考え方は、単なる比喩ではない。</p>
+
+<p>BalcerakとDaleによる1992年のEngineering Change研究では、Eaton Corporationのトラック用トランスミッション部門を対象に設計変更管理を調査している。その主要な知見の一つとして、著者らは<strong>engineering change procedureの成功にはfeedbackが不可欠</strong>だとしている。さらに、変更の影響と緊急性による分類、effectivity date（変更実施時点）を複数要因から判断する必要性なども指摘している。<sup><a href="#ref3">[3]</a></sup></p>
+
+<p>設計変更は、開発が「変更したのでよろしく」と出す一方向の通達だけでは完成しない。</p>
+
+<p>受け取った側で何が起きたのか。</p>
+
+<p>変更可能なのか。在庫はどうなるのか。製造上の追加処置は必要か。品質上の懸念はないか。サービスへの影響はないか。</p>
+
+<p>その情報が変更を起案した側へ戻らなければ、変更管理は閉じない。</p>
+
+<h2>5. 設計変更登録書を「結果報告書」から「ループ開始票」へ</h2>
+
+<p>ここから、設計変更登録書の位置づけも変わってくる。</p>
+
+<p>よくある運用はこうである。</p>
+
+<div class="box">
+  <div class="flowline">関係部門と事前調整 → ほぼ全部決める → 設計変更登録書を作る → 回覧・承認</div>
+</div>
+
+<p>もちろん事前調整は必要である。しかし、これを徹底しすぎると、正式文書が単なる「調整済み事項の確認票」になる。</p>
+
+<p>それでは文書が管理しているのは結論だけである。</p>
+
+<p>誰からどんな懸念が返ってきたのか。何が未解決なのか。誰がいつまでに処置するのか。追加評価によって何が変わったのか。こうした変更管理の核心部分が、正式な管理対象の外側で処理されやすくなる。</p>
+
+<p>そこで発想を逆にする。</p>
+
+<blockquote>設計変更登録書は、すべての調整が終わった後に回覧する文書ではなく、変更管理ループをオープンする文書である。</blockquote>
+
+<p>登録書を発行したら、関係部門が影響を評価する。必要なアクション、担当者、期限、完了条件を明確にする。結果を返す。それを起案部門・品質保証部門が確認し、必要なら条件を修正する。</p>
+
+<p>そして必要な処置がすべて完了したことを確認して初めて、案件をクローズする。</p>
+
+<table>
+<thead>
+<tr><th>従来型の見方</th><th>ループ型の見方</th></tr>
+</thead>
+<tbody>
+<tr><td>調整結果を記録する書類</td><td>調整を開始し管理する案件票</td></tr>
+<tr><td>発行前にほぼすべて決める</td><td>未解決事項も管理対象にする</td></tr>
+<tr><td>押印・承認が中心</td><td>アクション・期限・回答・結果が中心</td></tr>
+<tr><td>発行・承認がゴールに近い</td><td>発行はループの開始</td></tr>
+<tr><td>通知したかを確認する</td><td>問題が閉じたかを確認する</td></tr>
+</tbody>
+</table>
+
+<h2>6. 「通知済み」と「ループが閉じた」は違う</h2>
+
+<p>ここには非常に大きな違いがある。</p>
+
+<p>「関係部署へ連絡済み」でも、仕事は終わっていない。</p>
+
+<p>メールを送った。会議で説明した。PDMで配信した。回覧印をもらった。</p>
+
+<p>これらはすべて情報伝達の証拠ではある。しかし、変更による影響が処置された証拠とは限らない。</p>
+
+<div class="key">
+<p><strong>フロー管理では「書類がどこまで進んだか」を見る。</strong></p>
+<p><strong>ループ管理では「未解決事項が本当に閉じたか」を見る。</strong></p>
+</div>
+
+<p>旧部品がまだ倉庫に残っている。仕入先の切替が終わっていない。作業標準が更新されていない。治具ができていない。サービス部品の互換性が未確認である。</p>
+
+<p>この状態でシステム上の案件だけが「完了」になっているなら、書類は閉じていても仕事は閉じていない。</p>
+
+<h2>7. 良いループと悪い「手戻り」は違う</h2>
+
+<p>ここで誤解しやすい点がある。</p>
+
+<p>ループが重要だからといって、仕事が何度も後戻りすればよいわけではない。</p>
+
+<p>Lean Product Developmentでは、開発を知識獲得の活動として扱い、LAMDA（Look, Ask, Model, Discuss, Act）のような学習サイクルが用いられる。観察し、問い、モデル化し、議論し、行動して理解を検証する。<sup><a href="#ref4">[4]</a></sup></p>
+
+<p>これは意図的に早く回すループである。</p>
+
+<p>一方、後工程まで問題を送り込み、そこで発覚して大量のやり直しが起きるのは単なる手戻りである。</p>
+
+<table>
+<thead>
+<tr><th>良いループ</th><th>悪い手戻り</th></tr>
+</thead>
+<tbody>
+<tr><td>早い段階で情報を返す</td><td>問題を後工程まで持ち越す</td></tr>
+<tr><td>学習のために意図して回す</td><td>見落としによって戻る</td></tr>
+<tr><td>一周するたび不確実性が減る</td><td>一周するたび工数だけ増える</td></tr>
+<tr><td>収束条件がある</td><td>終わり方が曖昧</td></tr>
+</tbody>
+</table>
+
+<p>したがってループ型業務の設計では、「戻りをなくす」のではなく、<strong>戻すべき情報をできるだけ早く戻す</strong>ことが重要になる。</p>
+
+<h2>8. なぜ「ループ」は見落とされるのか</h2>
+
+<p>フローは目に見えやすい。</p>
+
+<p>組織図にも描ける。業務手順書にも描ける。承認システムにも実装しやすい。担当者から次の担当者へ矢印を引けばよい。</p>
+
+<p>ループは少し難しい。</p>
+
+<p>一度決めたことが戻ってくる。他部署の回答によって前提条件が変わる。結果によって、過去の判断を修正する必要が出る。</p>
+
+<p>System Dynamicsの研究では、人がこうしたフィードバック構造を十分に認識できない問題が研究されている。</p>
+
+<p>Schaffernichtは2019年、9人の企業経営者へのインタビューから得たmental modelを分析した。そのモデルには49個のfeedback loopが含まれていたが、そのうち44個は本人たちに認識されていない「dark loops」だったと報告した。著者は、ループを考慮しないことが状況判断を誤る可能性を高めるとしている。<sup><a href="#ref5">[5]</a></sup></p>
+
+<p>もちろん9人を対象とした一研究であり、「経営者一般はループを理解していない」と一般化することはできない。</p>
+
+<p>しかし、因果関係を一方向の鎖として見ることと、因果関係が戻ってくる閉ループとして見ることには、大きな認知上の違いがあることを示す例として興味深い。</p>
+
+<p>経営層でも「ループ」という考え方への理解に温度差が生じるのは不思議ではない。</p>
+
+<h2>9. 会議にもフローとループがある</h2>
+
+<p>この考え方は設計変更以外にも使える。</p>
+
+<p>報告会は比較的フロー型である。</p>
+
+<p>担当者が報告し、上位者が確認し、必要なら決裁する。</p>
+
+<p>一方、問題解決会議はループ型である。</p>
+
+<p>仮説を立てる。調査する。結果を持ち寄る。新しい疑問が生じる。追加検証する。再び集まる。</p>
+
+<p>問題が解けるまで続く。</p>
+
+<p>ここを混同すると、「会議を開催したので対応完了」という妙な状態が生まれる。</p>
+
+<p>会議は終わった。しかし問題は終わっていない。</p>
+
+<h2>10. 開発そのものがループである</h2>
+
+<p>開発も本質的にはループの連続である。</p>
+
+<div class="box">
+  <div class="flowline">設計 → 試作 → 評価 → 問題発見 → 修正 → 再評価</div>
+</div>
+
+<p>一回の設計で正解を当てることが目的ではない。</p>
+
+<p>不確実なものについて仮説を立て、現物や解析によって結果を得て、その結果から次の判断を更新する。</p>
+
+<p>Lean Enterprise Instituteが紹介するLAMDAも、開発組織における継続的で実質的な学習を促すためのサイクルとして整理されている。<sup><a href="#ref4">[4]</a></sup></p>
+
+<p>品質改善、不具合解析、顧客との仕様調整、人材育成なども同じである。</p>
+
+<p>難しい仕事ほど、一回通過すれば終わるフローではなく、観測と修正を繰り返すループになる。</p>
+
+<h2>11. 業務設計で最初に問うべきこと</h2>
+
+<p>仕事を標準化するとき、私たちはすぐに「フロー図を書こう」と考える。</p>
+
+<p>しかし、その前に一つ問いを置いた方がよい。</p>
+
+<blockquote>これは、本当にフローだけで管理できる仕事なのか。</blockquote>
+
+<p>フロー型なら、順序、責任者、期限、承認条件を明確にすればよい。</p>
+
+<p>ループ型なら、それだけでは不足する。</p>
+
+<p>何を相手へ渡すのか。相手は何を評価するのか。何を回答として返すのか。回答期限はいつか。結果を受け取る責任者は誰か。結果によって何を再判断するのか。どんな状態になればループを閉じてよいのか。</p>
+
+<p>そこまで決めなければならない。</p>
+
+<h2>12. フローは進捗を管理し、ループは未解決事項を管理する</h2>
+
+<p>結局、両者の違いはここに集約できると思う。</p>
+
+<div class="diagram">
+  <div class="box">
+    <h3>フロー</h3>
+    <p>「今どこまで進んだか」を管理する。</p>
+    <p>順番・担当・承認・状態遷移が中心。</p>
+  </div>
+  <div class="box">
+    <h3>ループ</h3>
+    <p>「何がまだ閉じていないか」を管理する。</p>
+    <p>結果・フィードバック・再判断・収束条件が中心。</p>
+  </div>
+</div>
+
+<p>両方必要である。</p>
+
+<p>問題なのは、ループで管理すべき仕事をフローだけで管理してしまうことである。</p>
+
+<p>設計変更登録書を回した。承認印がそろった。PDMで配信した。</p>
+
+<p>それだけで安心してはいけない。</p>
+
+<p>変更によって発生した問いに、関係部門は答えたのか。その回答によって必要な追加対応は行われたのか。旧品、在庫、製造、品質、サービス、帳票は本当に変更後の状態へ遷移したのか。</p>
+
+<p>そして最後に問う。</p>
+
+<blockquote>書類が閉じたのか。それとも、仕事が閉じたのか。</blockquote>
+
+<p>フローは仕事を前へ進める。</p>
+
+<p>ループは仕事を収束させる。</p>
+
+<p>この二つを意識して区別するだけでも、業務設計の見え方はかなり変わる。</p>
+
+<h2>参考文献</h2>
+<ol class="refs">
+  <li id="ref1">
+    ISO/TC 176/SC 2, <em>The process approach in ISO 9001:2015</em>. ISO. 
+    <a href="https://www.iso.org/files/live/sites/isoorg/files/archive/pdf/en/iso9001-2015-process-appr.pdf">ISO公式PDF</a>.
+    <div class="small">プロセスの相互関係、PDCAによるプロセス／システム管理、継続的改善について参照。</div>
+  </li>
+  <li id="ref2">
+    American Society for Quality (ASQ), <em>PDCA Cycle - What is the Plan-Do-Check-Act Cycle?</em>.
+    <a href="https://asq.org/quality-resources/pdca-cycle">ASQ</a>.
+    <div class="small">PDCAを継続的改善のため反復するサイクルとして説明。</div>
+  </li>
+  <li id="ref3">
+    Balcerak, K. J. &amp; Dale, B. G. (1992), “Engineering change administration: the key issues,”
+    <em>Computer Integrated Manufacturing Systems</em>, Vol. 5, Issue 2, pp. 125–132.
+    DOI: <a href="https://doi.org/10.1016/0951-5240(92)90007-Y">10.1016/0951-5240(92)90007-Y</a>.
+    <div class="small">Engineering Change手順の成功にfeedbackが不可欠であるという知見などを参照。</div>
+  </li>
+  <li id="ref4">
+    Lean Enterprise Institute, <em>LAMDA Cycle</em>.
+    <a href="https://www.lean.org/lexicon-terms/lamda-cycle/">Lean Enterprise Institute</a>.
+    <div class="small">Look, Ask, Model, Discuss, Actによる製品・プロセス開発の学習サイクルについて参照。</div>
+  </li>
+  <li id="ref5">
+    Schaffernicht, M. (2019), “Unrecognized interdependencies in mental models—The case for taking feedback loops into account,”
+    <em>Systems Research and Behavioral Science</em>, 36(4), 580–603.
+    DOI: <a href="https://doi.org/10.1002/sres.2572">10.1002/sres.2572</a>.
+    <div class="small">経営者のmental modelに含まれる未認識のfeedback loop（dark loops）の分析を参照。</div>
+  </li>
+</ol>
+
+<h2>文献との関係について</h2>
+
+<p>本稿の「フロー／ループ」という二分法は、上記文献が直接提示している分類ではない。</p>
+
+<p>ISO 9001のプロセスアプローチとPDCAは、相互依存するプロセスを測定・改善する循環構造を示す。Engineering Change Management研究は、設計変更管理におけるfeedbackの重要性を示す。Lean Product Developmentは開発を学習サイクルとして捉える。System Dynamicsは、人がfeedback loopを認識し損なう問題を扱う。</p>
+
+<p>本稿はこれらを横断し、実務上の観察として、<strong>「前へ送ることを中心とする仕事」と「結果を戻して判断を更新し、収束させる仕事」</strong>という軸で再整理したものである。</p>
+
+<footer>
+  <p>作成日：2026年10月1日</p>
+  <p>テーマ：業務設計／設計変更管理／品質管理／システム思考</p>
+</footer>
+
+</main>
+</body>
+</html>
