@@ -3,134 +3,109 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="構造設計、音響、業務設計を学ぶ技術資料の一覧。樹脂ねじ締結と音響メタマテリアルの教科書、仕事のフローとループに関する記事を収録。">
+  <meta name="description" content="k-380/business リポジトリで公開しているHTML技術資料のリンク集。構造設計、音響、防音、業務設計の教材・記事をまとめています。">
   <meta name="theme-color" content="#173b44">
-  <title>技術資料と教科書 | business</title>
+  <title>business HTMLリンク集</title>
   <style>
-    :root { color-scheme: light; --ink:#20363d; --muted:#63777d; --accent:#126d76; --line:#d7e2e1; --paper:#fff; }
-    * { box-sizing:border-box; }
-    body { margin:0; color:var(--ink); background:#f1f5f3; font-family:system-ui,-apple-system,"Noto Sans JP","Yu Gothic",Meiryo,sans-serif; line-height:1.8; }
-    a { color:inherit; text-underline-offset:4px; }
-    a:focus-visible { outline:3px solid #b57a28; outline-offset:5px; }
-    .skip { position:absolute; top:-70px; left:15px; padding:10px; z-index:2; background:white; }
-    .skip:focus { top:10px; }
-    .wrap { max-width:1060px; margin:auto; padding:0 32px; }
-    .masthead { display:flex; align-items:center; justify-content:space-between; padding-top:28px; padding-bottom:28px; border-bottom:1px solid var(--line); gap:20px; }
-    .brand { font-size:13px; letter-spacing:.15em; font-weight:750; }
-    .repo { color:var(--muted); font-size:13px; }
-    .intro { padding:64px 0 42px; }
-    .eyebrow { color:var(--accent); letter-spacing:.15em; font-weight:700; font-size:12px; margin:0 0 17px; }
-    h1 { font-size:clamp(30px,5vw,48px); letter-spacing:.025em; line-height:1.45; margin:0 0 20px; font-weight:750; }
-    .intro p:last-child { max-width:690px; color:var(--muted); font-size:16px; margin:0; }
-    .list-heading { display:flex; justify-content:space-between; align-items:center; gap:15px; padding:0 0 17px; }
-    .list-heading h2 { font-size:16px; margin:0; }
-    .count { color:var(--muted); font-size:13px; }
-    .list { list-style:none; margin:0; padding:0; display:grid; gap:16px; }
-    .card { display:grid; grid-template-columns:68px minmax(0,1fr) 32px; gap:24px; padding:30px; border:1px solid var(--line); border-radius:12px; text-decoration:none; background:var(--paper); transition:border-color .15s,box-shadow .15s; }
-    .card:hover { border-color:#7ca2a2; box-shadow:0 6px 22px #1e474c0b; }
-    .number { font:36px/1.4 Georgia,serif; color:#aec4c4; border-top:3px solid var(--line); padding-top:10px; }
-    .featured .number { border-color:#bc843a; color:#a76f28; }
-    .meta { display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:12px; color:var(--accent); font-weight:650; }
-    .tag { background:#edf5f2; border-radius:4px; padding:2px 8px; }
-    .new { background:#fbf1de; color:#93641f; }
-    h3 { font-size:22px; line-height:1.6; margin:12px 0 8px; font-weight:700; }
-    .subtitle { display:block; font-size:15px; font-weight:500; margin-top:4px; color:#405d65; }
-    .description { font-size:14px; color:var(--muted); margin:12px 0 15px; }
-    .filename { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:11px; color:#6a8085; overflow-wrap:anywhere; }
-    .arrow { color:var(--accent); font-size:23px; align-self:center; }
-    .read { font-size:13px; color:var(--accent); display:block; margin:12px 0 0; font-weight:650; }
-    .note { font-size:13px; color:var(--muted); margin:26px 0 46px; }
-    footer { border-top:1px solid var(--line); padding:23px 0 32px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; color:var(--muted); font-size:12px; }
-    @media(max-width:600px) {
-      .wrap { padding:0 20px; }
-      .masthead { padding:20px 0; }
-      .brand { font-size:11px; letter-spacing:.08em; }
-      .repo { font-size:12px; }
-      .intro { padding:40px 0 32px; }
-      .intro p:last-child { font-size:14px; }
-      .card { grid-template-columns:34px minmax(0,1fr); gap:15px; padding:22px 18px; }
-      .number { font-size:25px; }
-      .arrow { display:none; }
-      h3 { font-size:19px; }
-      .subtitle { font-size:14px; }
-      .description { font-size:13px; }
-      .filename { font-size:10px; }
-    }
-    @media(prefers-reduced-motion:reduce) { .card { transition:none; } }
-    @media print {
-      body { background:white; }
-      .wrap { max-width:none; padding:0; }
-      .skip,.repo,.arrow { display:none; }
-      .intro { padding:25px 0; }
-      .card { break-inside:avoid; box-shadow:none; }
+    :root{--ink:#20363d;--muted:#667a80;--accent:#126d76;--line:#d7e2e1;--paper:#fff;--bg:#f1f5f3}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans JP","Yu Gothic",Meiryo,sans-serif;line-height:1.8}
+    a{color:inherit;text-underline-offset:4px}
+    a:focus-visible{outline:3px solid #b57a28;outline-offset:4px}
+    .wrap{max-width:980px;margin:auto;padding:0 28px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:26px 0;border-bottom:1px solid var(--line)}
+    .brand{font-size:13px;font-weight:750;letter-spacing:.13em}
+    .repo{font-size:13px;color:var(--muted)}
+    main{padding:62px 0 70px}
+    .eyebrow{margin:0 0 14px;color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.16em}
+    h1{margin:0;font-size:clamp(32px,6vw,50px);line-height:1.35}
+    .lead{max-width:690px;margin:18px 0 42px;color:var(--muted)}
+    .summary{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:14px}
+    h2{margin:0;font-size:17px}
+    .count{font-size:13px;color:var(--muted)}
+    ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+    li{border-bottom:1px solid var(--line)}
+    .item{display:grid;grid-template-columns:58px minmax(0,1fr) auto;gap:20px;align-items:center;padding:24px 6px;text-decoration:none}
+    .item:hover .title{text-decoration:underline}
+    .no{font:30px/1 Georgia,serif;color:#9db6b8}
+    .meta{font-size:12px;color:var(--accent);font-weight:650}
+    .title{display:block;margin:5px 0 4px;font-size:20px;font-weight:750;line-height:1.55}
+    .desc{display:block;color:var(--muted);font-size:14px}
+    .file{display:block;margin-top:7px;color:#7b8d91;font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+    .arrow{font-size:22px;color:var(--accent)}
+    .note{margin:30px 0 0;color:var(--muted);font-size:13px}
+    footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px 0 30px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+    @media(max-width:620px){
+      .wrap{padding:0 19px}
+      header{padding:19px 0}.brand{font-size:11px}.repo{font-size:12px}
+      main{padding:40px 0 50px}.lead{font-size:14px;margin-bottom:32px}
+      .item{grid-template-columns:34px minmax(0,1fr);gap:13px;padding:22px 0}
+      .no{font-size:23px}.arrow{display:none}.title{font-size:18px}.desc{font-size:13px}
     }
   </style>
 </head>
 <body>
-  <a class="skip" href="#documents">資料一覧へ移動</a>
   <div class="wrap">
-    <header class="masthead">
-      <div class="brand">BUSINESS / KNOWLEDGE NOTES</div>
-      <a class="repo" href="https://github.com/k-380/business">GitHub ↗</a>
+    <header>
+      <div class="brand">BUSINESS / HTML LIBRARY</div>
+      <a class="repo" href="https://github.com/k-380/business">GitHub リポジトリ ↗</a>
     </header>
+
     <main>
-      <div class="intro">
-        <p class="eyebrow">ENGINEERING &amp; WORK DESIGN</p>
-        <h1>技術資料と教科書</h1>
-        <p>設計の原理を理解し、現物と仕事につなげる。<br>構造設計・音響・業務設計について、ブラウザで読める資料をまとめました。</p>
-      </div>
-      <section id="documents" aria-labelledby="documents-title">
-        <div class="list-heading">
-          <h2 id="documents-title">HTML資料一覧</h2>
-          <span class="count">全3件</span>
+      <p class="eyebrow">ENGINEERING NOTES &amp; TEXTBOOKS</p>
+      <h1>business リンク集</h1>
+      <p class="lead">business リポジトリで公開している、ブラウザでそのまま読めるHTML資料をまとめています。技術教科書から業務設計の記事まで、入口をここに集約します。</p>
+
+      <section aria-labelledby="html-list-title">
+        <div class="summary">
+          <h2 id="html-list-title">HTML資料</h2>
+          <span class="count">3 pages</span>
         </div>
-        <ul class="list">
+        <ul>
           <li>
-            <a class="card featured" href="./resin_screw_fastening_textbook.html">
-              <span class="number" aria-hidden="true">01</span>
-              <div>
-                <div class="meta"><span class="tag">構造設計</span><span>教科書</span><span class="tag new">追加</span></div>
-                <h3>樹脂に着座するねじの締結工学<span class="subtitle">着座・軸力・クリープから量産締付けまで</span></h3>
-                <p class="description">トルクと軸力の基礎から、座面設計、長期緩和、熱サイクル、量産管理まで。全14章・4付録に、例題・演習・4つの計算ツールを収録。</p>
-                <div class="filename">resin_screw_fastening_textbook.html</div>
-                <span class="read">教科書を読む →</span>
-              </div>
+            <a class="item" href="./resin_screw_fastening_textbook.html">
+              <span class="no" aria-hidden="true">01</span>
+              <span>
+                <span class="meta">構造設計 / 締結 / 教科書</span>
+                <span class="title">樹脂に着座するねじの締結工学</span>
+                <span class="desc">着座・軸力・クリープ・熱サイクル・量産締付け・軸力測定までを、全14章＋4付録で体系化。</span>
+                <span class="file">resin_screw_fastening_textbook.html</span>
+              </span>
               <span class="arrow" aria-hidden="true">↗</span>
             </a>
           </li>
           <li>
-            <a class="card" href="./acoustic_metamaterials_textbook.html">
-              <span class="number" aria-hidden="true">02</span>
-              <div>
-                <div class="meta"><span class="tag">音響・防音</span><span>教科書</span></div>
-                <h3>実用 音響メタマテリアル入門<span class="subtitle">1000 Hz以下の低周波防音</span></h3>
-                <p class="description">共鳴、有効物性、バンドギャップなどの基礎を学び、低周波防音の設計へ。局所共振、Helmholtz型、通気性を持つ構造などを実用の視点から解説。</p>
-                <div class="filename">acoustic_metamaterials_textbook.html</div>
-                <span class="read">教科書を読む →</span>
-              </div>
+            <a class="item" href="./acoustic_metamaterials_textbook.html">
+              <span class="no" aria-hidden="true">02</span>
+              <span>
+                <span class="meta">音響 / 防音 / 教科書</span>
+                <span class="title">実用 音響メタマテリアル入門</span>
+                <span class="desc">1000 Hz以下の低周波防音を中心に、共鳴・有効物性・バンドギャップから実用設計までを整理。</span>
+                <span class="file">acoustic_metamaterials_textbook.html</span>
+              </span>
               <span class="arrow" aria-hidden="true">↗</span>
             </a>
           </li>
           <li>
-            <a class="card" href="./work_flow_and_loop_article.html">
-              <span class="number" aria-hidden="true">03</span>
-              <div>
-                <div class="meta"><span class="tag">業務設計</span><span>解説記事</span></div>
-                <h3>仕事にはフローとループの2種類がある</h3>
-                <p class="description">仕事を前へ進めるフローと、結果を戻して確かめるループ。設計変更、会議、開発を題材に、進捗と未解決事項の管理を考える。</p>
-                <div class="filename">work_flow_and_loop_article.html</div>
-                <span class="read">記事を読む →</span>
-              </div>
+            <a class="item" href="./work_flow_and_loop_article.html">
+              <span class="no" aria-hidden="true">03</span>
+              <span>
+                <span class="meta">業務設計 / 開発プロセス / 記事</span>
+                <span class="title">仕事にはフローとループの2種類がある</span>
+                <span class="desc">前へ進める仕事と、結果を戻して確かめる仕事を分けて考える。設計変更・会議・開発管理を題材にした解説。</span>
+                <span class="file">work_flow_and_loop_article.html</span>
+              </span>
               <span class="arrow" aria-hidden="true">↗</span>
             </a>
           </li>
         </ul>
-        <p class="note">各資料のカードを選ぶと本文が開きます。参考文献・数値例の前提・適用範囲は各資料内に記載しています。</p>
+        <p class="note">新しいHTML資料を追加したときは、このページを入口として追記していく想定です。</p>
       </section>
     </main>
+
     <footer>
       <span>k-380 / business</span>
-      <span>一覧更新：<time datetime="2026-10-03">2026年10月3日</time></span>
+      <span>更新：<time datetime="2026-10-03">2026年10月3日</time></span>
     </footer>
   </div>
 </body>
