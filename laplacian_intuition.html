@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ラプラシアンの直感的イメージ――「周囲との差」を測る演算子</title>
+<meta name="description" content="ラプラシアンを「周囲との差を測る演算子」として直感的に理解する解説。拡散、波動、ガウス分布、フーリエ空間、表面粗さまでつなげて説明します。">
+<style>
+:root{
+  --bg:#0f1115;
+  --panel:#171a21;
+  --text:#e8edf2;
+  --muted:#aab4bf;
+  --line:#2a313b;
+  --accent:#8fc8ff;
+  --accent2:#b8e3c2;
+  --warn:#ffd28c;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Yu Gothic UI","Yu Gothic","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
+  line-height:1.9;
+}
+main{max-width:900px;margin:0 auto;padding:56px 22px 88px}
+header{margin-bottom:48px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.2;margin:0 0 18px;letter-spacing:.02em}
+.subtitle{color:var(--muted);font-size:1.05rem}
+h2{margin-top:56px;font-size:1.65rem;line-height:1.4;border-left:5px solid var(--accent);padding-left:14px}
+p{margin:1em 0}
+strong{color:#fff}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:26px 0}
+.key{border-left:4px solid var(--accent2)}
+.warn{border-left:4px solid var(--warn)}
+.eq{overflow-x:auto;text-align:center;padding:10px 0}
+.summary{font-size:1.08rem}
+small,.muted{color:var(--muted)}
+code{background:#11151b;padding:.15em .35em;border-radius:5px}
+footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+@media (prefers-color-scheme: light){
+  :root{--bg:#f7f9fb;--panel:#ffffff;--text:#1b1f24;--muted:#66727e;--line:#dbe2e8;--accent:#2f7fc1;--accent2:#4d9b65;--warn:#c5892c}
+  strong{color:#111}
+  code{background:#eef2f5}
+}
+</style>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+<main>
+<header>
+  <h1>ラプラシアンの直感的イメージ</h1>
+  <div class="subtitle">「周囲との差」を測る演算子として考える</div>
+</header>
+
+<p>ラプラシアンという言葉を初めて見ると、いかにも難しそうに見える。</p>
+<div class="eq">\[\nabla^2\]</div>
+<p>実際には、3次元では</p>
+<div class="eq">\[
+\nabla^2 u
+=
+\frac{\partial^2 u}{\partial x^2}
++
+\frac{\partial^2 u}{\partial y^2}
++
+\frac{\partial^2 u}{\partial z^2}
+\]</div>
+<p>と書かれる。「空間方向の二階微分を足し合わせたもの」と説明されても、いまひとつ像が浮かばない。</p>
+
+<div class="box key summary">
+  <strong>ラプラシアンは、「その点が周囲と比べてどれくらい浮いているか」を見る演算子</strong>だと考えると、かなり分かりやすい。
+</div>
+
+<h2>まずは1次元で考える</h2>
+<p>1次元なら、ラプラシアンはただの二階微分である。</p>
+<div class="eq">\[\frac{d^2u}{dx^2}\]</div>
+<p>二階微分というと「傾きの変化」と習う。それで正しい。ただ、物理的なイメージとしては、もう少し別の見方をした方が分かりやすい。</p>
+<p>二階微分は差分で書けば、</p>
+<div class="eq">\[
+\frac{d^2u}{dx^2}
+\approx
+\frac{u(x+\Delta x)-2u(x)+u(x-\Delta x)}
+{(\Delta x)^2}
+\]</div>
+<p>となる。</p>
+<p>これは、真ん中の値 \(u(x)\) と、その左右の値を比べている。</p>
+<p>左右の平均は</p>
+<div class="eq">\[\frac{u(x+\Delta x)+u(x-\Delta x)}{2}\]</div>
+<p>なので、二階微分は本質的に、<strong>「真ん中が周囲の平均からどれだけ外れているか」</strong>を見ている。</p>
+
+<div class="box">
+  真ん中だけ盛り上がっていれば、二階微分は負。<br>
+  真ん中だけへこんでいれば、二階微分は正。<br>
+  直線的な斜面なら、傾いてはいるが周囲との差はないので、二階微分はゼロ。
+</div>
+
+<p>つまり、かなり雑に言えば、</p>
+<div class="eq">\[\text{一階微分}=\text{坂}\]</div>
+<div class="eq">\[\text{二階微分}=\text{山・谷度}\]</div>
+<p>である。</p>
+
+<h2>2次元では「地形」を考える</h2>
+<p>高さを</p>
+<div class="eq">\[z=z(x,y)\]</div>
+<p>とすると、</p>
+<div class="eq">\[
+\nabla^2 z
+=
+\frac{\partial^2 z}{\partial x^2}
++
+\frac{\partial^2 z}{\partial y^2}
+\]</div>
+<p>となる。</p>
+<p>ここで地形を考えるとよい。</p>
+
+<div class="box">
+  <strong>山の頂上</strong>では、中心が周囲より高いので、だいたい \(\nabla^2 z&lt;0\)。<br>
+  <strong>谷底</strong>では、中心が周囲より低いので、だいたい \(\nabla^2 z&gt;0\)。<br>
+  <strong>ただの斜面</strong>なら、局所的には平面に近いので、\(\nabla^2 z\approx0\)。
+</div>
+
+<p>つまりラプラシアンは、<strong>「傾いているか」ではなく「曲がっているか」</strong>を見る。</p>
+<p>さらに言えば、<strong>「その点が周囲に対して山なのか谷なのか」</strong>を見る。</p>
+
+<h2>拡散方程式を見ると意味がよく分かる</h2>
+<p>温度分布 \(T\) の拡散方程式は、</p>
+<div class="eq">\[
+\frac{\partial T}{\partial t}
+=
+D\nabla^2T
+\]</div>
+<p>と書ける。</p>
+<p>ある点だけ周囲より高温だったとする。その点は「山」なので、</p>
+<div class="eq">\[\nabla^2T&lt;0\]</div>
+<p>となり、</p>
+<div class="eq">\[\frac{\partial T}{\partial t}&lt;0\]</div>
+<p>だから、その点の温度は下がる。</p>
+<p>逆に周囲より低温なら「谷」なので、\(\nabla^2T&gt;0\) となり、温度は上がる。</p>
+
+<div class="box key">
+  ラプラシアンは、<strong>「周囲との差をならそうとする向き」</strong>を教えている。
+</div>
+
+<p>周囲より高ければ下がる。周囲より低ければ上がる。その結果、分布はなめらかになる。</p>
+
+<h2>波動方程式でも同じものが出てくる</h2>
+<p>波動方程式は、</p>
+<div class="eq">\[
+\frac{\partial^2u}{\partial t^2}
+=
+c^2\nabla^2u
+\]</div>
+<p>である。</p>
+<p>今度は左辺が時間の二階微分、つまり加速度である。</p>
+<p>だからこの式は、<strong>「空間的に山や谷になっている場所には、それを戻そうとする加速度が生じる」</strong>と読める。</p>
+<p>弦の中央を持ち上げて山を作る。山の頂点では \(\nabla^2u&lt;0\) なので、下向きの加速度が生じる。その結果、山が崩れ、周囲へ伝わっていく。これが波になる。</p>
+
+<h2>ガウス分布もラプラシアンとつながっている</h2>
+<p>拡散方程式</p>
+<div class="eq">\[
+\frac{\partial u}{\partial t}
+=
+D\nabla^2u
+\]</div>
+<p>で、初期状態を一点集中</p>
+<div class="eq">\[u(x,0)=\delta(x)\]</div>
+<p>とすると、その後はガウス分布になる。</p>
+<p>1次元なら、</p>
+<div class="eq">\[
+u(x,t)
+=
+\frac{1}{\sqrt{4\pi Dt}}
+\exp\left(
+-\frac{x^2}{4Dt}
+\right)
+\]</div>
+<p>である。</p>
+
+<div class="box key">
+  \[
+  \text{ラプラシアン}
+  \rightarrow
+  \text{拡散}
+  \rightarrow
+  \text{ガウス分布}
+  \]
+</div>
+
+<p>ラプラシアンは、尖った分布をなめらかにしていく。一点に集中していたものが時間とともに広がり、ガウス型の形になる。</p>
+
+<h2>フーリエ空間ではさらに分かりやすい</h2>
+<p>ラプラシアンをフーリエ変換すると、</p>
+<div class="eq">\[
+\nabla^2
+\longleftrightarrow
+-k^2
+\]</div>
+<p>となる。</p>
+<p>つまりラプラシアンは、波数 \(k\) の大きな成分ほど強く作用する。</p>
+<p>波数が大きいということは、細かくギザギザした成分である。</p>
+
+<div class="box">
+  <strong>ラプラシアンは細かい凹凸に敏感。</strong><br>
+  ゆっくり変化する大きなうねりには弱く、細かく急激に変化する成分には強く反応する。
+</div>
+
+<h2>表面粗さにもそのまま使える発想</h2>
+<p>表面高さを</p>
+<div class="eq">\[z=z(x,y)\]</div>
+<p>とする。</p>
+<p>すると \(\nabla^2z\) は、その表面の局所的な山や谷の鋭さを見ている。</p>
+<p>一般的な粗さ指標 \(R_a\) や \(R_q\) は、主に高さ方向のばらつきを評価する。一方、ラプラシアンは、<strong>どれだけ急に曲がっているか</strong>に敏感である。</p>
+<p>たとえば、</p>
+<div class="eq">\[z=A\sin(kx)\]</div>
+<p>なら、</p>
+<div class="eq">\[
+\frac{d^2z}{dx^2}
+=
+-Ak^2\sin(kx)
+\]</div>
+<p>となる。</p>
+<p>同じ振幅 \(A\) でも、波数 \(k\) が大きいほど二階微分は大きくなる。</p>
+<p>つまり、同じ高さの凹凸でも、<strong>大きくゆるやかなうねり</strong>と、<strong>細かく尖ったザラザラ</strong>では、ラプラシアンの値は大きく異なる。</p>
+<p>この性質は、表面粗さ、接触、摩擦、シール、疲労起点、局所変形、板金の反り、樹脂部品の形状評価などにも応用できる。</p>
+
+<div class="box warn">
+  ただし、二階微分は高周波ノイズも強く増幅する。実際の測定データに使う場合は、<strong>測定 → 平滑化・フィルタリング → ラプラシアン</strong>という順序が重要になる。
+</div>
+
+<h2>「周囲との差」という見方</h2>
+<p>ラプラシアンを抽象的な微分演算子として覚えると難しい。</p>
+<p>だが、</p>
+<div class="eq">\[\nabla^2u\]</div>
+<p>を、<strong>「その点が周囲の平均と比べてどれくらい浮いているか」</strong>と考えると、一気に分かりやすくなる。</p>
+
+<div class="box key summary">
+  山なら負。谷なら正。平面ならゼロ。<br><br>
+  一階微分が「どちらへ傾いているか」を見るものなら、二階微分、そしてラプラシアンは、<strong>「その場所がどれだけ山や谷になっているか」</strong>を見る。
+</div>
+
+<p>この感覚を一度持ってしまうと、さまざまな物理方程式の中でラプラシアンが出てきたとき、</p>
+<p><strong>「ああ、ここでは周囲との差を見ているのか」</strong></p>
+<p>と読めるようになる。</p>
+<p>そこから先は、式が少しだけ物理の言葉に見えてくる。</p>
+
+<footer>
+  <p>ラプラシアンの直感的イメージ ― 「周囲との差」を測る演算子</p>
+</footer>
+</main>
+</body>
+</html>
