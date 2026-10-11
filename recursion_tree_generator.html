@@ -1,0 +1,1275 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="迷路、ハノイの塔、フラクタル、麻雀を、再帰呼び出しの木という共通原理でつなぐ図解小冊子。全7章・図版17点・Pythonコード付き。"><meta name="theme-color" content="#236675"><title>再帰という木構造生成装置 — 迷路、ハノイの塔、フラクタル、麻雀をつなぐ数学</title><style>
+:root{--ink:#202a30;--muted:#5c6d73;--accent:#236675;--pale:#eaf2f3;--line:#d3dce0;--paper:#fff}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:30px}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;line-height:1.95;overflow-wrap:anywhere}a{color:var(--accent);text-underline-offset:4px}a:hover{color:#133e48}button,summary{cursor:pointer}button,input{font:inherit}button{color:var(--accent);background:white;border:1px solid var(--line);border-radius:6px;padding:5px 12px}button:hover{background:var(--pale)}a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #c78239;outline-offset:4px}.skip{position:absolute;left:16px;top:-100px;background:white;padding:8px;z-index:30}.skip:focus{top:10px}.topbar{max-width:1280px;margin:auto;padding:20px 32px;display:flex;justify-content:space-between;gap:20px;font-size:13px;border-bottom:1px solid var(--line)}.topbar span{color:var(--muted)}.hero{max-width:1060px;margin:auto;padding:80px 32px 72px}.eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--accent)}h1{font-size:clamp(34px,5vw,61px);line-height:1.45;letter-spacing:.035em;margin:20px 0 14px;font-weight:750}.subtitle{font-size:clamp(16px,2vw,23px);margin:0 0 30px;color:var(--muted)}.intro-line{font-size:18px;max-width:720px}.topics{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}.topics a{padding:5px 15px;border:1px solid var(--line);border-radius:30px;text-decoration:none;font-size:14px}.layout{display:grid;grid-template-columns:230px minmax(0,810px);gap:60px;max-width:1164px;margin:0 auto;padding:0 32px}.toc-wrap{position:sticky;top:20px;max-height:calc(100vh - 40px);overflow-y:auto;align-self:start;padding-right:10px;font-size:12px}.toc summary{font-weight:700;font-size:15px;padding-bottom:12px}.toc a{display:block;text-decoration:none;border-left:2px solid var(--line);padding:7px 0 7px 14px;line-height:1.6}.toc a:hover,.toc a[aria-current="location"]{border-left-color:var(--accent);background:var(--pale)}main{min-width:0;font-size:16px}.chapter{margin-bottom:82px;scroll-margin-top:30px}.chapter-heading{border-top:3px solid var(--accent);padding-top:22px;margin-bottom:35px}h2{font-size:27px;line-height:1.55;margin:8px 0 0;letter-spacing:.02em}h3{font-size:20px;line-height:1.6;margin:0 0 23px}.subsection{margin-bottom:46px;scroll-margin-top:30px}p{margin:0 0 22px;text-wrap:pretty}.summary{border-left:3px solid var(--accent);background:var(--pale);padding:18px 22px;margin:28px 0;border-radius:0 8px 8px 0}.summary strong{color:var(--accent);font-size:13px;letter-spacing:.04em}.summary p{margin:6px 0 0;font-size:15px}.citations{font-size:12px;white-space:nowrap}figure{margin:28px 0 32px;border:1px solid var(--line);border-radius:9px;padding:12px;background:white}.figure-tools{display:flex;align-items:center;justify-content:space-between;gap:15px;color:var(--muted);font-size:11px;padding:0 2px 12px}.figure-tools span{visibility:hidden}.figure-scroll{overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}.figure-scroll svg{display:block;width:100%;height:auto;min-width:500px}.wide .figure-scroll svg{min-width:980px}.wide .figure-tools span{visibility:visible}svg text{font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}figcaption{font-size:12px;color:var(--muted);line-height:1.8;padding:14px 6px 4px;border-top:1px solid #edf0f1;margin-top:10px}.code{margin:25px 0;background:#f5f7f8;border:1px solid var(--line);border-radius:8px;overflow:hidden}.code summary{padding:12px 18px;font-size:13px;color:var(--accent);font-weight:650}pre{font-size:13px;line-height:1.75;overflow-x:auto;margin:0;padding:18px;border-top:1px solid var(--line);tab-size:4}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.table-scroll{overflow-x:auto;margin:24px 0}table{border-collapse:collapse;width:100%;font-size:14px}caption{text-align:left;font-size:12px;color:var(--muted);margin-bottom:10px}th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}thead{background:var(--pale)}.refs{padding-left:30px;font-size:14px}.refs li{padding:0 0 24px 8px;scroll-margin-top:30px}.refs a,.ref-author{display:block}.refs p{font-size:12px;color:var(--muted);margin:7px 0 0}.ref-author{font-weight:650}.glossary dt{margin-top:23px;font-weight:650}.glossary dd{margin:4px 0 0;color:var(--muted);font-size:14px}.downloads{display:grid;gap:12px;margin:25px 0}.downloads a{border:1px solid var(--line);padding:14px 18px;text-decoration:none;border-radius:6px}.downloads span{display:block;color:var(--muted);font-size:12px}.small{font-size:12px;color:var(--muted)}footer{border-top:1px solid var(--line);padding:24px 32px;display:flex;justify-content:space-between;gap:20px;font-size:12px;color:var(--muted);max-width:1164px;margin:auto}dialog{width:calc(100vw - 32px);max-width:1400px;height:calc(100vh - 32px);max-height:100%;border:1px solid var(--line);border-radius:12px;padding:20px;overflow:hidden;background:white;color:var(--ink)}dialog::backdrop{background:rgba(15,30,35,.7)}.dialog-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:15px;font-size:13px}.dialog-bar label{display:flex;align-items:center;gap:10px}.dialog-scroll{height:calc(100% - 82px);overflow:auto;border:1px solid var(--line)}.dialog-scroll svg{display:block;margin:auto;max-width:none;height:auto}#figure-caption{font-size:12px;color:var(--muted);margin:8px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.dialog-open{overflow:hidden}
+@media(min-width:1400px){.layout{max-width:1300px;grid-template-columns:250px minmax(0,900px)}.hero{max-width:1200px}}@media(max-width:900px){.layout{display:block;padding:0 22px;max-width:760px}.toc-wrap{position:static;max-height:none;padding:18px 20px;background:#f5f8f9;border:1px solid var(--line);border-radius:9px;margin-bottom:45px}.toc nav{columns:2;column-gap:20px}.toc a{break-inside:avoid}.hero{padding:45px 22px}.topbar{padding:16px 22px}main{font-size:16px}h2{font-size:25px}.chapter{margin-bottom:60px}}@media(max-width:580px){.topbar span{display:none}.toc nav{columns:1}.hero{padding-top:35px}h1{font-size:36px}.intro-line{font-size:16px}.layout{padding:0 18px}h2{font-size:24px}h3{font-size:19px}.figure-tools span{visibility:visible}.figure-tools{gap:8px}figure{padding:9px;margin-left:0;margin-right:0}.summary{padding:16px}.dialog-bar label{width:100%}.dialog-scroll{height:calc(100% - 128px)}footer{display:block}footer a{display:block;margin-bottom:8px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{@page{size:A4;margin:18mm}body{font-size:10pt}.topbar,.toc-wrap,.topics,.skip,.figure-tools,.downloads,dialog,footer{display:none!important}.hero{padding:0 0 30px}.hero h1{font-size:34pt}.layout{display:block;max-width:none;padding:0}main{font-size:10pt}.chapter{break-before:page;margin-bottom:20px}.chapter-heading{margin-bottom:20px}h2{font-size:22pt}h3{font-size:15pt;break-after:avoid}p{orphans:3;widows:3}.subsection{margin-bottom:20px}figure{break-inside:avoid;padding:5px}.figure-scroll{overflow:visible}.figure-scroll svg,.wide .figure-scroll svg{min-width:0!important;width:100%!important;max-height:230mm}.summary{break-inside:avoid}.code{display:block}.code>pre{display:block!important;white-space:pre-wrap}a{color:inherit;text-decoration:none}.refs{font-size:9pt}.refs li{break-inside:avoid}}
+</style></head><body><a class="skip" href="#reading">本文へ移動</a><header class="topbar" id="top"><a href="./index.html">← business 資料リンク集</a><span>数学・計算機科学の教養小冊子 / HTML版</span></header><div class="hero"><span class="eyebrow">A COMMON STRUCTURE BEHIND FOUR PROBLEMS</span><h1>再帰という<br>木構造生成装置</h1><p class="subtitle">迷路、ハノイの塔、フラクタル、麻雀をつなぐ数学</p><p class="intro-line">問題を小さな仕事へ展開すると、木が現れる。<br>枝をたどり、親へ戻り、同じ問いを見つける。<br>四つの具体例から、再帰の共通原理を見ていきます。</p><div class="topics"><a href="#ch2">迷路探索</a><a href="#ch3">ハノイの塔</a><a href="#ch4">フラクタル</a><a href="#ch5">麻雀の待ち判定</a></div></div><div class="layout"><aside class="toc-wrap"><details class="toc" open><summary>目次</summary><nav aria-label="章の目次"><a href="#reading">本書の読み方</a><a href="#intro">はじめに</a><a href="#ch1">第1章　再帰関数とは何か</a><a href="#ch2">第2章　迷路探索</a><a href="#ch3">第3章　ハノイの塔</a><a href="#ch4">第4章　フラクタル</a><a href="#ch5">第5章　麻雀の待ち判定</a><a href="#ch6">第6章　親子関係があるから迷子にならない</a><a href="#ch7">第7章　木からグラフへ</a><a href="#ending">終章</a><a href="#exercises">付録A　自分で確かめる</a><a href="#answers">付録B　解答と検算</a><a href="#references">参考文献</a><a href="#glossary">用語索引</a><a href="#code-download">コードと検証記録</a></nav></details></aside><main><section class="chapter" id="reading"><header class="chapter-heading"><span class="eyebrow">RECURSION / READING</span><h2>本書の読み方</h2></header><section class="subsection" id="s1"><h3>木を見るための、三つの約束</h3><p>本書は、再帰という考え方を、計算の途中に現れる木から理解する小冊子です。迷路、ハノイの塔、フラクタル、麻雀を順に取り上げます。コードの文法を覚えることよりも、「いま何を解こうとしていて、次に何を任せ、どこへ戻るのか」を追うことを大切にします。</p>
+<p>第一の約束は、同じ処理と、同じ呼び出しを区別することです。同じ関数を同じ引数で2回呼んでも、それは2回の出来事です。呼び出しの木には別々のノードとして描きます。</p>
+<p>第二の約束は、木の全体と、いま実行中の経路を区別することです。木は過去や未来の呼び出しまで含めて描けます。一方、スタックが覚えているのは、まだ終わっていない呼び出しの列です。</p>
+<p>第三の約束は、帰り先と停止条件を区別することです。呼び出した相手がいつまでも戻らなければ、帰り先が記録されていても処理は先へ進みません。</p>
+<p>本文の角括弧の番号<span class="citations">［<a href="#ref1" aria-label="参考文献1">1</a>］</span>などは末尾の参考文献に対応します。図、牌姿、コード、証明の説明は本書用に制作しました。資料が裏づける標準的な知識と、本書の見方である「木構造生成装置」は区別して扱います。</p>
+<p>Pythonコードを飛ばしても本文は読めます。実行したい人向けに、標準ライブラリだけで動く <a href="#code-download">examples.py</a> を付属しました。掲載例は通常の同期的な関数呼び出しを対象とし、並行処理や継続の特殊な制御までは扱いません。</p><aside class="summary"><strong>ここに注目</strong><p>「ノード＝1回の呼び出し」という単位を、最初に決める。</p></aside></section></section><section class="chapter" id="intro"><header class="chapter-heading"><span class="eyebrow">RECURSION / INTRO</span><h2>はじめに</h2></header><section class="subsection" id="s3"><h3>まったく違う問題から、同じ木が現れた</h3><p>迷路で右へ進んでみたら行き止まりだった。最後の分岐へ戻り、今度は左を試す。この行動には、前へ進む規則だけでなく、途中の仕事を覚えておく仕組みが要ります。</p>
+<p>ハノイの塔では、いちばん大きな円盤を動かす前に、その上の円盤を別の棒へ移さなければなりません。「小さな塔を移す」という仕事の中に、さらに小さな塔を移す仕事が含まれています。</p>
+<p>三角形を3個の小さな三角形に置き換え、それぞれに同じ操作を施すと、自己相似な模様が現れます。麻雀の手牌から3枚の組を取り除き、残った牌をまた調べると、分解の候補が枝分かれします。</p>
+<p>これらを紙に描くとき、問題全体を上に置き、そこから生まれた部分問題を下へ並べ、線で結んでみましょう。何度も現れるのは木です。ただし、木が表しているものを揃える必要があります。迷路そのものは輪を含みえますが、その探索を行った呼び出しの履歴は木として描けます。</p>
+<p>本書でたどるのは、この区別を含めた発見です。再帰は単に「自分自身を呼ぶ」という奇妙な文法ではありません。一つの仕事を、同じ形式の小さな仕事へ展開することで、親子関係を持つ計算の構造が現れます。</p>
+<p>まず一本道の再帰から始め、分岐、復帰、図形、探索を少しずつ加えます。最後には、重複する部分問題をまとめて木からグラフへ進みます。木が見えるようになると、木だけでは表せないものも、はっきり区別できるようになるはずです。</p></section></section><section class="chapter" id="ch1"><header class="chapter-heading"><span class="eyebrow">RECURSION / CH1</span><h2>第1章　再帰関数とは何か</h2></header><section class="subsection" id="s4"><h3>1.1　「自分を呼ぶ」を、小さな仕事に直す</h3><p>関数とは、入力を受け取り、決めた手順を実行するまとまりです。数を返すものもあれば、図を描いたり円盤の移動を記録したりするものもあります。関数の実行中に、その関数をもう一度呼び出すことを再帰と呼びます。<span class="citations">［<a href="#ref1" aria-label="参考文献1">1</a>］</span></p>
+<p>例として階乗を考えます。4! は「4の階乗」と読み、4 × 3 × 2 × 1 = 24 を表します。この積の後半は3!ですから、4! = 4 × 3! と書けます。同様に3! = 3 × 2!、2! = 2 × 1!です。</p>
+<p>一般に、0以上の整数nについて、0! = 1、n ≥ 1ならn! = n × (n−1)!と定義できます。0! = 1という約束は、1! = 1 × 0!とのつながりを保ち、何も掛けない積を1とする扱いにも一致します。</p>
+<p>ここで4!を求める係は、3!の中身をすべて自分で展開しなくても、「3!を求める係」に任せられます。ただし別の人を用意する必要はありません。同じ計算手順を、入力だけ変えてもう一度実行すればよいのです。</p>
+<p>基本条件は、他の呼び出しに頼らず答えられる場合です。再帰規則は、それ以外をどの部分問題に結びつけるかを定めます。階乗ではnが1ずつ減るため、0以上の整数から始めれば必ず基本条件へ到達します。</p>
+<p>この二つに加え、「本当に小さくなるのか」を確かめましょう。nを増やし続ける手順にも自分自身の呼び出しはありますが、それだけでは計算を終えられません。</p><aside class="summary"><strong>ここに注目</strong><p>基本条件：0! = 1　／　再帰規則：n! = n × (n−1)!</p></aside></section><section class="subsection" id="s5"><h3>1.2　下へ呼び、上へ答えを返す</h3><p>4!の処理は、3!を呼んだ瞬間に消えるわけではありません。「3!が分かったら4を掛ける」という続きが保留されます。3!も同様に、2!を待ちます。いちばん奥の0!だけは、その場で1を返せます。</p>
+<p>図1.1の左側は呼び出す順序、右側は値が確定する順序です。下向きに問題を小さくし、上向きに答えを組み立てます。呼び出しの向きと、結果を返す向きが逆になることに注目してください。</p><figure id="fig-01_factorial" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-01_factorial" aria-label="図1.1を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図1.1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 270" width="500" height="270" role="img" aria-labelledby="title-01_factorial"><title id="title-01_factorial">図1.1　4!の呼び出しと復帰。左の5個は別々の呼び出しであり、右はそれぞれが返す値。</title>
+<text x="110" y="22" font-size="14" fill="#236675" text-anchor="middle">呼び出す（下へ）</text>
+<text x="384" y="22" font-size="14" fill="#236675" text-anchor="middle">値を返す（上へ）</text>
+<rect x="45.0" y="40.0" width="150" height="30" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="120" y="59.2" font-size="12" fill="#202a30" text-anchor="middle">factorial(4)</text>
+<rect x="317.5" y="40.0" width="125" height="30" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="380" y="59.2" font-size="12" fill="#202a30" text-anchor="middle">4! = 24</text>
+<line x1="120" y1="72" x2="120" y2="82" stroke="#236675" stroke-width="1.5"/>
+<polygon points="120,82 117.39020679533262,76.59731738588394 122.60979320466738,76.59731738588394" fill="#236675" stroke="none"/>
+<line x1="380" y1="82" x2="380" y2="72" stroke="#236675" stroke-width="1.5"/>
+<polygon points="380,72 382.60979320466737,77.40268261411606 377.39020679533263,77.40268261411606" fill="#236675" stroke="none"/>
+<rect x="45.0" y="84.0" width="150" height="30" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="120" y="103.2" font-size="12" fill="#202a30" text-anchor="middle">factorial(3)</text>
+<rect x="317.5" y="84.0" width="125" height="30" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="380" y="103.2" font-size="12" fill="#202a30" text-anchor="middle">3! = 6</text>
+<line x1="120" y1="116" x2="120" y2="126" stroke="#236675" stroke-width="1.5"/>
+<polygon points="120,126 117.39020679533262,120.59731738588394 122.60979320466738,120.59731738588394" fill="#236675" stroke="none"/>
+<line x1="380" y1="126" x2="380" y2="116" stroke="#236675" stroke-width="1.5"/>
+<polygon points="380,116 382.60979320466737,121.40268261411606 377.39020679533263,121.40268261411606" fill="#236675" stroke="none"/>
+<rect x="45.0" y="128.0" width="150" height="30" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="120" y="147.2" font-size="12" fill="#202a30" text-anchor="middle">factorial(2)</text>
+<rect x="317.5" y="128.0" width="125" height="30" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="380" y="147.2" font-size="12" fill="#202a30" text-anchor="middle">2! = 2</text>
+<line x1="120" y1="160" x2="120" y2="170" stroke="#236675" stroke-width="1.5"/>
+<polygon points="120,170 117.39020679533262,164.59731738588394 122.60979320466738,164.59731738588394" fill="#236675" stroke="none"/>
+<line x1="380" y1="170" x2="380" y2="160" stroke="#236675" stroke-width="1.5"/>
+<polygon points="380,160 382.60979320466737,165.40268261411606 377.39020679533263,165.40268261411606" fill="#236675" stroke="none"/>
+<rect x="45.0" y="172.0" width="150" height="30" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="120" y="191.2" font-size="12" fill="#202a30" text-anchor="middle">factorial(1)</text>
+<rect x="317.5" y="172.0" width="125" height="30" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="380" y="191.2" font-size="12" fill="#202a30" text-anchor="middle">1! = 1</text>
+<line x1="120" y1="204" x2="120" y2="214" stroke="#236675" stroke-width="1.5"/>
+<polygon points="120,214 117.39020679533262,208.59731738588394 122.60979320466738,208.59731738588394" fill="#236675" stroke="none"/>
+<line x1="380" y1="214" x2="380" y2="204" stroke="#236675" stroke-width="1.5"/>
+<polygon points="380,204 382.60979320466737,209.40268261411606 377.39020679533263,209.40268261411606" fill="#236675" stroke="none"/>
+<rect x="45.0" y="216.0" width="150" height="30" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="120" y="235.2" font-size="12" fill="#202a30" text-anchor="middle">factorial(0)</text>
+<rect x="317.5" y="216.0" width="125" height="30" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="380" y="235.2" font-size="12" fill="#202a30" text-anchor="middle">0! = 1</text>
+<line x1="200" y1="231" x2="312" y2="231" stroke="#236675" stroke-width="1.5"/>
+<polygon points="312,231 306.5973173858839,233.60979320466737 306.5973173858839,228.39020679533263" fill="#236675" stroke="none"/>
+<text x="253" y="218" font-size="11" fill="#202a30" text-anchor="middle">基本条件</text></svg></div><figcaption>図1.1　4!の呼び出しと復帰。左の5個は別々の呼び出しであり、右はそれぞれが返す値。</figcaption></figure><details class="code"><summary>Pythonコードを読む</summary><pre><code>def factorial(n):
+    if n &lt; 0:
+        raise ValueError(&quot;n must be nonnegative&quot;)
+    if n == 0:
+        return 1
+    return n * factorial(n - 1)</code></pre></details></section><section class="subsection" id="s6"><h3>1.3　スタックは「まだ終わっていない仕事」</h3><p>関数を呼ぶと、通常は引数や局所変数、呼び出し後に再開する位置などを保持する実行の記録が作られます。これをフレームと呼びます。後から呼ばれた仕事を先に終えるよう重ねたものが、コールスタックです。<span class="citations">［<a href="#ref2" aria-label="参考文献2">2</a>］</span></p>
+<p>図1.2では、下にある仕事ほど先に始まりました。0!が返るとそのフレームが外れ、すぐ下にある1!の続きが再開されます。4!へ一足飛びに戻るのではありません。</p><figure id="fig-02_stack" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-02_stack" aria-label="図1.2を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図1.2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 220" width="500" height="220" role="img" aria-labelledby="title-02_stack"><title id="title-02_stack">図1.2　スタックの上端だけが実行を進める。図は引数や復帰位置を、読める短い表現に置き換えた模式図。</title>
+<text x="85" y="23" font-size="13" fill="#202a30" text-anchor="middle">深くなる</text>
+<rect x="15.0" y="171.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="85" y="188.85" font-size="11" fill="#202a30" text-anchor="middle">4! の続き</text>
+<rect x="15.0" y="141.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="85" y="158.85" font-size="11" fill="#202a30" text-anchor="middle">3! の続き</text>
+<rect x="15.0" y="111.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="85" y="128.85" font-size="11" fill="#202a30" text-anchor="middle">2! の続き</text>
+<rect x="15.0" y="81.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="85" y="98.85" font-size="11" fill="#202a30" text-anchor="middle">1! の続き</text>
+<rect x="15.0" y="51.0" width="140" height="28" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="85" y="68.85" font-size="11" fill="#202a30" text-anchor="middle">0! を計算</text>
+<line x1="159" y1="110" x2="176" y2="110" stroke="#236675" stroke-width="1.5"/>
+<polygon points="176,110 170.59731738588394,112.60979320466738 170.59731738588394,107.39020679533262" fill="#236675" stroke="none"/>
+<text x="250" y="23" font-size="13" fill="#202a30" text-anchor="middle">0! が返る</text>
+<rect x="180.0" y="171.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="250" y="188.85" font-size="11" fill="#202a30" text-anchor="middle">4! の続き</text>
+<rect x="180.0" y="141.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="250" y="158.85" font-size="11" fill="#202a30" text-anchor="middle">3! の続き</text>
+<rect x="180.0" y="111.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="250" y="128.85" font-size="11" fill="#202a30" text-anchor="middle">2! の続き</text>
+<rect x="180.0" y="81.0" width="140" height="28" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="250" y="98.85" font-size="11" fill="#202a30" text-anchor="middle">1 × 1 を計算</text>
+<line x1="324" y1="110" x2="341" y2="110" stroke="#236675" stroke-width="1.5"/>
+<polygon points="341,110 335.5973173858839,112.60979320466738 335.5973173858839,107.39020679533262" fill="#236675" stroke="none"/>
+<text x="415" y="23" font-size="13" fill="#202a30" text-anchor="middle">1! が返る</text>
+<rect x="345.0" y="171.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="415" y="188.85" font-size="11" fill="#202a30" text-anchor="middle">4! の続き</text>
+<rect x="345.0" y="141.0" width="140" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="415" y="158.85" font-size="11" fill="#202a30" text-anchor="middle">3! の続き</text>
+<rect x="345.0" y="111.0" width="140" height="28" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="415" y="128.85" font-size="11" fill="#202a30" text-anchor="middle">2 × 1 を計算</text></svg></div><figcaption>図1.2　スタックの上端だけが実行を進める。図は引数や復帰位置を、読める短い表現に置き換えた模式図。</figcaption></figure><p>同じnという名前でも、各フレームは別の値を持ちます。3!の途中で2!を呼んでも、親のn = 3が2へ書き換わるわけではありません。この独立した実行の記録が、入れ子の処理を支えます。</p><aside class="summary"><strong>ここに注目</strong><p>木の全体は履歴の図。スタックは、その時点で生きている根から現在までの経路。</p></aside></section><section class="subsection" id="s7"><h3>1.4　一本道も、木の一種である</h3><p>階乗の呼び出しでは、一つのノードから子が一つだけ生まれます。枝分かれがなくても、これは根付き木の特別な形です。根とは最初の呼び出し、辺とは「この呼び出しが、その呼び出しを始めた」という関係を表します。</p>
+<p>根以外のノードには親が一つあります。自分を呼んだ実行が一つだからです。同じ関数名が並んでも、n = 4の実行とn = 3の実行は同一ではありません。さらに、同じnで2回呼べば、その2回も別ノードです。</p>
+<p>階乗は繰り返しでも計算できます。resultを1から始め、1、2、3、4を順に掛ければ24になります。再帰は仕事を入れ子の呼び出しで表し、反復はループの中で状態を更新します。答えが同じでも、途中の情報の持ち方は違います。</p>
+<p>再帰を書けば、必ず大きな木をメモリ上に保存するわけではありません。通常、計算に必要なのは現在のスタックだけです。完了した枝は忘れられますし、後で見る呼び出しの木は、実行記録から描いてもかまいません。</p>
+<p>また、通常の関数呼び出しの入れ子は、再帰を使わない場合にも木として描けます。再帰の特徴は、同じ規則を繰り返し適用して、入力に応じた深さや分岐を生める点にあります。木という形だけで再帰を定義しているわけではありません。</p>
+<aside class="summary"><strong>この章のまとめ</strong><p>再帰では、部分問題を呼び出し、結果が返るまで続きを保留します。呼び出しを出来事として描くと木が現れ、スタックはその木の一つの経路を保持します。<span class="citations">［<a href="#ref1" aria-label="参考文献1">1</a>, <a href="#ref2" aria-label="参考文献2">2</a>］</span></p></aside></section></section><section class="chapter" id="ch2"><header class="chapter-heading"><span class="eyebrow">RECURSION / CH2</span><h2>第2章　迷路探索</h2></header><section class="subsection" id="s8"><h3>2.1　地図には輪があり、履歴には親がある</h3><p>図2.1の左は、小さな迷路を通路と分岐点だけに簡略化した地図です。Sを入口、Gを出口とします。S、A、C、DをたどるとSへ戻れるため、この地図には輪があります。点を頂点、点の間の通路を辺と呼ぶと、迷路はグラフです。</p>
+<p>右は、SからAへ進み、まずBを調べる探索の履歴です。Bから戻った後、AからCへ、さらにD、E、Gへ進みます。DにはSから直接行く通路もありますが、今回はCから初めて発見しました。したがってDの親はCです。</p><figure id="fig-03_maze" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-03_maze" aria-label="図2.1を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図2.1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 340" width="500" height="340" role="img" aria-labelledby="title-03_maze"><title id="title-03_maze">図2.1　同じ文字は同じ場所。左は通行可能性、右は初訪問を生んだ呼び出しの関係を示す。輪の辺S-Dは右の木には入らない。</title>
+<text x="115" y="20" font-size="14" fill="#202a30" text-anchor="middle">迷路の通路</text>
+<text x="380" y="20" font-size="14" fill="#202a30" text-anchor="middle">初訪問の親子関係</text>
+<line x1="35" y1="65" x2="120" y2="65" stroke="#d3dce0" stroke-width="22"/>
+<line x1="35" y1="65" x2="120" y2="65" stroke="#ffffff" stroke-width="17"/>
+<line x1="35" y1="65" x2="35" y2="165" stroke="#d3dce0" stroke-width="22"/>
+<line x1="35" y1="65" x2="35" y2="165" stroke="#ffffff" stroke-width="17"/>
+<line x1="120" y1="65" x2="210" y2="65" stroke="#d3dce0" stroke-width="22"/>
+<line x1="120" y1="65" x2="210" y2="65" stroke="#ffffff" stroke-width="17"/>
+<line x1="120" y1="65" x2="120" y2="165" stroke="#d3dce0" stroke-width="22"/>
+<line x1="120" y1="65" x2="120" y2="165" stroke="#ffffff" stroke-width="17"/>
+<line x1="120" y1="165" x2="35" y2="165" stroke="#d3dce0" stroke-width="22"/>
+<line x1="120" y1="165" x2="35" y2="165" stroke="#ffffff" stroke-width="17"/>
+<line x1="35" y1="165" x2="35" y2="275" stroke="#d3dce0" stroke-width="22"/>
+<line x1="35" y1="165" x2="35" y2="275" stroke="#ffffff" stroke-width="17"/>
+<line x1="35" y1="275" x2="145" y2="275" stroke="#d3dce0" stroke-width="22"/>
+<line x1="35" y1="275" x2="145" y2="275" stroke="#ffffff" stroke-width="17"/>
+<circle cx="35" cy="65" r="14" fill="#eaf2f3" stroke="#236675"/>
+<text x="35" y="69" font-size="12" fill="#202a30" text-anchor="middle">S</text>
+<circle cx="120" cy="65" r="14" fill="#eaf2f3" stroke="#236675"/>
+<text x="120" y="69" font-size="12" fill="#202a30" text-anchor="middle">A</text>
+<circle cx="210" cy="65" r="14" fill="#eaf2f3" stroke="#236675"/>
+<text x="210" y="69" font-size="12" fill="#202a30" text-anchor="middle">B</text>
+<circle cx="120" cy="165" r="14" fill="#eaf2f3" stroke="#236675"/>
+<text x="120" y="169" font-size="12" fill="#202a30" text-anchor="middle">C</text>
+<circle cx="35" cy="165" r="14" fill="#eaf2f3" stroke="#236675"/>
+<text x="35" y="169" font-size="12" fill="#202a30" text-anchor="middle">D</text>
+<circle cx="35" cy="275" r="14" fill="#eaf2f3" stroke="#236675"/>
+<text x="35" y="279" font-size="12" fill="#202a30" text-anchor="middle">E</text>
+<circle cx="145" cy="275" r="14" fill="#eaf2f3" stroke="#236675"/>
+<text x="145" y="279" font-size="12" fill="#202a30" text-anchor="middle">G</text>
+<line x1="370" y1="55" x2="370" y2="105" stroke="#236675" stroke-width="1.7"/>
+<line x1="370" y1="105" x2="305" y2="155" stroke="#236675" stroke-width="1.7"/>
+<line x1="370" y1="105" x2="410" y2="155" stroke="#236675" stroke-width="1.7"/>
+<line x1="410" y1="155" x2="410" y2="205" stroke="#236675" stroke-width="1.7"/>
+<line x1="410" y1="205" x2="410" y2="255" stroke="#236675" stroke-width="1.7"/>
+<line x1="410" y1="255" x2="410" y2="305" stroke="#236675" stroke-width="1.7"/>
+<circle cx="370" cy="55" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="370" y="59" font-size="12" fill="#202a30" text-anchor="middle">S</text>
+<circle cx="370" cy="105" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="370" y="109" font-size="12" fill="#202a30" text-anchor="middle">A</text>
+<circle cx="305" cy="155" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="305" y="159" font-size="12" fill="#202a30" text-anchor="middle">B</text>
+<circle cx="410" cy="155" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="410" y="159" font-size="12" fill="#202a30" text-anchor="middle">C</text>
+<circle cx="410" cy="205" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="410" y="209" font-size="12" fill="#202a30" text-anchor="middle">D</text>
+<circle cx="410" cy="255" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="410" y="259" font-size="12" fill="#202a30" text-anchor="middle">E</text>
+<circle cx="410" cy="305" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="410" y="309" font-size="12" fill="#202a30" text-anchor="middle">G</text>
+<text x="118" y="326" font-size="10" fill="#78858a" text-anchor="middle">S-D は通路にあるが、木の辺ではない</text></svg></div><figcaption>図2.1　同じ文字は同じ場所。左は通行可能性、右は初訪問を生んだ呼び出しの関係を示す。輪の辺S-Dは右の木には入らない。</figcaption></figure><aside class="summary"><strong>ここに注目</strong><p>「場所の親」と「今回その場所を探索した呼び出しの親」は別の話。</p></aside></section><section class="subsection" id="s9"><h3>2.2　行き止まりは、全体の失敗ではない</h3><p>深さ優先探索、略してDFSは、選んだ枝をできるだけ奥まで調べてから、別の枝へ移る探索法です。Bでは未訪問の隣接点がなくなります。それでもAにはCという候補が残っています。</p>
+<p>そこでBの探索を終えて、Bを呼んだAへ戻ります。Aの処理は、「Bの探索の結果を確認した次」から再開します。Aを入口として一から探索し直すわけではありません。このように選択を取り消し、前の分岐から別の可能性を調べる操作をバックトラックと呼びます。<span class="citations">［<a href="#ref2" aria-label="参考文献2">2</a>, <a href="#ref3" aria-label="参考文献3">3</a>］</span></p><figure id="fig-04_backtrack" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-04_backtrack" aria-label="図2.2を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図2.2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 190" width="500" height="190" role="img" aria-labelledby="title-04_backtrack"><title id="title-04_backtrack">図2.2　Bの探索が失敗したらAの続きへ復帰し、次の候補Cへ進む。帰り先は、近そうな分岐を推測して選ぶものではない。</title>
+<text x="80" y="20" font-size="13" fill="#202a30" text-anchor="middle">① Bで行き止まり</text>
+<line x1="80" y1="65" x2="38" y2="145" stroke="#78858a" stroke-width="1"/>
+<line x1="80" y1="65" x2="122" y2="145" stroke="#78858a" stroke-width="1"/>
+<circle cx="80" cy="65" r="17" fill="#ffffff" stroke="#236675"/>
+<text x="80" y="69" font-size="12" fill="#202a30" text-anchor="middle">A</text>
+<circle cx="38" cy="145" r="17" fill="#eaf2f3" stroke="#236675"/>
+<text x="38" y="149" font-size="12" fill="#202a30" text-anchor="middle">B</text>
+<circle cx="122" cy="145" r="17" fill="#ffffff" stroke="#236675"/>
+<text x="122" y="149" font-size="12" fill="#202a30" text-anchor="middle">C</text>
+<text x="250" y="20" font-size="13" fill="#202a30" text-anchor="middle">② Aへ復帰</text>
+<line x1="250" y1="65" x2="208" y2="145" stroke="#78858a" stroke-width="1"/>
+<line x1="250" y1="65" x2="292" y2="145" stroke="#78858a" stroke-width="1"/>
+<circle cx="250" cy="65" r="17" fill="#eaf2f3" stroke="#236675"/>
+<text x="250" y="69" font-size="12" fill="#202a30" text-anchor="middle">A</text>
+<circle cx="208" cy="145" r="17" fill="#ffffff" stroke="#236675"/>
+<text x="208" y="149" font-size="12" fill="#202a30" text-anchor="middle">B</text>
+<circle cx="292" cy="145" r="17" fill="#ffffff" stroke="#236675"/>
+<text x="292" y="149" font-size="12" fill="#202a30" text-anchor="middle">C</text>
+<line x1="223" y1="124" x2="242" y2="88" stroke="#a95a3f" stroke-width="1.5"/>
+<polygon points="242,88 241.78631263941597,93.99619360193837 237.17019000283307,91.55990665485294" fill="#a95a3f" stroke="none"/>
+<text x="420" y="20" font-size="13" fill="#202a30" text-anchor="middle">③ Cを選ぶ</text>
+<line x1="420" y1="65" x2="378" y2="145" stroke="#78858a" stroke-width="1"/>
+<line x1="420" y1="65" x2="462" y2="145" stroke="#78858a" stroke-width="1"/>
+<circle cx="420" cy="65" r="17" fill="#ffffff" stroke="#236675"/>
+<text x="420" y="69" font-size="12" fill="#202a30" text-anchor="middle">A</text>
+<circle cx="378" cy="145" r="17" fill="#ffffff" stroke="#236675"/>
+<text x="378" y="149" font-size="12" fill="#202a30" text-anchor="middle">B</text>
+<circle cx="462" cy="145" r="17" fill="#eaf2f3" stroke="#236675"/>
+<text x="462" y="149" font-size="12" fill="#202a30" text-anchor="middle">C</text>
+<line x1="429" y1="86" x2="451" y2="123" stroke="#236675" stroke-width="1.5"/>
+<polygon points="451,123 445.99561094067604,119.69000148898546 450.48203278012414,117.02239931417847" fill="#236675" stroke="none"/></svg></div><figcaption>図2.2　Bの探索が失敗したらAの続きへ復帰し、次の候補Cへ進む。帰り先は、近そうな分岐を推測して選ぶものではない。</figcaption></figure><aside class="summary"><strong>ここに注目</strong><p>失敗という結果も、親に返せる有用な情報。「この枝には出口がなかった」と分かる。</p></aside></section><section class="subsection" id="s10"><h3>2.3　訪問済みの印は、何を防ぐのか</h3><p>SからA、C、Dへ進んだ後、DからSへまた進めば、同じ輪を何度でも回れてしまいます。呼び出しの木では、Sというラベルの別ノードが、そのたびに追加されます。木に循環がなくても、同じ場所の探索は繰り返せるのです。</p>
+<p>出口への到達可能性を調べる今回の問題では、訪問済み集合を共有し、初めて入った頂点をすぐ登録します。既に登録された頂点へは再帰しません。有限の迷路なら、初訪問を生む呼び出しは頂点数を超えません。<span class="citations">［<a href="#ref2" aria-label="参考文献2">2</a>］</span></p>
+<p>一方、いまの経路を保存するpathは別です。行き止まりから戻るときには末尾を消しますが、訪問済みの印は残します。pathは「いまどこを通っているか」、visitedは「これまでどこを調べたか」を表しているからです。</p>
+<p>この区別は、目的が変わると見直しが必要です。すべての単純経路を列挙したい場合には、一度訪れた場所を全体で禁止すると別経路を捨ててしまいます。また、鍵を拾うと通れる扉が増える迷路では、場所だけが同じでも状態は同じではありません。位置と鍵の有無を合わせて管理します。</p>
+<p>図2.1で得られるS-A-C-D-E-Gは5本の辺を通ります。しかしS-D-E-Gなら3本です。DFSは一つの道を見つけても、それが最短であるとは限りません。最短の辺数を求める幅優先探索は、第7章で比較します。</p><aside class="summary"><strong>ここに注目</strong><p>訪問済み管理の単位は、問題の「状態」。いつでも位置だけで十分とは限らない。</p></aside></section><section class="subsection" id="s11"><h3>2.4　選択と復帰をコードにする</h3><p>次の関数は、隣接点を列挙する辞書graphを受け取り、入口から出口への経路を一つ返します。見つからなければNoneです。内側のvisitが、頂点一つ分の探索を担当します。図2.1では、付属コードに記した隣接順で実行します。</p><details class="code"><summary>Pythonコードを読む</summary><pre><code>def dfs_path(graph, start, goal):
+    visited = set()
+    path = []
+    def visit(v):
+        visited.add(v)
+        path.append(v)
+        if v == goal:
+            return True
+        for w in graph[v]:
+            if w not in visited and visit(w):
+                return True
+        path.pop()
+        return False
+    return path if visit(start) else None</code></pre></details><aside class="summary"><strong>この章のまとめ</strong><p>迷路はグラフ、初訪問の履歴は木。DFSは深く進み、失敗したら親の続きへ戻る。有限グラフでの停止には訪問済み管理が効く。</p></aside></section></section><section class="chapter" id="ch3"><header class="chapter-heading"><span class="eyebrow">RECURSION / CH3</span><h2>第3章　ハノイの塔</h2></header><section class="subsection" id="s12"><h3>3.1　大きな円盤を動かす前に</h3><p>3本の棒A、B、Cと、大小の円盤を用意します。最初はAに、大きい順に下から積んであります。目的は全部をCへ移すこと。1回に動かせるのは一番上の円盤1枚だけで、大きな円盤を小さな円盤の上に置いてはいけません。<span class="citations">［<a href="#ref1" aria-label="参考文献1">1</a>］</span></p>
+<p>円盤が1枚ならAからCへ動かして終わりです。2枚なら、小をAからBへ、大をAからCへ、小をBからCへ移します。3枚ではどうでしょう。大きな円盤を動かすには、その上の2枚をどかす必要があります。</p>
+<p>ここで「2枚を移す仕事」を一まとまりとして考えます。まず上の2枚をAからBへ移す。その間はCを補助に使う。次に最大の円盤をAからCへ動かす。最後にBの2枚をCへ移す。その間はAを補助に使います。</p>
+<p>上の2枚を移すあいだ、下にもっと大きな円盤があっても邪魔にはなりません。小さな円盤は、その上に合法的に載せられるからです。この性質により、同じ手順を塔の一部分へそのまま適用できます。</p>
+<p>n枚を移す課題をH(n, 出発, 到着, 補助)と書きます。最初の仕事はH(3,A,C,B)。そこからH(2,A,B,C)とH(2,B,C,A)という二つの子が生まれ、その間に円盤3の移動が入ります。</p>
+<p>注意したいのは、子の引数です。円盤の枚数を一つ減らすだけでなく、棒の役割も入れ替わります。木の形が同じでも、具体的な移動先はラベルによって決まります。</p><aside class="summary"><strong>ここに注目</strong><p>小さい塔を移す → 最大の円盤を1回動かす → 小さい塔を重ねる。</p></aside></section><section class="subsection" id="s13"><h3>3.2　3枚の移動を、手で確かめる</h3><p>図3.1を上から行ごとに、左、右の順で読んでください。円盤番号は小さいものから1、2、3です。最初の3手で円盤1と2がBへ移り、4手目で円盤3がCへ進みます。残り3手で小さい塔をCへ重ねます。</p><figure id="fig-05_hanoi3" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-05_hanoi3" aria-label="図3.1を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図3.1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 420" width="500" height="420" role="img" aria-labelledby="title-05_hanoi3"><title id="title-05_hanoi3">図3.1　開始状態と7手すべて。表示した各移動について、移動元の最上段であることと、大小の制約をプログラムでも検証した。</title>
+<line x1="46.0" y1="85" x2="46.0" y2="31.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="21.7" y1="85" x2="70.3" y2="85" stroke="#78858a" stroke-width="1"/>
+<rect x="22.599999999999998" y="72.4" width="46.800000000000004" height="10.8" fill="#75aab5" stroke="#236675" stroke-width=".8"/>
+<text x="46.0" y="81.4" font-size="8.1" fill="#202a30" text-anchor="middle">3</text>
+<rect x="28.0" y="59.8" width="36.0" height="10.8" fill="#b6d3d9" stroke="#236675" stroke-width=".8"/>
+<text x="46.0" y="68.80000000000001" font-size="8.1" fill="#202a30" text-anchor="middle">2</text>
+<rect x="33.4" y="47.199999999999996" width="25.2" height="10.8" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="46.0" y="56.199999999999996" font-size="8.1" fill="#202a30" text-anchor="middle">1</text>
+<text x="46.0" y="99.4" font-size="9.9" fill="#202a30" text-anchor="middle">A</text>
+<line x1="101.80000000000001" y1="85" x2="101.80000000000001" y2="31.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="77.50000000000001" y1="85" x2="126.10000000000001" y2="85" stroke="#78858a" stroke-width="1"/>
+<text x="101.80000000000001" y="99.4" font-size="9.9" fill="#202a30" text-anchor="middle">B</text>
+<line x1="157.60000000000002" y1="85" x2="157.60000000000002" y2="31.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="133.3" y1="85" x2="181.90000000000003" y2="85" stroke="#78858a" stroke-width="1"/>
+<text x="157.60000000000002" y="99.4" font-size="9.9" fill="#202a30" text-anchor="middle">C</text>
+<text x="102" y="19" font-size="11" fill="#236675" text-anchor="middle">開始</text>
+<line x1="306.0" y1="85" x2="306.0" y2="31.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="281.7" y1="85" x2="330.3" y2="85" stroke="#78858a" stroke-width="1"/>
+<rect x="282.6" y="72.4" width="46.800000000000004" height="10.8" fill="#75aab5" stroke="#236675" stroke-width=".8"/>
+<text x="306.0" y="81.4" font-size="8.1" fill="#202a30" text-anchor="middle">3</text>
+<rect x="288.0" y="59.8" width="36.0" height="10.8" fill="#b6d3d9" stroke="#236675" stroke-width=".8"/>
+<text x="306.0" y="68.80000000000001" font-size="8.1" fill="#202a30" text-anchor="middle">2</text>
+<text x="306.0" y="99.4" font-size="9.9" fill="#202a30" text-anchor="middle">A</text>
+<line x1="361.8" y1="85" x2="361.8" y2="31.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="337.5" y1="85" x2="386.1" y2="85" stroke="#78858a" stroke-width="1"/>
+<text x="361.8" y="99.4" font-size="9.9" fill="#202a30" text-anchor="middle">B</text>
+<line x1="417.6" y1="85" x2="417.6" y2="31.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="393.3" y1="85" x2="441.90000000000003" y2="85" stroke="#78858a" stroke-width="1"/>
+<rect x="405.0" y="72.4" width="25.2" height="10.8" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="417.6" y="81.4" font-size="8.1" fill="#202a30" text-anchor="middle">1</text>
+<text x="417.6" y="99.4" font-size="9.9" fill="#202a30" text-anchor="middle">C</text>
+<text x="362" y="19" font-size="11" fill="#236675" text-anchor="middle">1手目：円盤1  A→C</text>
+<line x1="46.0" y1="187" x2="46.0" y2="133.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="21.7" y1="187" x2="70.3" y2="187" stroke="#78858a" stroke-width="1"/>
+<rect x="22.599999999999998" y="174.4" width="46.800000000000004" height="10.8" fill="#75aab5" stroke="#236675" stroke-width=".8"/>
+<text x="46.0" y="183.4" font-size="8.1" fill="#202a30" text-anchor="middle">3</text>
+<text x="46.0" y="201.4" font-size="9.9" fill="#202a30" text-anchor="middle">A</text>
+<line x1="101.80000000000001" y1="187" x2="101.80000000000001" y2="133.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="77.50000000000001" y1="187" x2="126.10000000000001" y2="187" stroke="#78858a" stroke-width="1"/>
+<rect x="83.80000000000001" y="174.4" width="36.0" height="10.8" fill="#b6d3d9" stroke="#236675" stroke-width=".8"/>
+<text x="101.80000000000001" y="183.4" font-size="8.1" fill="#202a30" text-anchor="middle">2</text>
+<text x="101.80000000000001" y="201.4" font-size="9.9" fill="#202a30" text-anchor="middle">B</text>
+<line x1="157.60000000000002" y1="187" x2="157.60000000000002" y2="133.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="133.3" y1="187" x2="181.90000000000003" y2="187" stroke="#78858a" stroke-width="1"/>
+<rect x="145.00000000000003" y="174.4" width="25.2" height="10.8" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="157.60000000000002" y="183.4" font-size="8.1" fill="#202a30" text-anchor="middle">1</text>
+<text x="157.60000000000002" y="201.4" font-size="9.9" fill="#202a30" text-anchor="middle">C</text>
+<text x="102" y="121" font-size="11" fill="#236675" text-anchor="middle">2手目：円盤2  A→B</text>
+<line x1="306.0" y1="187" x2="306.0" y2="133.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="281.7" y1="187" x2="330.3" y2="187" stroke="#78858a" stroke-width="1"/>
+<rect x="282.6" y="174.4" width="46.800000000000004" height="10.8" fill="#75aab5" stroke="#236675" stroke-width=".8"/>
+<text x="306.0" y="183.4" font-size="8.1" fill="#202a30" text-anchor="middle">3</text>
+<text x="306.0" y="201.4" font-size="9.9" fill="#202a30" text-anchor="middle">A</text>
+<line x1="361.8" y1="187" x2="361.8" y2="133.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="337.5" y1="187" x2="386.1" y2="187" stroke="#78858a" stroke-width="1"/>
+<rect x="343.8" y="174.4" width="36.0" height="10.8" fill="#b6d3d9" stroke="#236675" stroke-width=".8"/>
+<text x="361.8" y="183.4" font-size="8.1" fill="#202a30" text-anchor="middle">2</text>
+<rect x="349.2" y="161.8" width="25.2" height="10.8" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="361.8" y="170.8" font-size="8.1" fill="#202a30" text-anchor="middle">1</text>
+<text x="361.8" y="201.4" font-size="9.9" fill="#202a30" text-anchor="middle">B</text>
+<line x1="417.6" y1="187" x2="417.6" y2="133.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="393.3" y1="187" x2="441.90000000000003" y2="187" stroke="#78858a" stroke-width="1"/>
+<text x="417.6" y="201.4" font-size="9.9" fill="#202a30" text-anchor="middle">C</text>
+<text x="362" y="121" font-size="11" fill="#236675" text-anchor="middle">3手目：円盤1  C→B</text>
+<line x1="46.0" y1="289" x2="46.0" y2="235.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="21.7" y1="289" x2="70.3" y2="289" stroke="#78858a" stroke-width="1"/>
+<text x="46.0" y="303.4" font-size="9.9" fill="#202a30" text-anchor="middle">A</text>
+<line x1="101.80000000000001" y1="289" x2="101.80000000000001" y2="235.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="77.50000000000001" y1="289" x2="126.10000000000001" y2="289" stroke="#78858a" stroke-width="1"/>
+<rect x="83.80000000000001" y="276.4" width="36.0" height="10.8" fill="#b6d3d9" stroke="#236675" stroke-width=".8"/>
+<text x="101.80000000000001" y="285.4" font-size="8.1" fill="#202a30" text-anchor="middle">2</text>
+<rect x="89.20000000000002" y="263.8" width="25.2" height="10.8" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="101.80000000000001" y="272.79999999999995" font-size="8.1" fill="#202a30" text-anchor="middle">1</text>
+<text x="101.80000000000001" y="303.4" font-size="9.9" fill="#202a30" text-anchor="middle">B</text>
+<line x1="157.60000000000002" y1="289" x2="157.60000000000002" y2="235.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="133.3" y1="289" x2="181.90000000000003" y2="289" stroke="#78858a" stroke-width="1"/>
+<rect x="134.20000000000002" y="276.4" width="46.800000000000004" height="10.8" fill="#75aab5" stroke="#236675" stroke-width=".8"/>
+<text x="157.60000000000002" y="285.4" font-size="8.1" fill="#202a30" text-anchor="middle">3</text>
+<text x="157.60000000000002" y="303.4" font-size="9.9" fill="#202a30" text-anchor="middle">C</text>
+<text x="102" y="223" font-size="11" fill="#236675" text-anchor="middle">4手目：円盤3  A→C</text>
+<line x1="306.0" y1="289" x2="306.0" y2="235.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="281.7" y1="289" x2="330.3" y2="289" stroke="#78858a" stroke-width="1"/>
+<rect x="293.4" y="276.4" width="25.2" height="10.8" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="306.0" y="285.4" font-size="8.1" fill="#202a30" text-anchor="middle">1</text>
+<text x="306.0" y="303.4" font-size="9.9" fill="#202a30" text-anchor="middle">A</text>
+<line x1="361.8" y1="289" x2="361.8" y2="235.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="337.5" y1="289" x2="386.1" y2="289" stroke="#78858a" stroke-width="1"/>
+<rect x="343.8" y="276.4" width="36.0" height="10.8" fill="#b6d3d9" stroke="#236675" stroke-width=".8"/>
+<text x="361.8" y="285.4" font-size="8.1" fill="#202a30" text-anchor="middle">2</text>
+<text x="361.8" y="303.4" font-size="9.9" fill="#202a30" text-anchor="middle">B</text>
+<line x1="417.6" y1="289" x2="417.6" y2="235.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="393.3" y1="289" x2="441.90000000000003" y2="289" stroke="#78858a" stroke-width="1"/>
+<rect x="394.20000000000005" y="276.4" width="46.800000000000004" height="10.8" fill="#75aab5" stroke="#236675" stroke-width=".8"/>
+<text x="417.6" y="285.4" font-size="8.1" fill="#202a30" text-anchor="middle">3</text>
+<text x="417.6" y="303.4" font-size="9.9" fill="#202a30" text-anchor="middle">C</text>
+<text x="362" y="223" font-size="11" fill="#236675" text-anchor="middle">5手目：円盤1  B→A</text>
+<line x1="46.0" y1="391" x2="46.0" y2="337.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="21.7" y1="391" x2="70.3" y2="391" stroke="#78858a" stroke-width="1"/>
+<rect x="33.4" y="378.4" width="25.2" height="10.8" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="46.0" y="387.4" font-size="8.1" fill="#202a30" text-anchor="middle">1</text>
+<text x="46.0" y="405.4" font-size="9.9" fill="#202a30" text-anchor="middle">A</text>
+<line x1="101.80000000000001" y1="391" x2="101.80000000000001" y2="337.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="77.50000000000001" y1="391" x2="126.10000000000001" y2="391" stroke="#78858a" stroke-width="1"/>
+<text x="101.80000000000001" y="405.4" font-size="9.9" fill="#202a30" text-anchor="middle">B</text>
+<line x1="157.60000000000002" y1="391" x2="157.60000000000002" y2="337.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="133.3" y1="391" x2="181.90000000000003" y2="391" stroke="#78858a" stroke-width="1"/>
+<rect x="134.20000000000002" y="378.4" width="46.800000000000004" height="10.8" fill="#75aab5" stroke="#236675" stroke-width=".8"/>
+<text x="157.60000000000002" y="387.4" font-size="8.1" fill="#202a30" text-anchor="middle">3</text>
+<rect x="139.60000000000002" y="365.8" width="36.0" height="10.8" fill="#b6d3d9" stroke="#236675" stroke-width=".8"/>
+<text x="157.60000000000002" y="374.79999999999995" font-size="8.1" fill="#202a30" text-anchor="middle">2</text>
+<text x="157.60000000000002" y="405.4" font-size="9.9" fill="#202a30" text-anchor="middle">C</text>
+<text x="102" y="325" font-size="11" fill="#236675" text-anchor="middle">6手目：円盤2  B→C</text>
+<line x1="306.0" y1="391" x2="306.0" y2="337.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="281.7" y1="391" x2="330.3" y2="391" stroke="#78858a" stroke-width="1"/>
+<text x="306.0" y="405.4" font-size="9.9" fill="#202a30" text-anchor="middle">A</text>
+<line x1="361.8" y1="391" x2="361.8" y2="337.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="337.5" y1="391" x2="386.1" y2="391" stroke="#78858a" stroke-width="1"/>
+<text x="361.8" y="405.4" font-size="9.9" fill="#202a30" text-anchor="middle">B</text>
+<line x1="417.6" y1="391" x2="417.6" y2="337.0" stroke="#78858a" stroke-width="1.8"/>
+<line x1="393.3" y1="391" x2="441.90000000000003" y2="391" stroke="#78858a" stroke-width="1"/>
+<rect x="394.20000000000005" y="378.4" width="46.800000000000004" height="10.8" fill="#75aab5" stroke="#236675" stroke-width=".8"/>
+<text x="417.6" y="387.4" font-size="8.1" fill="#202a30" text-anchor="middle">3</text>
+<rect x="399.6" y="365.8" width="36.0" height="10.8" fill="#b6d3d9" stroke="#236675" stroke-width=".8"/>
+<text x="417.6" y="374.79999999999995" font-size="8.1" fill="#202a30" text-anchor="middle">2</text>
+<rect x="405.0" y="353.2" width="25.2" height="10.8" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="417.6" y="362.2" font-size="8.1" fill="#202a30" text-anchor="middle">1</text>
+<text x="417.6" y="405.4" font-size="9.9" fill="#202a30" text-anchor="middle">C</text>
+<text x="362" y="325" font-size="11" fill="#236675" text-anchor="middle">7手目：円盤1  A→C</text></svg></div><figcaption>図3.1　開始状態と7手すべて。表示した各移動について、移動元の最上段であることと、大小の制約をプログラムでも検証した。</figcaption></figure><aside class="summary"><strong>ここに注目</strong><p>移動回数は3 + 1 + 3 = 7。前半と後半は、ともに2枚の塔を移す仕事。</p></aside></section><section class="subsection" id="s14"><h3>3.3　4枚の塔から15個の呼び出しへ</h3><p>次は4枚です。根のH(4,A,C,B)は、左のH(3,A,B,C)と、右のH(3,B,C,A)を呼びます。それぞれが2個のH(2,…)を呼び、さらに各H(2,…)が2個のH(1,…)を呼びます。</p>
+<p>次の図3.2が、その全体です。各囲みは1回の呼び出しを表し、下段に、その呼び出し自身が担当する1回の円盤移動を記しています。先頭の01～15は移動の順番です。</p>
+<p>1枚で止めるので、葉はすべてH(1,…)です。葉以外は必ず子を二つ持ち、葉はすべて同じ深さにあります。この意味で「完全二分木」、英語ではより明確にperfect binary treeと呼ぶ形になります。complete、full、perfectの訳語は教材によって揺れるため、本書ではこの形の定義を優先します。</p>
+<p>呼び出しの開始順と、円盤の移動順は違います。H(4,…)は最初に始まりますが、円盤4を動かすのは左の7個が終わった後の8手目です。根は、開始時刻も実際の作業時刻も最初、というわけではありません。</p>
+<p>根の二つの枝が、左部分木と右部分木につながっています。まず左側の01～07をたどり、根の08を実行し、右側の09～15へ進んでみてください。左右の木は形が同じで、棒の名前だけが異なります。</p><aside class="summary"><strong>ここに注目</strong><p>数える対象を固定する：基本条件をn = 1とした、再帰関数Hの呼び出しだけを描く。</p></aside></section><section class="subsection" id="s15"><h3>3.4　4枚の完全二分木</h3><p>左部分木は「上の3枚をAからBへ移す」という仕事です。右部分木は「Bに待機した3枚をCへ重ねる」という仕事です。囲み上段が呼び出し、下段がその呼び出しの担当する移動です。</p>
+<p>左側の01～07、根の08、右側の09～15の順にたどります。画面が狭い場合は図を横にスクロールするか、「図を拡大」で全体を開いてください。</p><figure id="fig-06_hanoi4_spread" class="wide"><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-06_hanoi4_spread" aria-label="図3.2を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図3.2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 405" width="980" height="405" role="img" aria-labelledby="title-06_hanoi4_spread"><title id="title-06_hanoi4_spread">図3.2　4枚の呼び出し木。1 + 2 + 4 + 8 = 15ノード。根の移動は08。各ノードを中順で一度ずつ処理すると、15回の合法な移動になる。</title>
+<rect x="7.25" y="302.0" width="108" height="48" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="61.25" y="322.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">H(1,A,B,C)</text>
+<text x="61.25" y="337.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">01  円盤1 A→B</text>
+<rect x="129.75" y="302.0" width="108" height="48" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="183.75" y="322.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">H(1,B,C,A)</text>
+<text x="183.75" y="337.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">03  円盤1 B→C</text>
+<line x1="122.5" y1="264" x2="61.25" y2="302" stroke="#236675" stroke-width="1.5"/>
+<line x1="122.5" y1="264" x2="183.75" y2="302" stroke="#236675" stroke-width="1.5"/>
+<rect x="68.5" y="215.0" width="108" height="48" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="122.5" y="235.7" font-size="11" fill="#202a30" text-anchor="middle">H(2,A,C,B)</text>
+<text x="122.5" y="250.0" font-size="11" fill="#202a30" text-anchor="middle">02  円盤2 A→C</text>
+<rect x="252.25" y="302.0" width="108" height="48" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="306.25" y="322.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">H(1,C,A,B)</text>
+<text x="306.25" y="337.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">05  円盤1 C→A</text>
+<rect x="374.75" y="302.0" width="108" height="48" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="428.75" y="322.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">H(1,A,B,C)</text>
+<text x="428.75" y="337.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">07  円盤1 A→B</text>
+<line x1="367.5" y1="264" x2="306.25" y2="302" stroke="#236675" stroke-width="1.5"/>
+<line x1="367.5" y1="264" x2="428.75" y2="302" stroke="#236675" stroke-width="1.5"/>
+<rect x="313.5" y="215.0" width="108" height="48" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="367.5" y="235.7" font-size="11" fill="#202a30" text-anchor="middle">H(2,C,B,A)</text>
+<text x="367.5" y="250.0" font-size="11" fill="#202a30" text-anchor="middle">06  円盤2 C→B</text>
+<line x1="245.0" y1="177" x2="122.5" y2="215" stroke="#236675" stroke-width="1.5"/>
+<line x1="245.0" y1="177" x2="367.5" y2="215" stroke="#236675" stroke-width="1.5"/>
+<rect x="191.0" y="128.0" width="108" height="48" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="245.0" y="148.7" font-size="11" fill="#202a30" text-anchor="middle">H(3,A,B,C)</text>
+<text x="245.0" y="163.0" font-size="11" fill="#202a30" text-anchor="middle">04  円盤3 A→B</text>
+<rect x="497.25" y="302.0" width="108" height="48" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="551.25" y="322.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">H(1,B,C,A)</text>
+<text x="551.25" y="337.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">09  円盤1 B→C</text>
+<rect x="619.75" y="302.0" width="108" height="48" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="673.75" y="322.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">H(1,C,A,B)</text>
+<text x="673.75" y="337.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">11  円盤1 C→A</text>
+<line x1="612.5" y1="264" x2="551.25" y2="302" stroke="#236675" stroke-width="1.5"/>
+<line x1="612.5" y1="264" x2="673.75" y2="302" stroke="#236675" stroke-width="1.5"/>
+<rect x="558.5" y="215.0" width="108" height="48" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="612.5" y="235.7" font-size="11" fill="#202a30" text-anchor="middle">H(2,B,A,C)</text>
+<text x="612.5" y="250.0" font-size="11" fill="#202a30" text-anchor="middle">10  円盤2 B→A</text>
+<rect x="742.25" y="302.0" width="108" height="48" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="796.25" y="322.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">H(1,A,B,C)</text>
+<text x="796.25" y="337.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">13  円盤1 A→B</text>
+<rect x="864.75" y="302.0" width="108" height="48" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="918.75" y="322.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">H(1,B,C,A)</text>
+<text x="918.75" y="337.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">15  円盤1 B→C</text>
+<line x1="857.5" y1="264" x2="796.25" y2="302" stroke="#236675" stroke-width="1.5"/>
+<line x1="857.5" y1="264" x2="918.75" y2="302" stroke="#236675" stroke-width="1.5"/>
+<rect x="803.5" y="215.0" width="108" height="48" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="857.5" y="235.7" font-size="11" fill="#202a30" text-anchor="middle">H(2,A,C,B)</text>
+<text x="857.5" y="250.0" font-size="11" fill="#202a30" text-anchor="middle">14  円盤2 A→C</text>
+<line x1="735.0" y1="177" x2="612.5" y2="215" stroke="#236675" stroke-width="1.5"/>
+<line x1="735.0" y1="177" x2="857.5" y2="215" stroke="#236675" stroke-width="1.5"/>
+<rect x="681.0" y="128.0" width="108" height="48" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="735.0" y="148.7" font-size="11" fill="#202a30" text-anchor="middle">H(3,B,C,A)</text>
+<text x="735.0" y="163.0" font-size="11" fill="#202a30" text-anchor="middle">12  円盤3 B→C</text>
+<line x1="430" y1="90" x2="245.0" y2="128" stroke="#236675" stroke-width="1.5"/>
+<line x1="430" y1="90" x2="735.0" y2="128" stroke="#236675" stroke-width="1.5"/>
+<rect x="376.0" y="41.0" width="108" height="48" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="430" y="61.7" font-size="11" fill="#202a30" text-anchor="middle">H(4,A,C,B)</text>
+<text x="430" y="76.0" font-size="11" fill="#202a30" text-anchor="middle">08  円盤4 A→C</text></svg></div><figcaption>図3.2　4枚の呼び出し木。1 + 2 + 4 + 8 = 15ノード。根の移動は08。各ノードを中順で一度ずつ処理すると、15回の合法な移動になる。</figcaption></figure><aside class="summary"><strong>ここに注目</strong><p>01～07：A上の3枚をBへ。08：円盤4をAからCへ。09～15：B上の3枚をCへ。右部分木が終わると、根の呼び出しも終了する。</p></aside></section><section class="subsection" id="s17"><h3>3.5　左、根、右という読み方</h3><p>二分木を「左部分木、自分自身、右部分木」の順に処理することを中順走査と呼びます。ハノイの手順は、まさにこの位置に円盤移動を置いています。次のコードではmovesへ追加する行が、自分自身の仕事です。</p><details class="code"><summary>Pythonコードを読む</summary><pre><code>def hanoi(n, src, dst, aux, moves):
+    if n &lt; 1:
+        raise ValueError(&quot;n must be positive&quot;)
+    if n == 1:
+        moves.append((1, src, dst))
+        return
+    hanoi(n - 1, src, aux, dst, moves)
+    moves.append((n, src, dst))
+    hanoi(n - 1, aux, dst, src, moves)</code></pre></details><p>付属コードでは、moves = []を作り、hanoi(4, &quot;A&quot;, &quot;C&quot;, &quot;B&quot;, moves)と実行します。要素は円盤番号、移動元、移動先の組です。木を先順、つまり根から処理すると、まだ上に小さな円盤があるのに円盤4を動かそうとしてしまいます。木の形だけでなく、作業を実行する位置が重要です。</p><aside class="summary"><strong>ここに注目</strong><p>n = 0なら何もしない版では、4枚の呼び出しは31回。そのうち16回は0枚の葉で、移動は行わない。移動回数はどちらも15回。</p></aside></section><section class="subsection" id="s18"><h3>3.6　15という数を、二通りで数える</h3><p>深さ0に根が1個、深さ1に2個、深さ2に4個、深さ3に8個。4枚の木は、その合計15個です。n枚では深さn−1まであり、1 + 2 + … + 2ⁿ⁻¹ = 2ⁿ − 1となります。</p><figure id="fig-07_levels" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-07_levels" aria-label="図3.3を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図3.3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 235" width="500" height="235" role="img" aria-labelledby="title-07_levels"><title id="title-07_levels">図3.3　深さが一つ増えるたびに、その段のノード数は2倍になる。4枚では4段、葉は8個。</title>
+<text x="35" y="35" font-size="12" fill="#202a30" text-anchor="middle">深さ0</text>
+<circle cx="105" cy="30" r="10" fill="#eaf2f3" stroke="#236675"/>
+<text x="455" y="35" font-size="14" fill="#202a30" text-anchor="middle">1個</text>
+<text x="35" y="88" font-size="12" fill="#202a30" text-anchor="middle">深さ1</text>
+<circle cx="105" cy="83" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="141" cy="83" r="10" fill="#eaf2f3" stroke="#236675"/>
+<text x="455" y="88" font-size="14" fill="#202a30" text-anchor="middle">2個</text>
+<text x="35" y="141" font-size="12" fill="#202a30" text-anchor="middle">深さ2</text>
+<circle cx="105" cy="136" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="141" cy="136" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="177" cy="136" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="213" cy="136" r="10" fill="#eaf2f3" stroke="#236675"/>
+<text x="455" y="141" font-size="14" fill="#202a30" text-anchor="middle">4個</text>
+<text x="35" y="194" font-size="12" fill="#202a30" text-anchor="middle">深さ3</text>
+<circle cx="105" cy="189" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="141" cy="189" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="177" cy="189" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="213" cy="189" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="249" cy="189" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="285" cy="189" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="321" cy="189" r="10" fill="#eaf2f3" stroke="#236675"/>
+<circle cx="357" cy="189" r="10" fill="#eaf2f3" stroke="#236675"/>
+<text x="455" y="194" font-size="14" fill="#202a30" text-anchor="middle">8個</text>
+<text x="250" y="230" font-size="15" fill="#236675" text-anchor="middle">1 + 2 + 4 + 8 = 15</text></svg></div><figcaption>図3.3　深さが一つ増えるたびに、その段のノード数は2倍になる。4枚では4段、葉は8個。</figcaption></figure><p>別の数え方は、塔を一段小さくする漸化式です。左にT(n−1)回、中央に1回、右にT(n−1)回。したがってT(n)+1 = 2{T(n−1)+1}です。T(1)+1 = 2から、T(n)+1 = 2ⁿ、すなわちT(n) = 2ⁿ−1が得られます。<span class="citations">［<a href="#ref4" aria-label="参考文献4">4</a>］</span></p>
+<p>木の段を足しても、根で左右へ分けても、同じ数になります。数式の2は子の数、最後の+1は自分自身の作業に対応しています。</p><aside class="summary"><strong>ここに注目</strong><p>移動回数の漸化式：T(1) = 1、T(n) = 2T(n−1) + 1。</p></aside></section><section class="subsection" id="s19"><h3>3.7　なぜ、これが最小なのか</h3><p>漸化式は、この手順が何回動かすかを教えてくれます。しかし、それだけではもっと短い別の手順がないとは言えません。最小性には下限の議論が必要です。</p>
+<p>最小移動回数をM(n)とします。最大の円盤を最初に動かす直前、小さいn−1枚は残りの1本へすべて積まれていなければなりません。その準備には少なくともM(n−1)回かかります。</p>
+<p>また、最大の円盤が目的地Cへ最後に入る直後、小さいn−1枚は別の1本に積まれています。それらをCへ重ねるには、少なくともM(n−1)回必要です。最初の最大円盤の移動以前と、最後の移動以後の区間は重なりません。途中に最大円盤の移動が少なくとも1回あるので、M(n) ≥ 2M(n−1) + 1です。</p>
+<p>再帰手順は、ちょうどその回数で実現します。M(1) = 1から帰納的にM(n) = 2ⁿ − 1。これで、実現可能な手順と、それより減らせない理由が揃いました。</p>
+<p>一方、同時に保留する呼び出しは根から葉までのn個です。全体の仕事量は指数的に増えても、コールスタックの深さはnです。付属コードのように全移動をリストへ保存すれば、その出力の保存には2ⁿ − 1個分の領域が別途必要になります。</p>
+<aside class="summary"><strong>この章のまとめ</strong><p>1枚で止まるハノイの呼び出し木は、各段が満たされた二分木です。中順走査が移動順を与え、木全体のノード数が移動回数に一致します。ただし、最小性はノード数を数えるだけでは証明できません。</p></aside></section></section><section class="chapter" id="ch4"><header class="chapter-heading"><span class="eyebrow">RECURSION / CH4</span><h2>第4章　フラクタル</h2></header><section class="subsection" id="s20"><h3>4.1　三角形を、三つの三角形で置き換える</h3><p>正三角形の各辺の中点を結ぶと、元の半分の辺長を持つ三角形が4個できます。中央の逆三角形の内部を除き、角に残る3個へ同じ操作を繰り返します。これがシェルピンスキーの三角形を作る標準的な方法です。<span class="citations">［<a href="#ref5" aria-label="参考文献5">5</a>］</span></p>
+<p>段階0を元の三角形とすると、段階1では3個、段階2では9個、段階3では27個の小三角形が残ります。「いま扱う三角形」を親、「次に扱う3個」を子とすれば、呼び出しの木は三分木になります。</p><figure id="fig-08_sierpinski" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-08_sierpinski" aria-label="図4.1を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図4.1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 345" width="500" height="345" role="img" aria-labelledby="title-08_sierpinski"><title id="title-08_sierpinski">図4.1　段階0～5。各段階の小三角形は3ᵏ個、辺長は元の2⁻ᵏ倍。白い部分は中央から取り除いた領域。</title>
+<polygon points="12,165 152,165 82,44" fill="#236675" stroke="none"/>
+<text x="82" y="191" font-size="12" fill="#202a30" text-anchor="middle">段階0：1個</text>
+<polygon points="181,165 251.0,165.0 216.0,104.5" fill="#236675" stroke="none"/>
+<polygon points="251.0,165.0 321,165 286.0,104.5" fill="#236675" stroke="none"/>
+<polygon points="216.0,104.5 286.0,104.5 251,44" fill="#236675" stroke="none"/>
+<text x="251" y="191" font-size="12" fill="#202a30" text-anchor="middle">段階1：3個</text>
+<polygon points="350,165 385.0,165.0 367.5,134.75" fill="#236675" stroke="none"/>
+<polygon points="385.0,165.0 420.0,165.0 402.5,134.75" fill="#236675" stroke="none"/>
+<polygon points="367.5,134.75 402.5,134.75 385.0,104.5" fill="#236675" stroke="none"/>
+<polygon points="420.0,165.0 455.0,165.0 437.5,134.75" fill="#236675" stroke="none"/>
+<polygon points="455.0,165.0 490,165 472.5,134.75" fill="#236675" stroke="none"/>
+<polygon points="437.5,134.75 472.5,134.75 455.0,104.5" fill="#236675" stroke="none"/>
+<polygon points="385.0,104.5 420.0,104.5 402.5,74.25" fill="#236675" stroke="none"/>
+<polygon points="420.0,104.5 455.0,104.5 437.5,74.25" fill="#236675" stroke="none"/>
+<polygon points="402.5,74.25 437.5,74.25 420,44" fill="#236675" stroke="none"/>
+<text x="420" y="191" font-size="12" fill="#202a30" text-anchor="middle">段階2：9個</text>
+<polygon points="12,331 29.5,331.0 20.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="29.5,331.0 47.0,331.0 38.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="20.75,315.875 38.25,315.875 29.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="47.0,331.0 64.5,331.0 55.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="64.5,331.0 82.0,331.0 73.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="55.75,315.875 73.25,315.875 64.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="29.5,300.75 47.0,300.75 38.25,285.625" fill="#236675" stroke="none"/>
+<polygon points="47.0,300.75 64.5,300.75 55.75,285.625" fill="#236675" stroke="none"/>
+<polygon points="38.25,285.625 55.75,285.625 47.0,270.5" fill="#236675" stroke="none"/>
+<polygon points="82.0,331.0 99.5,331.0 90.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="99.5,331.0 117.0,331.0 108.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="90.75,315.875 108.25,315.875 99.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="117.0,331.0 134.5,331.0 125.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="134.5,331.0 152,331 143.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="125.75,315.875 143.25,315.875 134.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="99.5,300.75 117.0,300.75 108.25,285.625" fill="#236675" stroke="none"/>
+<polygon points="117.0,300.75 134.5,300.75 125.75,285.625" fill="#236675" stroke="none"/>
+<polygon points="108.25,285.625 125.75,285.625 117.0,270.5" fill="#236675" stroke="none"/>
+<polygon points="47.0,270.5 64.5,270.5 55.75,255.375" fill="#236675" stroke="none"/>
+<polygon points="64.5,270.5 82.0,270.5 73.25,255.375" fill="#236675" stroke="none"/>
+<polygon points="55.75,255.375 73.25,255.375 64.5,240.25" fill="#236675" stroke="none"/>
+<polygon points="82.0,270.5 99.5,270.5 90.75,255.375" fill="#236675" stroke="none"/>
+<polygon points="99.5,270.5 117.0,270.5 108.25,255.375" fill="#236675" stroke="none"/>
+<polygon points="90.75,255.375 108.25,255.375 99.5,240.25" fill="#236675" stroke="none"/>
+<polygon points="64.5,240.25 82.0,240.25 73.25,225.125" fill="#236675" stroke="none"/>
+<polygon points="82.0,240.25 99.5,240.25 90.75,225.125" fill="#236675" stroke="none"/>
+<polygon points="73.25,225.125 90.75,225.125 82,210" fill="#236675" stroke="none"/>
+<text x="82" y="357" font-size="12" fill="#202a30" text-anchor="middle">段階3：27個</text>
+<polygon points="181,331 189.75,331.0 185.375,323.4375" fill="#236675" stroke="none"/>
+<polygon points="189.75,331.0 198.5,331.0 194.125,323.4375" fill="#236675" stroke="none"/>
+<polygon points="185.375,323.4375 194.125,323.4375 189.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="198.5,331.0 207.25,331.0 202.875,323.4375" fill="#236675" stroke="none"/>
+<polygon points="207.25,331.0 216.0,331.0 211.625,323.4375" fill="#236675" stroke="none"/>
+<polygon points="202.875,323.4375 211.625,323.4375 207.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="189.75,315.875 198.5,315.875 194.125,308.3125" fill="#236675" stroke="none"/>
+<polygon points="198.5,315.875 207.25,315.875 202.875,308.3125" fill="#236675" stroke="none"/>
+<polygon points="194.125,308.3125 202.875,308.3125 198.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="216.0,331.0 224.75,331.0 220.375,323.4375" fill="#236675" stroke="none"/>
+<polygon points="224.75,331.0 233.5,331.0 229.125,323.4375" fill="#236675" stroke="none"/>
+<polygon points="220.375,323.4375 229.125,323.4375 224.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="233.5,331.0 242.25,331.0 237.875,323.4375" fill="#236675" stroke="none"/>
+<polygon points="242.25,331.0 251.0,331.0 246.625,323.4375" fill="#236675" stroke="none"/>
+<polygon points="237.875,323.4375 246.625,323.4375 242.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="224.75,315.875 233.5,315.875 229.125,308.3125" fill="#236675" stroke="none"/>
+<polygon points="233.5,315.875 242.25,315.875 237.875,308.3125" fill="#236675" stroke="none"/>
+<polygon points="229.125,308.3125 237.875,308.3125 233.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="198.5,300.75 207.25,300.75 202.875,293.1875" fill="#236675" stroke="none"/>
+<polygon points="207.25,300.75 216.0,300.75 211.625,293.1875" fill="#236675" stroke="none"/>
+<polygon points="202.875,293.1875 211.625,293.1875 207.25,285.625" fill="#236675" stroke="none"/>
+<polygon points="216.0,300.75 224.75,300.75 220.375,293.1875" fill="#236675" stroke="none"/>
+<polygon points="224.75,300.75 233.5,300.75 229.125,293.1875" fill="#236675" stroke="none"/>
+<polygon points="220.375,293.1875 229.125,293.1875 224.75,285.625" fill="#236675" stroke="none"/>
+<polygon points="207.25,285.625 216.0,285.625 211.625,278.0625" fill="#236675" stroke="none"/>
+<polygon points="216.0,285.625 224.75,285.625 220.375,278.0625" fill="#236675" stroke="none"/>
+<polygon points="211.625,278.0625 220.375,278.0625 216.0,270.5" fill="#236675" stroke="none"/>
+<polygon points="251.0,331.0 259.75,331.0 255.375,323.4375" fill="#236675" stroke="none"/>
+<polygon points="259.75,331.0 268.5,331.0 264.125,323.4375" fill="#236675" stroke="none"/>
+<polygon points="255.375,323.4375 264.125,323.4375 259.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="268.5,331.0 277.25,331.0 272.875,323.4375" fill="#236675" stroke="none"/>
+<polygon points="277.25,331.0 286.0,331.0 281.625,323.4375" fill="#236675" stroke="none"/>
+<polygon points="272.875,323.4375 281.625,323.4375 277.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="259.75,315.875 268.5,315.875 264.125,308.3125" fill="#236675" stroke="none"/>
+<polygon points="268.5,315.875 277.25,315.875 272.875,308.3125" fill="#236675" stroke="none"/>
+<polygon points="264.125,308.3125 272.875,308.3125 268.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="286.0,331.0 294.75,331.0 290.375,323.4375" fill="#236675" stroke="none"/>
+<polygon points="294.75,331.0 303.5,331.0 299.125,323.4375" fill="#236675" stroke="none"/>
+<polygon points="290.375,323.4375 299.125,323.4375 294.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="303.5,331.0 312.25,331.0 307.875,323.4375" fill="#236675" stroke="none"/>
+<polygon points="312.25,331.0 321,331 316.625,323.4375" fill="#236675" stroke="none"/>
+<polygon points="307.875,323.4375 316.625,323.4375 312.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="294.75,315.875 303.5,315.875 299.125,308.3125" fill="#236675" stroke="none"/>
+<polygon points="303.5,315.875 312.25,315.875 307.875,308.3125" fill="#236675" stroke="none"/>
+<polygon points="299.125,308.3125 307.875,308.3125 303.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="268.5,300.75 277.25,300.75 272.875,293.1875" fill="#236675" stroke="none"/>
+<polygon points="277.25,300.75 286.0,300.75 281.625,293.1875" fill="#236675" stroke="none"/>
+<polygon points="272.875,293.1875 281.625,293.1875 277.25,285.625" fill="#236675" stroke="none"/>
+<polygon points="286.0,300.75 294.75,300.75 290.375,293.1875" fill="#236675" stroke="none"/>
+<polygon points="294.75,300.75 303.5,300.75 299.125,293.1875" fill="#236675" stroke="none"/>
+<polygon points="290.375,293.1875 299.125,293.1875 294.75,285.625" fill="#236675" stroke="none"/>
+<polygon points="277.25,285.625 286.0,285.625 281.625,278.0625" fill="#236675" stroke="none"/>
+<polygon points="286.0,285.625 294.75,285.625 290.375,278.0625" fill="#236675" stroke="none"/>
+<polygon points="281.625,278.0625 290.375,278.0625 286.0,270.5" fill="#236675" stroke="none"/>
+<polygon points="216.0,270.5 224.75,270.5 220.375,262.9375" fill="#236675" stroke="none"/>
+<polygon points="224.75,270.5 233.5,270.5 229.125,262.9375" fill="#236675" stroke="none"/>
+<polygon points="220.375,262.9375 229.125,262.9375 224.75,255.375" fill="#236675" stroke="none"/>
+<polygon points="233.5,270.5 242.25,270.5 237.875,262.9375" fill="#236675" stroke="none"/>
+<polygon points="242.25,270.5 251.0,270.5 246.625,262.9375" fill="#236675" stroke="none"/>
+<polygon points="237.875,262.9375 246.625,262.9375 242.25,255.375" fill="#236675" stroke="none"/>
+<polygon points="224.75,255.375 233.5,255.375 229.125,247.8125" fill="#236675" stroke="none"/>
+<polygon points="233.5,255.375 242.25,255.375 237.875,247.8125" fill="#236675" stroke="none"/>
+<polygon points="229.125,247.8125 237.875,247.8125 233.5,240.25" fill="#236675" stroke="none"/>
+<polygon points="251.0,270.5 259.75,270.5 255.375,262.9375" fill="#236675" stroke="none"/>
+<polygon points="259.75,270.5 268.5,270.5 264.125,262.9375" fill="#236675" stroke="none"/>
+<polygon points="255.375,262.9375 264.125,262.9375 259.75,255.375" fill="#236675" stroke="none"/>
+<polygon points="268.5,270.5 277.25,270.5 272.875,262.9375" fill="#236675" stroke="none"/>
+<polygon points="277.25,270.5 286.0,270.5 281.625,262.9375" fill="#236675" stroke="none"/>
+<polygon points="272.875,262.9375 281.625,262.9375 277.25,255.375" fill="#236675" stroke="none"/>
+<polygon points="259.75,255.375 268.5,255.375 264.125,247.8125" fill="#236675" stroke="none"/>
+<polygon points="268.5,255.375 277.25,255.375 272.875,247.8125" fill="#236675" stroke="none"/>
+<polygon points="264.125,247.8125 272.875,247.8125 268.5,240.25" fill="#236675" stroke="none"/>
+<polygon points="233.5,240.25 242.25,240.25 237.875,232.6875" fill="#236675" stroke="none"/>
+<polygon points="242.25,240.25 251.0,240.25 246.625,232.6875" fill="#236675" stroke="none"/>
+<polygon points="237.875,232.6875 246.625,232.6875 242.25,225.125" fill="#236675" stroke="none"/>
+<polygon points="251.0,240.25 259.75,240.25 255.375,232.6875" fill="#236675" stroke="none"/>
+<polygon points="259.75,240.25 268.5,240.25 264.125,232.6875" fill="#236675" stroke="none"/>
+<polygon points="255.375,232.6875 264.125,232.6875 259.75,225.125" fill="#236675" stroke="none"/>
+<polygon points="242.25,225.125 251.0,225.125 246.625,217.5625" fill="#236675" stroke="none"/>
+<polygon points="251.0,225.125 259.75,225.125 255.375,217.5625" fill="#236675" stroke="none"/>
+<polygon points="246.625,217.5625 255.375,217.5625 251,210" fill="#236675" stroke="none"/>
+<text x="251" y="357" font-size="12" fill="#202a30" text-anchor="middle">段階4：81個</text>
+<polygon points="350,331 354.375,331.0 352.1875,327.21875" fill="#236675" stroke="none"/>
+<polygon points="354.375,331.0 358.75,331.0 356.5625,327.21875" fill="#236675" stroke="none"/>
+<polygon points="352.1875,327.21875 356.5625,327.21875 354.375,323.4375" fill="#236675" stroke="none"/>
+<polygon points="358.75,331.0 363.125,331.0 360.9375,327.21875" fill="#236675" stroke="none"/>
+<polygon points="363.125,331.0 367.5,331.0 365.3125,327.21875" fill="#236675" stroke="none"/>
+<polygon points="360.9375,327.21875 365.3125,327.21875 363.125,323.4375" fill="#236675" stroke="none"/>
+<polygon points="354.375,323.4375 358.75,323.4375 356.5625,319.65625" fill="#236675" stroke="none"/>
+<polygon points="358.75,323.4375 363.125,323.4375 360.9375,319.65625" fill="#236675" stroke="none"/>
+<polygon points="356.5625,319.65625 360.9375,319.65625 358.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="367.5,331.0 371.875,331.0 369.6875,327.21875" fill="#236675" stroke="none"/>
+<polygon points="371.875,331.0 376.25,331.0 374.0625,327.21875" fill="#236675" stroke="none"/>
+<polygon points="369.6875,327.21875 374.0625,327.21875 371.875,323.4375" fill="#236675" stroke="none"/>
+<polygon points="376.25,331.0 380.625,331.0 378.4375,327.21875" fill="#236675" stroke="none"/>
+<polygon points="380.625,331.0 385.0,331.0 382.8125,327.21875" fill="#236675" stroke="none"/>
+<polygon points="378.4375,327.21875 382.8125,327.21875 380.625,323.4375" fill="#236675" stroke="none"/>
+<polygon points="371.875,323.4375 376.25,323.4375 374.0625,319.65625" fill="#236675" stroke="none"/>
+<polygon points="376.25,323.4375 380.625,323.4375 378.4375,319.65625" fill="#236675" stroke="none"/>
+<polygon points="374.0625,319.65625 378.4375,319.65625 376.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="358.75,315.875 363.125,315.875 360.9375,312.09375" fill="#236675" stroke="none"/>
+<polygon points="363.125,315.875 367.5,315.875 365.3125,312.09375" fill="#236675" stroke="none"/>
+<polygon points="360.9375,312.09375 365.3125,312.09375 363.125,308.3125" fill="#236675" stroke="none"/>
+<polygon points="367.5,315.875 371.875,315.875 369.6875,312.09375" fill="#236675" stroke="none"/>
+<polygon points="371.875,315.875 376.25,315.875 374.0625,312.09375" fill="#236675" stroke="none"/>
+<polygon points="369.6875,312.09375 374.0625,312.09375 371.875,308.3125" fill="#236675" stroke="none"/>
+<polygon points="363.125,308.3125 367.5,308.3125 365.3125,304.53125" fill="#236675" stroke="none"/>
+<polygon points="367.5,308.3125 371.875,308.3125 369.6875,304.53125" fill="#236675" stroke="none"/>
+<polygon points="365.3125,304.53125 369.6875,304.53125 367.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="385.0,331.0 389.375,331.0 387.1875,327.21875" fill="#236675" stroke="none"/>
+<polygon points="389.375,331.0 393.75,331.0 391.5625,327.21875" fill="#236675" stroke="none"/>
+<polygon points="387.1875,327.21875 391.5625,327.21875 389.375,323.4375" fill="#236675" stroke="none"/>
+<polygon points="393.75,331.0 398.125,331.0 395.9375,327.21875" fill="#236675" stroke="none"/>
+<polygon points="398.125,331.0 402.5,331.0 400.3125,327.21875" fill="#236675" stroke="none"/>
+<polygon points="395.9375,327.21875 400.3125,327.21875 398.125,323.4375" fill="#236675" stroke="none"/>
+<polygon points="389.375,323.4375 393.75,323.4375 391.5625,319.65625" fill="#236675" stroke="none"/>
+<polygon points="393.75,323.4375 398.125,323.4375 395.9375,319.65625" fill="#236675" stroke="none"/>
+<polygon points="391.5625,319.65625 395.9375,319.65625 393.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="402.5,331.0 406.875,331.0 404.6875,327.21875" fill="#236675" stroke="none"/>
+<polygon points="406.875,331.0 411.25,331.0 409.0625,327.21875" fill="#236675" stroke="none"/>
+<polygon points="404.6875,327.21875 409.0625,327.21875 406.875,323.4375" fill="#236675" stroke="none"/>
+<polygon points="411.25,331.0 415.625,331.0 413.4375,327.21875" fill="#236675" stroke="none"/>
+<polygon points="415.625,331.0 420.0,331.0 417.8125,327.21875" fill="#236675" stroke="none"/>
+<polygon points="413.4375,327.21875 417.8125,327.21875 415.625,323.4375" fill="#236675" stroke="none"/>
+<polygon points="406.875,323.4375 411.25,323.4375 409.0625,319.65625" fill="#236675" stroke="none"/>
+<polygon points="411.25,323.4375 415.625,323.4375 413.4375,319.65625" fill="#236675" stroke="none"/>
+<polygon points="409.0625,319.65625 413.4375,319.65625 411.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="393.75,315.875 398.125,315.875 395.9375,312.09375" fill="#236675" stroke="none"/>
+<polygon points="398.125,315.875 402.5,315.875 400.3125,312.09375" fill="#236675" stroke="none"/>
+<polygon points="395.9375,312.09375 400.3125,312.09375 398.125,308.3125" fill="#236675" stroke="none"/>
+<polygon points="402.5,315.875 406.875,315.875 404.6875,312.09375" fill="#236675" stroke="none"/>
+<polygon points="406.875,315.875 411.25,315.875 409.0625,312.09375" fill="#236675" stroke="none"/>
+<polygon points="404.6875,312.09375 409.0625,312.09375 406.875,308.3125" fill="#236675" stroke="none"/>
+<polygon points="398.125,308.3125 402.5,308.3125 400.3125,304.53125" fill="#236675" stroke="none"/>
+<polygon points="402.5,308.3125 406.875,308.3125 404.6875,304.53125" fill="#236675" stroke="none"/>
+<polygon points="400.3125,304.53125 404.6875,304.53125 402.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="367.5,300.75 371.875,300.75 369.6875,296.96875" fill="#236675" stroke="none"/>
+<polygon points="371.875,300.75 376.25,300.75 374.0625,296.96875" fill="#236675" stroke="none"/>
+<polygon points="369.6875,296.96875 374.0625,296.96875 371.875,293.1875" fill="#236675" stroke="none"/>
+<polygon points="376.25,300.75 380.625,300.75 378.4375,296.96875" fill="#236675" stroke="none"/>
+<polygon points="380.625,300.75 385.0,300.75 382.8125,296.96875" fill="#236675" stroke="none"/>
+<polygon points="378.4375,296.96875 382.8125,296.96875 380.625,293.1875" fill="#236675" stroke="none"/>
+<polygon points="371.875,293.1875 376.25,293.1875 374.0625,289.40625" fill="#236675" stroke="none"/>
+<polygon points="376.25,293.1875 380.625,293.1875 378.4375,289.40625" fill="#236675" stroke="none"/>
+<polygon points="374.0625,289.40625 378.4375,289.40625 376.25,285.625" fill="#236675" stroke="none"/>
+<polygon points="385.0,300.75 389.375,300.75 387.1875,296.96875" fill="#236675" stroke="none"/>
+<polygon points="389.375,300.75 393.75,300.75 391.5625,296.96875" fill="#236675" stroke="none"/>
+<polygon points="387.1875,296.96875 391.5625,296.96875 389.375,293.1875" fill="#236675" stroke="none"/>
+<polygon points="393.75,300.75 398.125,300.75 395.9375,296.96875" fill="#236675" stroke="none"/>
+<polygon points="398.125,300.75 402.5,300.75 400.3125,296.96875" fill="#236675" stroke="none"/>
+<polygon points="395.9375,296.96875 400.3125,296.96875 398.125,293.1875" fill="#236675" stroke="none"/>
+<polygon points="389.375,293.1875 393.75,293.1875 391.5625,289.40625" fill="#236675" stroke="none"/>
+<polygon points="393.75,293.1875 398.125,293.1875 395.9375,289.40625" fill="#236675" stroke="none"/>
+<polygon points="391.5625,289.40625 395.9375,289.40625 393.75,285.625" fill="#236675" stroke="none"/>
+<polygon points="376.25,285.625 380.625,285.625 378.4375,281.84375" fill="#236675" stroke="none"/>
+<polygon points="380.625,285.625 385.0,285.625 382.8125,281.84375" fill="#236675" stroke="none"/>
+<polygon points="378.4375,281.84375 382.8125,281.84375 380.625,278.0625" fill="#236675" stroke="none"/>
+<polygon points="385.0,285.625 389.375,285.625 387.1875,281.84375" fill="#236675" stroke="none"/>
+<polygon points="389.375,285.625 393.75,285.625 391.5625,281.84375" fill="#236675" stroke="none"/>
+<polygon points="387.1875,281.84375 391.5625,281.84375 389.375,278.0625" fill="#236675" stroke="none"/>
+<polygon points="380.625,278.0625 385.0,278.0625 382.8125,274.28125" fill="#236675" stroke="none"/>
+<polygon points="385.0,278.0625 389.375,278.0625 387.1875,274.28125" fill="#236675" stroke="none"/>
+<polygon points="382.8125,274.28125 387.1875,274.28125 385.0,270.5" fill="#236675" stroke="none"/>
+<polygon points="420.0,331.0 424.375,331.0 422.1875,327.21875" fill="#236675" stroke="none"/>
+<polygon points="424.375,331.0 428.75,331.0 426.5625,327.21875" fill="#236675" stroke="none"/>
+<polygon points="422.1875,327.21875 426.5625,327.21875 424.375,323.4375" fill="#236675" stroke="none"/>
+<polygon points="428.75,331.0 433.125,331.0 430.9375,327.21875" fill="#236675" stroke="none"/>
+<polygon points="433.125,331.0 437.5,331.0 435.3125,327.21875" fill="#236675" stroke="none"/>
+<polygon points="430.9375,327.21875 435.3125,327.21875 433.125,323.4375" fill="#236675" stroke="none"/>
+<polygon points="424.375,323.4375 428.75,323.4375 426.5625,319.65625" fill="#236675" stroke="none"/>
+<polygon points="428.75,323.4375 433.125,323.4375 430.9375,319.65625" fill="#236675" stroke="none"/>
+<polygon points="426.5625,319.65625 430.9375,319.65625 428.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="437.5,331.0 441.875,331.0 439.6875,327.21875" fill="#236675" stroke="none"/>
+<polygon points="441.875,331.0 446.25,331.0 444.0625,327.21875" fill="#236675" stroke="none"/>
+<polygon points="439.6875,327.21875 444.0625,327.21875 441.875,323.4375" fill="#236675" stroke="none"/>
+<polygon points="446.25,331.0 450.625,331.0 448.4375,327.21875" fill="#236675" stroke="none"/>
+<polygon points="450.625,331.0 455.0,331.0 452.8125,327.21875" fill="#236675" stroke="none"/>
+<polygon points="448.4375,327.21875 452.8125,327.21875 450.625,323.4375" fill="#236675" stroke="none"/>
+<polygon points="441.875,323.4375 446.25,323.4375 444.0625,319.65625" fill="#236675" stroke="none"/>
+<polygon points="446.25,323.4375 450.625,323.4375 448.4375,319.65625" fill="#236675" stroke="none"/>
+<polygon points="444.0625,319.65625 448.4375,319.65625 446.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="428.75,315.875 433.125,315.875 430.9375,312.09375" fill="#236675" stroke="none"/>
+<polygon points="433.125,315.875 437.5,315.875 435.3125,312.09375" fill="#236675" stroke="none"/>
+<polygon points="430.9375,312.09375 435.3125,312.09375 433.125,308.3125" fill="#236675" stroke="none"/>
+<polygon points="437.5,315.875 441.875,315.875 439.6875,312.09375" fill="#236675" stroke="none"/>
+<polygon points="441.875,315.875 446.25,315.875 444.0625,312.09375" fill="#236675" stroke="none"/>
+<polygon points="439.6875,312.09375 444.0625,312.09375 441.875,308.3125" fill="#236675" stroke="none"/>
+<polygon points="433.125,308.3125 437.5,308.3125 435.3125,304.53125" fill="#236675" stroke="none"/>
+<polygon points="437.5,308.3125 441.875,308.3125 439.6875,304.53125" fill="#236675" stroke="none"/>
+<polygon points="435.3125,304.53125 439.6875,304.53125 437.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="455.0,331.0 459.375,331.0 457.1875,327.21875" fill="#236675" stroke="none"/>
+<polygon points="459.375,331.0 463.75,331.0 461.5625,327.21875" fill="#236675" stroke="none"/>
+<polygon points="457.1875,327.21875 461.5625,327.21875 459.375,323.4375" fill="#236675" stroke="none"/>
+<polygon points="463.75,331.0 468.125,331.0 465.9375,327.21875" fill="#236675" stroke="none"/>
+<polygon points="468.125,331.0 472.5,331.0 470.3125,327.21875" fill="#236675" stroke="none"/>
+<polygon points="465.9375,327.21875 470.3125,327.21875 468.125,323.4375" fill="#236675" stroke="none"/>
+<polygon points="459.375,323.4375 463.75,323.4375 461.5625,319.65625" fill="#236675" stroke="none"/>
+<polygon points="463.75,323.4375 468.125,323.4375 465.9375,319.65625" fill="#236675" stroke="none"/>
+<polygon points="461.5625,319.65625 465.9375,319.65625 463.75,315.875" fill="#236675" stroke="none"/>
+<polygon points="472.5,331.0 476.875,331.0 474.6875,327.21875" fill="#236675" stroke="none"/>
+<polygon points="476.875,331.0 481.25,331.0 479.0625,327.21875" fill="#236675" stroke="none"/>
+<polygon points="474.6875,327.21875 479.0625,327.21875 476.875,323.4375" fill="#236675" stroke="none"/>
+<polygon points="481.25,331.0 485.625,331.0 483.4375,327.21875" fill="#236675" stroke="none"/>
+<polygon points="485.625,331.0 490,331 487.8125,327.21875" fill="#236675" stroke="none"/>
+<polygon points="483.4375,327.21875 487.8125,327.21875 485.625,323.4375" fill="#236675" stroke="none"/>
+<polygon points="476.875,323.4375 481.25,323.4375 479.0625,319.65625" fill="#236675" stroke="none"/>
+<polygon points="481.25,323.4375 485.625,323.4375 483.4375,319.65625" fill="#236675" stroke="none"/>
+<polygon points="479.0625,319.65625 483.4375,319.65625 481.25,315.875" fill="#236675" stroke="none"/>
+<polygon points="463.75,315.875 468.125,315.875 465.9375,312.09375" fill="#236675" stroke="none"/>
+<polygon points="468.125,315.875 472.5,315.875 470.3125,312.09375" fill="#236675" stroke="none"/>
+<polygon points="465.9375,312.09375 470.3125,312.09375 468.125,308.3125" fill="#236675" stroke="none"/>
+<polygon points="472.5,315.875 476.875,315.875 474.6875,312.09375" fill="#236675" stroke="none"/>
+<polygon points="476.875,315.875 481.25,315.875 479.0625,312.09375" fill="#236675" stroke="none"/>
+<polygon points="474.6875,312.09375 479.0625,312.09375 476.875,308.3125" fill="#236675" stroke="none"/>
+<polygon points="468.125,308.3125 472.5,308.3125 470.3125,304.53125" fill="#236675" stroke="none"/>
+<polygon points="472.5,308.3125 476.875,308.3125 474.6875,304.53125" fill="#236675" stroke="none"/>
+<polygon points="470.3125,304.53125 474.6875,304.53125 472.5,300.75" fill="#236675" stroke="none"/>
+<polygon points="437.5,300.75 441.875,300.75 439.6875,296.96875" fill="#236675" stroke="none"/>
+<polygon points="441.875,300.75 446.25,300.75 444.0625,296.96875" fill="#236675" stroke="none"/>
+<polygon points="439.6875,296.96875 444.0625,296.96875 441.875,293.1875" fill="#236675" stroke="none"/>
+<polygon points="446.25,300.75 450.625,300.75 448.4375,296.96875" fill="#236675" stroke="none"/>
+<polygon points="450.625,300.75 455.0,300.75 452.8125,296.96875" fill="#236675" stroke="none"/>
+<polygon points="448.4375,296.96875 452.8125,296.96875 450.625,293.1875" fill="#236675" stroke="none"/>
+<polygon points="441.875,293.1875 446.25,293.1875 444.0625,289.40625" fill="#236675" stroke="none"/>
+<polygon points="446.25,293.1875 450.625,293.1875 448.4375,289.40625" fill="#236675" stroke="none"/>
+<polygon points="444.0625,289.40625 448.4375,289.40625 446.25,285.625" fill="#236675" stroke="none"/>
+<polygon points="455.0,300.75 459.375,300.75 457.1875,296.96875" fill="#236675" stroke="none"/>
+<polygon points="459.375,300.75 463.75,300.75 461.5625,296.96875" fill="#236675" stroke="none"/>
+<polygon points="457.1875,296.96875 461.5625,296.96875 459.375,293.1875" fill="#236675" stroke="none"/>
+<polygon points="463.75,300.75 468.125,300.75 465.9375,296.96875" fill="#236675" stroke="none"/>
+<polygon points="468.125,300.75 472.5,300.75 470.3125,296.96875" fill="#236675" stroke="none"/>
+<polygon points="465.9375,296.96875 470.3125,296.96875 468.125,293.1875" fill="#236675" stroke="none"/>
+<polygon points="459.375,293.1875 463.75,293.1875 461.5625,289.40625" fill="#236675" stroke="none"/>
+<polygon points="463.75,293.1875 468.125,293.1875 465.9375,289.40625" fill="#236675" stroke="none"/>
+<polygon points="461.5625,289.40625 465.9375,289.40625 463.75,285.625" fill="#236675" stroke="none"/>
+<polygon points="446.25,285.625 450.625,285.625 448.4375,281.84375" fill="#236675" stroke="none"/>
+<polygon points="450.625,285.625 455.0,285.625 452.8125,281.84375" fill="#236675" stroke="none"/>
+<polygon points="448.4375,281.84375 452.8125,281.84375 450.625,278.0625" fill="#236675" stroke="none"/>
+<polygon points="455.0,285.625 459.375,285.625 457.1875,281.84375" fill="#236675" stroke="none"/>
+<polygon points="459.375,285.625 463.75,285.625 461.5625,281.84375" fill="#236675" stroke="none"/>
+<polygon points="457.1875,281.84375 461.5625,281.84375 459.375,278.0625" fill="#236675" stroke="none"/>
+<polygon points="450.625,278.0625 455.0,278.0625 452.8125,274.28125" fill="#236675" stroke="none"/>
+<polygon points="455.0,278.0625 459.375,278.0625 457.1875,274.28125" fill="#236675" stroke="none"/>
+<polygon points="452.8125,274.28125 457.1875,274.28125 455.0,270.5" fill="#236675" stroke="none"/>
+<polygon points="385.0,270.5 389.375,270.5 387.1875,266.71875" fill="#236675" stroke="none"/>
+<polygon points="389.375,270.5 393.75,270.5 391.5625,266.71875" fill="#236675" stroke="none"/>
+<polygon points="387.1875,266.71875 391.5625,266.71875 389.375,262.9375" fill="#236675" stroke="none"/>
+<polygon points="393.75,270.5 398.125,270.5 395.9375,266.71875" fill="#236675" stroke="none"/>
+<polygon points="398.125,270.5 402.5,270.5 400.3125,266.71875" fill="#236675" stroke="none"/>
+<polygon points="395.9375,266.71875 400.3125,266.71875 398.125,262.9375" fill="#236675" stroke="none"/>
+<polygon points="389.375,262.9375 393.75,262.9375 391.5625,259.15625" fill="#236675" stroke="none"/>
+<polygon points="393.75,262.9375 398.125,262.9375 395.9375,259.15625" fill="#236675" stroke="none"/>
+<polygon points="391.5625,259.15625 395.9375,259.15625 393.75,255.375" fill="#236675" stroke="none"/>
+<polygon points="402.5,270.5 406.875,270.5 404.6875,266.71875" fill="#236675" stroke="none"/>
+<polygon points="406.875,270.5 411.25,270.5 409.0625,266.71875" fill="#236675" stroke="none"/>
+<polygon points="404.6875,266.71875 409.0625,266.71875 406.875,262.9375" fill="#236675" stroke="none"/>
+<polygon points="411.25,270.5 415.625,270.5 413.4375,266.71875" fill="#236675" stroke="none"/>
+<polygon points="415.625,270.5 420.0,270.5 417.8125,266.71875" fill="#236675" stroke="none"/>
+<polygon points="413.4375,266.71875 417.8125,266.71875 415.625,262.9375" fill="#236675" stroke="none"/>
+<polygon points="406.875,262.9375 411.25,262.9375 409.0625,259.15625" fill="#236675" stroke="none"/>
+<polygon points="411.25,262.9375 415.625,262.9375 413.4375,259.15625" fill="#236675" stroke="none"/>
+<polygon points="409.0625,259.15625 413.4375,259.15625 411.25,255.375" fill="#236675" stroke="none"/>
+<polygon points="393.75,255.375 398.125,255.375 395.9375,251.59375" fill="#236675" stroke="none"/>
+<polygon points="398.125,255.375 402.5,255.375 400.3125,251.59375" fill="#236675" stroke="none"/>
+<polygon points="395.9375,251.59375 400.3125,251.59375 398.125,247.8125" fill="#236675" stroke="none"/>
+<polygon points="402.5,255.375 406.875,255.375 404.6875,251.59375" fill="#236675" stroke="none"/>
+<polygon points="406.875,255.375 411.25,255.375 409.0625,251.59375" fill="#236675" stroke="none"/>
+<polygon points="404.6875,251.59375 409.0625,251.59375 406.875,247.8125" fill="#236675" stroke="none"/>
+<polygon points="398.125,247.8125 402.5,247.8125 400.3125,244.03125" fill="#236675" stroke="none"/>
+<polygon points="402.5,247.8125 406.875,247.8125 404.6875,244.03125" fill="#236675" stroke="none"/>
+<polygon points="400.3125,244.03125 404.6875,244.03125 402.5,240.25" fill="#236675" stroke="none"/>
+<polygon points="420.0,270.5 424.375,270.5 422.1875,266.71875" fill="#236675" stroke="none"/>
+<polygon points="424.375,270.5 428.75,270.5 426.5625,266.71875" fill="#236675" stroke="none"/>
+<polygon points="422.1875,266.71875 426.5625,266.71875 424.375,262.9375" fill="#236675" stroke="none"/>
+<polygon points="428.75,270.5 433.125,270.5 430.9375,266.71875" fill="#236675" stroke="none"/>
+<polygon points="433.125,270.5 437.5,270.5 435.3125,266.71875" fill="#236675" stroke="none"/>
+<polygon points="430.9375,266.71875 435.3125,266.71875 433.125,262.9375" fill="#236675" stroke="none"/>
+<polygon points="424.375,262.9375 428.75,262.9375 426.5625,259.15625" fill="#236675" stroke="none"/>
+<polygon points="428.75,262.9375 433.125,262.9375 430.9375,259.15625" fill="#236675" stroke="none"/>
+<polygon points="426.5625,259.15625 430.9375,259.15625 428.75,255.375" fill="#236675" stroke="none"/>
+<polygon points="437.5,270.5 441.875,270.5 439.6875,266.71875" fill="#236675" stroke="none"/>
+<polygon points="441.875,270.5 446.25,270.5 444.0625,266.71875" fill="#236675" stroke="none"/>
+<polygon points="439.6875,266.71875 444.0625,266.71875 441.875,262.9375" fill="#236675" stroke="none"/>
+<polygon points="446.25,270.5 450.625,270.5 448.4375,266.71875" fill="#236675" stroke="none"/>
+<polygon points="450.625,270.5 455.0,270.5 452.8125,266.71875" fill="#236675" stroke="none"/>
+<polygon points="448.4375,266.71875 452.8125,266.71875 450.625,262.9375" fill="#236675" stroke="none"/>
+<polygon points="441.875,262.9375 446.25,262.9375 444.0625,259.15625" fill="#236675" stroke="none"/>
+<polygon points="446.25,262.9375 450.625,262.9375 448.4375,259.15625" fill="#236675" stroke="none"/>
+<polygon points="444.0625,259.15625 448.4375,259.15625 446.25,255.375" fill="#236675" stroke="none"/>
+<polygon points="428.75,255.375 433.125,255.375 430.9375,251.59375" fill="#236675" stroke="none"/>
+<polygon points="433.125,255.375 437.5,255.375 435.3125,251.59375" fill="#236675" stroke="none"/>
+<polygon points="430.9375,251.59375 435.3125,251.59375 433.125,247.8125" fill="#236675" stroke="none"/>
+<polygon points="437.5,255.375 441.875,255.375 439.6875,251.59375" fill="#236675" stroke="none"/>
+<polygon points="441.875,255.375 446.25,255.375 444.0625,251.59375" fill="#236675" stroke="none"/>
+<polygon points="439.6875,251.59375 444.0625,251.59375 441.875,247.8125" fill="#236675" stroke="none"/>
+<polygon points="433.125,247.8125 437.5,247.8125 435.3125,244.03125" fill="#236675" stroke="none"/>
+<polygon points="437.5,247.8125 441.875,247.8125 439.6875,244.03125" fill="#236675" stroke="none"/>
+<polygon points="435.3125,244.03125 439.6875,244.03125 437.5,240.25" fill="#236675" stroke="none"/>
+<polygon points="402.5,240.25 406.875,240.25 404.6875,236.46875" fill="#236675" stroke="none"/>
+<polygon points="406.875,240.25 411.25,240.25 409.0625,236.46875" fill="#236675" stroke="none"/>
+<polygon points="404.6875,236.46875 409.0625,236.46875 406.875,232.6875" fill="#236675" stroke="none"/>
+<polygon points="411.25,240.25 415.625,240.25 413.4375,236.46875" fill="#236675" stroke="none"/>
+<polygon points="415.625,240.25 420.0,240.25 417.8125,236.46875" fill="#236675" stroke="none"/>
+<polygon points="413.4375,236.46875 417.8125,236.46875 415.625,232.6875" fill="#236675" stroke="none"/>
+<polygon points="406.875,232.6875 411.25,232.6875 409.0625,228.90625" fill="#236675" stroke="none"/>
+<polygon points="411.25,232.6875 415.625,232.6875 413.4375,228.90625" fill="#236675" stroke="none"/>
+<polygon points="409.0625,228.90625 413.4375,228.90625 411.25,225.125" fill="#236675" stroke="none"/>
+<polygon points="420.0,240.25 424.375,240.25 422.1875,236.46875" fill="#236675" stroke="none"/>
+<polygon points="424.375,240.25 428.75,240.25 426.5625,236.46875" fill="#236675" stroke="none"/>
+<polygon points="422.1875,236.46875 426.5625,236.46875 424.375,232.6875" fill="#236675" stroke="none"/>
+<polygon points="428.75,240.25 433.125,240.25 430.9375,236.46875" fill="#236675" stroke="none"/>
+<polygon points="433.125,240.25 437.5,240.25 435.3125,236.46875" fill="#236675" stroke="none"/>
+<polygon points="430.9375,236.46875 435.3125,236.46875 433.125,232.6875" fill="#236675" stroke="none"/>
+<polygon points="424.375,232.6875 428.75,232.6875 426.5625,228.90625" fill="#236675" stroke="none"/>
+<polygon points="428.75,232.6875 433.125,232.6875 430.9375,228.90625" fill="#236675" stroke="none"/>
+<polygon points="426.5625,228.90625 430.9375,228.90625 428.75,225.125" fill="#236675" stroke="none"/>
+<polygon points="411.25,225.125 415.625,225.125 413.4375,221.34375" fill="#236675" stroke="none"/>
+<polygon points="415.625,225.125 420.0,225.125 417.8125,221.34375" fill="#236675" stroke="none"/>
+<polygon points="413.4375,221.34375 417.8125,221.34375 415.625,217.5625" fill="#236675" stroke="none"/>
+<polygon points="420.0,225.125 424.375,225.125 422.1875,221.34375" fill="#236675" stroke="none"/>
+<polygon points="424.375,225.125 428.75,225.125 426.5625,221.34375" fill="#236675" stroke="none"/>
+<polygon points="422.1875,221.34375 426.5625,221.34375 424.375,217.5625" fill="#236675" stroke="none"/>
+<polygon points="415.625,217.5625 420.0,217.5625 417.8125,213.78125" fill="#236675" stroke="none"/>
+<polygon points="420.0,217.5625 424.375,217.5625 422.1875,213.78125" fill="#236675" stroke="none"/>
+<polygon points="417.8125,213.78125 422.1875,213.78125 420,210" fill="#236675" stroke="none"/>
+<text x="420" y="357" font-size="12" fill="#202a30" text-anchor="middle">段階5：243個</text></svg></div><figcaption>図4.1　段階0～5。各段階の小三角形は3ᵏ個、辺長は元の2⁻ᵏ倍。白い部分は中央から取り除いた領域。</figcaption></figure></section><section class="subsection" id="s21"><h3>4.2　木の枝に、図形の住所を付ける</h3><p>上の子をA、左下をB、右下をCと名付けます。全体のAを選び、その中のBを選べばABです。2段たどる住所は9個あり、図形の9個の小領域と対応します。</p>
+<p>木はどの順で部分領域を作ったかを記述し、図形はそれらが平面のどこに置かれたかを示します。幾何学的な位置や縮小率は、木の形だけからは分かりません。枝に対応する変換の規則が必要です。</p><figure id="fig-09_addresses" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-09_addresses" aria-label="図4.2を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図4.2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 450" width="500" height="450" role="img" aria-labelledby="title-09_addresses"><title id="title-09_addresses">図4.2　長さ2の住所と、段階2の三角形の対応。三角形どうしの共有頂点は複数の住所側に属しうるため、点の住所が常に一意という意味ではない。</title>
+<circle cx="250" cy="27" r="20" fill="#eaf2f3" stroke="#236675"/>
+<text x="250" y="31" font-size="12" fill="#202a30" text-anchor="middle">全体</text>
+<line x1="250" y1="47" x2="80" y2="80" stroke="#78858a" stroke-width="1"/>
+<circle cx="80" cy="95" r="16" fill="#ffffff" stroke="#236675"/>
+<text x="80" y="99" font-size="12" fill="#202a30" text-anchor="middle">A</text>
+<line x1="80" y1="111" x2="33" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="13.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="33" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">AA</text>
+<line x1="80" y1="111" x2="80" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="60.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="80" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">AB</text>
+<line x1="80" y1="111" x2="127" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="107.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="127" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">AC</text>
+<line x1="250" y1="47" x2="250" y2="80" stroke="#78858a" stroke-width="1"/>
+<circle cx="250" cy="95" r="16" fill="#ffffff" stroke="#236675"/>
+<text x="250" y="99" font-size="12" fill="#202a30" text-anchor="middle">B</text>
+<line x1="250" y1="111" x2="203" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="183.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="203" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">BA</text>
+<line x1="250" y1="111" x2="250" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="230.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="250" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">BB</text>
+<line x1="250" y1="111" x2="297" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="277.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="297" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">BC</text>
+<line x1="250" y1="47" x2="420" y2="80" stroke="#78858a" stroke-width="1"/>
+<circle cx="420" cy="95" r="16" fill="#ffffff" stroke="#236675"/>
+<text x="420" y="99" font-size="12" fill="#202a30" text-anchor="middle">C</text>
+<line x1="420" y1="111" x2="373" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="353.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="373" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">CA</text>
+<line x1="420" y1="111" x2="420" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="400.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="420" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">CB</text>
+<line x1="420" y1="111" x2="467" y2="145" stroke="#78858a" stroke-width="1"/>
+<rect x="447.0" y="148.0" width="40" height="24" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="467" y="163.85" font-size="11" fill="#202a30" text-anchor="middle">CC</text>
+<polygon points="221.25,280.75 278.75,280.75 250,231" fill="#eaf2f3" stroke="#236675"/>
+<text x="250.0" y="268.1666666666667" font-size="10" fill="#202a30" text-anchor="middle">AA</text>
+<polygon points="192.5,330.5 250.0,330.5 221.25,280.75" fill="#eaf2f3" stroke="#236675"/>
+<text x="221.25" y="317.9166666666667" font-size="10" fill="#202a30" text-anchor="middle">AB</text>
+<polygon points="250.0,330.5 307.5,330.5 278.75,280.75" fill="#eaf2f3" stroke="#236675"/>
+<text x="278.75" y="317.9166666666667" font-size="10" fill="#202a30" text-anchor="middle">AC</text>
+<polygon points="163.75,380.25 221.25,380.25 192.5,330.5" fill="#eaf2f3" stroke="#236675"/>
+<text x="192.5" y="367.6666666666667" font-size="10" fill="#202a30" text-anchor="middle">BA</text>
+<polygon points="135,430 192.5,430.0 163.75,380.25" fill="#eaf2f3" stroke="#236675"/>
+<text x="163.75" y="417.4166666666667" font-size="10" fill="#202a30" text-anchor="middle">BB</text>
+<polygon points="192.5,430.0 250.0,430.0 221.25,380.25" fill="#eaf2f3" stroke="#236675"/>
+<text x="221.25" y="417.4166666666667" font-size="10" fill="#202a30" text-anchor="middle">BC</text>
+<polygon points="278.75,380.25 336.25,380.25 307.5,330.5" fill="#eaf2f3" stroke="#236675"/>
+<text x="307.5" y="367.6666666666667" font-size="10" fill="#202a30" text-anchor="middle">CA</text>
+<polygon points="250.0,430.0 307.5,430.0 278.75,380.25" fill="#eaf2f3" stroke="#236675"/>
+<text x="278.75" y="417.4166666666667" font-size="10" fill="#202a30" text-anchor="middle">CB</text>
+<polygon points="307.5,430.0 365,430 336.25,380.25" fill="#eaf2f3" stroke="#236675"/>
+<text x="336.25" y="417.4166666666667" font-size="10" fill="#202a30" text-anchor="middle">CC</text>
+<text x="70" y="277" font-size="12" fill="#202a30" text-anchor="middle">A：上</text>
+<text x="70" y="300" font-size="12" fill="#202a30" text-anchor="middle">B：左下</text>
+<text x="70" y="323" font-size="12" fill="#202a30" text-anchor="middle">C：右下</text></svg></div><figcaption>図4.2　長さ2の住所と、段階2の三角形の対応。三角形どうしの共有頂点は複数の住所側に属しうるため、点の住所が常に一意という意味ではない。</figcaption></figure></section><section class="subsection" id="s22"><h3>4.3　1.585次元は、何を数えているのか</h3><p>線分を半分の長さの部分で覆うには2個、正方形を半分の辺長の正方形で覆うには4個必要です。それぞれ2¹、2²個なので、拡大率2と個数の関係に次元が現れています。</p>
+<p>シェルピンスキーの三角形の極限集合は、半分に縮めた自分自身3個で構成されます。この対応から2ᴰ = 3と置けば、D = log(3) / log(2) ≈ 1.585となります。logは対数で、ここではどの底で計算しても比は同じです。</p>
+<p>これは相似性から求める相似次元です。一般の自己相似集合では、縮小コピーが大きく重なると、この計算だけで実際の次元は決まりません。今回の三角形は適切な分離条件、いわゆる開集合条件を満たし、ハウスドルフ次元、ボックス次元もこの値に一致します。<span class="citations">［<a href="#ref6" aria-label="参考文献6">6</a>］</span></p>
+<p>面積でも確かめましょう。1回の操作で残る面積は元の3/4。段階kでの面積は元の(3/4)ᵏ倍で、無限に繰り返すと0へ近づきます。面積が0だから、点が一つも残らないということではありません。外周や、細分化の境界などは残ります。</p>
+<p>ここで有限と無限を混同しないことが大切です。有限段階の黒い三角形にはまだ内部と正の面積があり、その集合のハウスドルフ次元は2です。1.585は、無限の細分化で得られる極限集合についての値です。印刷された図は、その有限の近似にすぎません。</p><aside class="summary"><strong>ここに注目</strong><p>縮小率1/2のコピーが3個：3 × (1/2)ᴰ = 1。</p></aside></section><section class="subsection" id="s23"><h3>4.4　IFSは、枝の規則を座標で書く</h3><p>正三角形の頂点をa、b、cとします。点xを頂点aとの中点へ送る写像をfₐ(x) = (x + a) / 2と定めます。fᵦ、f𝒸も同様です。各写像は距離を1/2に縮め、図形全体を三つの角へ写します。</p>
+<p>複数の縮小写像をひと組にしたものを、ここでは反復関数系、IFSと呼びます。図形Sのコピー三つを合わせる操作は、fₐ(S) ∪ fᵦ(S) ∪ f𝒸(S)です。極限の三角形Kでは、K = fₐ(K) ∪ fᵦ(K) ∪ f𝒸(K)という関係が成り立ちます。<span class="citations">［<a href="#ref6" aria-label="参考文献6">6</a>, <a href="#ref7" aria-label="参考文献7">7</a>］</span></p>
+<p>図4.2のABは、全体をAへ写し、その領域の中でB側を選ぶという住所です。写像で書けばfₐ(fᵦ(S))。右側の写像から計算する記法と、外側から読む住所の順が異なる点には注意してください。</p>
+<p>この図を作るために、関数の自己呼び出しは必須ではありません。現在の三角形の一覧を用意し、ループで次段階の一覧へ置き換えても同じ図ができます。再帰的な構造を持つ対象と、再帰関数で実装することは、区別できます。</p>
+<p>ハノイの木も、左右に同じ形の小さな木を含みます。しかし、それだけでフラクタル次元が決まるわけではありません。縮尺、空間への配置、無限の極限をどう定義するかが必要です。「形の繰り返しが見える」と「数学的なフラクタルである」の間には、この追加の条件があります。</p><aside class="summary"><strong>ここに注目</strong><p>再帰木は生成の関係を記述する。IFSは、その枝に幾何学的な変換を与える。</p></aside></section><section class="subsection" id="s24"><h3>4.5　コラム：ハノイには、もう一つの図がある</h3><p>ハノイの塔の合法状態を点にし、1回の合法な移動で行き来できる状態を線で結びます。2枚なら、大小それぞれの円盤の所在をA、B、Cから選べるので9状態です。棒ごとに大きい順に積む配置が一意に決まるため、一般には3ⁿ状態あります。</p><figure id="fig-10_hanoi_graph" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-10_hanoi_graph" aria-label="図4.3を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図4.3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" width="500" height="320" role="img" aria-labelledby="title-10_hanoi_graph"><title id="title-10_hanoi_graph">図4.3　2枚のハノイ状態グラフ。たとえばCAは、小さい円盤がC、大きい円盤がAにある状態。9頂点・12辺を全列挙して検証した。</title>
+<line x1="250.0" y1="51.0" x2="280.73605760202787" y2="124.07149419441647" stroke="#236675" stroke-width="1.8"/>
+<line x1="250.0" y1="51.0" x2="219.2639423979721" y2="124.07149419441647" stroke="#236675" stroke-width="1.8"/>
+<line x1="162.80630532153995" y1="249.0767909830038" x2="82.25049036468147" y2="265.59064161926466" stroke="#236675" stroke-width="1.8"/>
+<line x1="162.80630532153995" y1="249.0767909830038" x2="143.43449907560282" y2="208.94692449907262" stroke="#236675" stroke-width="1.8"/>
+<line x1="162.80630532153995" y1="249.0767909830038" x2="337.1936946784601" y2="249.0767909830038" stroke="#236675" stroke-width="1.8"/>
+<line x1="337.1936946784601" y1="249.0767909830038" x2="356.5655009243972" y2="208.94692449907262" stroke="#236675" stroke-width="1.8"/>
+<line x1="337.1936946784601" y1="249.0767909830038" x2="417.74950963531853" y2="265.59064161926466" stroke="#236675" stroke-width="1.8"/>
+<line x1="280.73605760202787" y1="124.07149419441647" x2="356.5655009243972" y2="208.94692449907262" stroke="#236675" stroke-width="1.8"/>
+<line x1="280.73605760202787" y1="124.07149419441647" x2="219.2639423979721" y2="124.07149419441647" stroke="#236675" stroke-width="1.8"/>
+<line x1="82.25049036468147" y1="265.59064161926466" x2="143.43449907560282" y2="208.94692449907262" stroke="#236675" stroke-width="1.8"/>
+<line x1="356.5655009243972" y1="208.94692449907262" x2="417.74950963531853" y2="265.59064161926466" stroke="#236675" stroke-width="1.8"/>
+<line x1="219.2639423979721" y1="124.07149419441647" x2="143.43449907560282" y2="208.94692449907262" stroke="#236675" stroke-width="1.8"/>
+<rect x="231.0" y="38.5" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="250.0" y="54.85" font-size="11" fill="#202a30" text-anchor="middle">AA</text>
+<rect x="261.73605760202787" y="111.57149419441647" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="280.73605760202787" y="127.92149419441647" font-size="11" fill="#202a30" text-anchor="middle">BA</text>
+<rect x="200.2639423979721" y="111.57149419441647" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="219.2639423979721" y="127.92149419441647" font-size="11" fill="#202a30" text-anchor="middle">CA</text>
+<rect x="143.80630532153995" y="236.5767909830038" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="162.80630532153995" y="252.9267909830038" font-size="11" fill="#202a30" text-anchor="middle">AB</text>
+<rect x="63.25049036468147" y="253.09064161926466" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="82.25049036468147" y="269.4406416192647" font-size="11" fill="#202a30" text-anchor="middle">BB</text>
+<rect x="124.43449907560282" y="196.44692449907262" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="143.43449907560282" y="212.79692449907262" font-size="11" fill="#202a30" text-anchor="middle">CB</text>
+<rect x="318.1936946784601" y="236.5767909830038" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="337.1936946784601" y="252.9267909830038" font-size="11" fill="#202a30" text-anchor="middle">AC</text>
+<rect x="337.5655009243972" y="196.44692449907262" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="356.5655009243972" y="212.79692449907262" font-size="11" fill="#202a30" text-anchor="middle">BC</text>
+<rect x="398.74950963531853" y="253.09064161926466" width="38" height="25" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="417.74950963531853" y="269.4406416192647" font-size="11" fill="#202a30" text-anchor="middle">CC</text>
+<text x="250" y="317" font-size="12" fill="#202a30" text-anchor="middle">文字は「小さい円盤、大きい円盤」の所在</text></svg></div><figcaption>図4.3　2枚のハノイ状態グラフ。たとえばCAは、小さい円盤がC、大きい円盤がAにある状態。9頂点・12辺を全列挙して検証した。</figcaption></figure><aside class="summary"><strong>ここに注目</strong><p>最大円盤の所在で3群に分けると、それぞれが小さいハノイグラフ。群の間を特定の合法移動が結ぶ。</p></aside></section><section class="subsection" id="s25"><h3>4.6　二分木と三角形を、混ぜない</h3><p>図4.3の状態グラフでは、最大円盤をAに固定した群、Bに固定した群、Cに固定した群が、それぞれn−1枚の状態グラフになっています。二つの群をつなぐには、小さい円盤全部が第三の棒へ退避していなければなりません。そのため群間には限られた橋だけが架かります。</p>
+<p>この「3個の小さなグラフを結ぶ」再帰的構成が、シェルピンスキー型の三角形状の見た目を生みます。学術資料ではHanoi graphとSierpiński gasket graphが別々に定義され、比較されています。形が似ているからといって、両者を同じ有限グラフと断定することはできません。<span class="citations">［<a href="#ref8" aria-label="参考文献8">8</a>］</span></p>
+<p>第3章の二分木は、決められた解法の呼び出し履歴です。頂点は部分課題で、1枚で止めれば2ⁿ − 1個。一方、この状態グラフの頂点は円盤の配置で、3ⁿ個です。前者は計算の手順、後者はゲーム内で可能な移動全体を表しています。</p>
+<p>3枚なら、呼び出し木は7ノード、状態グラフは27頂点。最短手順は状態グラフ上の7本の辺を通り、開始を含めて8状態を訪れます。7ノードと8状態を対応させようとして混乱するのは、ノードの意味が違うからです。</p>
+<aside class="summary"><strong>この章のまとめ</strong><p>図形の再帰では、枝に位置と縮小率が加わります。有限の生成段階と無限の極限は別物です。ハノイの呼び出し木、合法状態グラフ、シェルピンスキーの図形は、関連していても同一の対象ではありません。</p></aside></section></section><section class="chapter" id="ch5"><header class="chapter-heading"><span class="eyebrow">RECURSION / CH5</span><h2>第5章　麻雀の待ち判定</h2></header><section class="subsection" id="s26"><h3>5.1　14枚を、3・3・3・3・2に分ける</h3><p>麻雀を知らない人は、決められた模様のカードを組に分けるパズルだと考えてください。数のある牌は、萬子・筒子・索子の3系列に1～9があり、ほかに7種類の字牌があります。合計34種類で、同じ種類の牌は4枚ずつあります。<span class="citations">［<a href="#ref9" aria-label="参考文献9">9</a>］</span></p>
+<p>通常の完成形は、3枚の組を四つと、同じ牌2枚の組を一つ作った形です。3枚の組を面子、2枚の組を雀頭と呼びます。面子には、同種3枚の刻子と、同じ系列で数が連続する順子があります。</p><figure id="fig-11_tiles" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-11_tiles" aria-label="図5.1を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図5.1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 210" width="500" height="210" role="img" aria-labelledby="title-11_tiles"><title id="title-11_tiles">図5.1　面子と雀頭の基本。1萬・2筒・3索では順子にならず、8・9・1のようにつながることもない。</title>
+<rect x="12" y="35" width="27" height="37.8" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="25.5" y="52.010000000000005" font-size="13.5" fill="#236675" text-anchor="middle">3</text>
+<text x="25.5" y="66.05" font-size="9.719999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="43" y="35" width="27" height="37.8" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="56.5" y="52.010000000000005" font-size="13.5" fill="#236675" text-anchor="middle">4</text>
+<text x="56.5" y="66.05" font-size="9.719999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="74" y="35" width="27" height="37.8" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="87.5" y="52.010000000000005" font-size="13.5" fill="#236675" text-anchor="middle">5</text>
+<text x="87.5" y="66.05" font-size="9.719999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<text x="60" y="111" font-size="11" fill="#202a30" text-anchor="middle">順子：連続した3枚</text>
+<rect x="188" y="35" width="27" height="37.8" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="201.5" y="52.010000000000005" font-size="13.5" fill="#236675" text-anchor="middle">7</text>
+<text x="201.5" y="66.05" font-size="9.719999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="219" y="35" width="27" height="37.8" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="232.5" y="52.010000000000005" font-size="13.5" fill="#236675" text-anchor="middle">7</text>
+<text x="232.5" y="66.05" font-size="9.719999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="250" y="35" width="27" height="37.8" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="263.5" y="52.010000000000005" font-size="13.5" fill="#236675" text-anchor="middle">7</text>
+<text x="263.5" y="66.05" font-size="9.719999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<text x="236" y="111" font-size="11" fill="#202a30" text-anchor="middle">刻子：同じ3枚</text>
+<rect x="373" y="35" width="27" height="37.8" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="386.5" y="52.010000000000005" font-size="13.5" fill="#236675" text-anchor="middle">2</text>
+<text x="386.5" y="66.05" font-size="9.719999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="404" y="35" width="27" height="37.8" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="417.5" y="52.010000000000005" font-size="13.5" fill="#236675" text-anchor="middle">2</text>
+<text x="417.5" y="66.05" font-size="9.719999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<text x="421" y="111" font-size="11" fill="#202a30" text-anchor="middle">雀頭：同じ2枚</text>
+<text x="250" y="164" font-size="14" fill="#202a30" text-anchor="middle">数牌：萬子・筒子・索子の各1～9</text>
+<text x="250" y="193" font-size="12" fill="#202a30" text-anchor="middle">字牌：東・南・西・北・白・發・中（順子にはできない）</text></svg></div><figcaption>図5.1　面子と雀頭の基本。1萬・2筒・3索では順子にならず、8・9・1のようにつながることもない。</figcaption></figure><aside class="summary"><strong>ここに注目</strong><p>本章は副露・槓のない13枚／14枚の形を扱う。役、点数、フリテンは判定の対象外。</p></aside></section><section class="subsection" id="s27"><h3>5.2　最初の分岐は、雀頭をどれにするか</h3><p>図5.2は、11122233345677萬という14枚の手牌です。同じ数字を並べて表し、すべて萬子とします。見た目では、111・222・333・456・77と分けられそうです。しかし、計算機にとっては、これは候補の一つです。</p><figure id="fig-12_hand" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-12_hand" aria-label="図5.2を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図5.2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 120" width="500" height="120" role="img" aria-labelledby="title-12_hand"><title id="title-12_hand">図5.2　本章の完成形の例。牌の重複枚数を保持したまま、雀頭候補と面子候補を選ぶ。</title>
+<rect x="3" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="18.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">1</text>
+<text x="18.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="37" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="52.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">1</text>
+<text x="52.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="71" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="86.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">1</text>
+<text x="86.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="105" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="120.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">2</text>
+<text x="120.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="139" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="154.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">2</text>
+<text x="154.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="173" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="188.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">2</text>
+<text x="188.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="207" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="222.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">3</text>
+<text x="222.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="241" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="256.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">3</text>
+<text x="256.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="275" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="290.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">3</text>
+<text x="290.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="309" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="324.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">4</text>
+<text x="324.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="343" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="358.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">5</text>
+<text x="358.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="377" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="392.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">6</text>
+<text x="392.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="411" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="426.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">7</text>
+<text x="426.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<rect x="445" y="15" width="30" height="42.0" fill="#ffffff" stroke="#78858a" stroke-width=".8"/>
+<text x="460.0" y="33.9" font-size="15.0" fill="#236675" text-anchor="middle">7</text>
+<text x="460.0" y="49.5" font-size="10.799999999999999" fill="#202a30" text-anchor="middle">萬</text>
+<text x="250" y="102" font-size="12" fill="#202a30" text-anchor="middle">14枚：1萬×3、2萬×3、3萬×3、4・5・6萬、7萬×2</text></svg></div><figcaption>図5.2　本章の完成形の例。牌の重複枚数を保持したまま、雀頭候補と面子候補を選ぶ。</figcaption></figure><p>たとえば77を雀頭として除くと、残りは111222333456です。次に111を刻子として除けば、222333456が残ります。同じ問いを、9枚の牌に対してもう一度行えばよいわけです。</p>
+<p>重要なのは、最初に思いついた面子へ確定してしまわないことです。111を除く選択と123を除く選択では、その後の残り牌が変わります。途中で詰まったら親の残り牌へ戻り、別の組を試します。</p>
+<p>また、牌を並べた順番は判定に影響しません。本書のコードは、各種類が何枚あるかという34個の整数で状態を表します。同じ牌を個体として区別せず、重複する数は正確に残せます。</p><aside class="summary"><strong>ここに注目</strong><p>雀頭の候補は11、22、33、77。いずれかを2枚除き、残った12枚が面子だけになるかを調べる。</p></aside></section><section class="subsection" id="s28"><h3>5.3　成功する枝、失敗する枝</h3><p>図5.3は雀頭を77にした後の探索です。残り333456から、333を除けば456だけになり成功します。ところが345を除くと336が残り、面子を作れず失敗します。</p><figure id="fig-13_mahjong_tree" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-13_mahjong_tree" aria-label="図5.3を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図5.3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 510" width="500" height="510" role="img" aria-labelledby="title-13_mahjong_tree"><title id="title-13_mahjong_tree">図5.3　雀頭77に固定した部分木。右枝は連続する一本道をまとめて表示した。失敗は手牌全体の否定ではなく、その選択の否定である。</title>
+<rect x="140.0" y="11.5" width="220" height="37" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="250" y="34.9" font-size="14" fill="#202a30" text-anchor="middle">77を雀頭に選ぶ</text>
+<rect x="127.5" y="76.5" width="245" height="37" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="250" y="99.55" font-size="13" fill="#202a30" text-anchor="middle">残り 111222333456</text>
+<line x1="250" y1="50" x2="250" y2="74" stroke="#236675" stroke-width="1.5"/>
+<polygon points="250,74 247.39020679533263,68.59731738588394 252.60979320466737,68.59731738588394" fill="#236675" stroke="none"/>
+<line x1="250" y1="115" x2="145" y2="162" stroke="#78858a" stroke-width="1"/>
+<line x1="250" y1="115" x2="393" y2="162" stroke="#78858a" stroke-width="1"/>
+<text x="137" y="143" font-size="11" fill="#236675" text-anchor="middle">111を除く</text>
+<text x="385" y="143" font-size="11" fill="#236675" text-anchor="middle">123を除く</text>
+<rect x="42.5" y="166.0" width="195" height="38" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="140" y="189.55" font-size="13" fill="#202a30" text-anchor="middle">222333456</text>
+<rect x="313.0" y="166.0" width="160" height="38" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="393" y="189.55" font-size="13" fill="#202a30" text-anchor="middle">112233456</text>
+<line x1="140" y1="205" x2="140" y2="250" stroke="#236675" stroke-width="1.5"/>
+<polygon points="140,250 137.39020679533263,244.59731738588394 142.60979320466737,244.59731738588394" fill="#236675" stroke="none"/>
+<text x="194" y="234" font-size="11" fill="#236675" text-anchor="middle">222を除く</text>
+<rect x="57.5" y="256.0" width="165" height="36" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="140" y="278.55" font-size="13" fill="#202a30" text-anchor="middle">333456</text>
+<line x1="140" y1="294" x2="62" y2="346" stroke="#78858a" stroke-width="1"/>
+<line x1="140" y1="294" x2="222" y2="346" stroke="#78858a" stroke-width="1"/>
+<text x="66" y="321" font-size="11" fill="#236675" text-anchor="middle">333を除く</text>
+<text x="226" y="321" font-size="11" fill="#a95a3f" text-anchor="middle">345を除く</text>
+<rect x="17.5" y="350.5" width="95" height="37" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="65" y="373.9" font-size="14" fill="#202a30" text-anchor="middle">456</text>
+<rect x="179.5" y="350.5" width="95" height="37" fill="#ffffff" stroke="#a95a3f" stroke-width=".8"/>
+<text x="227" y="373.9" font-size="14" fill="#202a30" text-anchor="middle">336</text>
+<line x1="65" y1="389" x2="65" y2="438" stroke="#236675" stroke-width="1.5"/>
+<polygon points="65,438 62.39020679533262,432.5973173858839 67.60979320466738,432.5973173858839" fill="#236675" stroke="none"/>
+<text x="114" y="415" font-size="10" fill="#236675" text-anchor="middle">456を除く</text>
+<rect x="15.0" y="440.0" width="100" height="38" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="65" y="463.2" font-size="12" fill="#202a30" text-anchor="middle">空 → 成功</text>
+<text x="232" y="425" font-size="11" fill="#a95a3f" text-anchor="middle">3の刻子も</text>
+<text x="232" y="445" font-size="11" fill="#a95a3f" text-anchor="middle">345も作れない</text>
+<text x="232" y="468" font-size="12" fill="#a95a3f" text-anchor="middle">失敗 → 親へ</text>
+<line x1="393" y1="207" x2="393" y2="258" stroke="#236675" stroke-width="1.5"/>
+<polygon points="393,258 390.39020679533263,252.59731738588394 395.60979320466737,252.59731738588394" fill="#236675" stroke="none"/>
+<rect x="313.0" y="259.0" width="160" height="50" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="393" y="280.70000000000005" font-size="11" fill="#202a30" text-anchor="middle">123を2回除く</text>
+<text x="393" y="295.00000000000006" font-size="11" fill="#202a30" text-anchor="middle">残り456</text>
+<line x1="393" y1="311" x2="393" y2="371" stroke="#236675" stroke-width="1.5"/>
+<polygon points="393,371 390.39020679533263,365.5973173858839 395.60979320466737,365.5973173858839" fill="#236675" stroke="none"/>
+<rect x="323.0" y="374.0" width="140" height="38" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="393" y="396.85" font-size="11" fill="#202a30" text-anchor="middle">456を除き成功</text>
+<text x="393" y="472" font-size="10" fill="#78858a" text-anchor="middle">この枝は途中を省略</text></svg></div><figcaption>図5.3　雀頭77に固定した部分木。右枝は連続する一本道をまとめて表示した。失敗は手牌全体の否定ではなく、その選択の否定である。</figcaption></figure></section><section class="subsection" id="s29"><h3>5.4　一番小さい牌から選べば、漏れない</h3><p>残り牌のうち、番号が最も小さい牌iを一つ選びます。正しい面子分解があるなら、この牌も必ずどこかの面子に入っています。その入り方は、同じ牌3枚の刻子か、iから始まる順子のどちらかです。</p>
+<p>なぜ順子の真ん中や最後を考えなくてよいのでしょう。たとえば最小の牌が3なら、123や234へ入るには1または2が要ります。しかし、残りには3より小さい牌がありません。このため、345だけを調べれば十分です。系列の境界と字牌の制約も守ります。</p>
+<p>候補の面子を除いて同じ判定を繰り返し、空になれば成功です。候補が一つもなければ失敗。これで、すべての牌を使い切る分解があるかどうかを判定できます。選ぶ順番を揃えることで、同じ面子集合を取り出す順序だけ変えた探索も減ります。</p>
+<p>この手順の正確さは、小さい問題から説明できます。空の集合は、追加の面子を必要としません。空でない集合の正しい分解には最小牌を含む面子があり、その候補をすべて試します。候補を外した後の判定が正しければ、元の判定も正しい。この構造は数学的帰納法と対応します。</p>
+<p>標準形で雀頭を先に除くと、残りは12枚です。面子を1個除くごとに3枚ずつ減り、12、9、6、3、0枚となります。深さは限られているので、一つの枝で無限に牌を取り除くことはありません。</p><aside class="summary"><strong>ここに注目</strong><p>「全部の並べ方を試す」必要はない。正しい分解が必ず含む最小牌の行き先を、漏れなく試す。</p></aside></section><section class="subsection" id="s30"><h3>5.5　残り牌だけを受け取る再帰関数</h3><p>countsは34種類の枚数を表すタプルです。番号0～8が萬子、9～17が筒子、18～26が索子、27～33が字牌です。先頭の@cacheは、第7章で扱う結果の保存です。外しても判定結果は変わりません。</p><details class="code"><summary>Pythonコードを読む</summary><pre><code>from functools import cache
+
+@cache
+def meldable(counts):
+    if not any(counts):
+        return True
+    i = next(i for i, x in enumerate(counts) if x)
+    c = list(counts)
+    if c[i] &gt;= 3:
+        c[i] -= 3
+        if meldable(tuple(c)):
+            return True
+        c[i] += 3
+    if i &lt; 27 and i % 9 &lt;= 6:
+        if c[i + 1] and c[i + 2]:
+            for j in (i, i + 1, i + 2):
+                c[j] -= 1
+            if meldable(tuple(c)):
+                return True
+    return False</code></pre></details><aside class="summary"><strong>ここに注目</strong><p>i % 9 ≤ 6は、順子の先頭が1～7である条件。子にはコピーした枚数列を渡すため、子の変更が親の状態を壊さない。</p></aside></section><section class="subsection" id="s31"><h3>5.6　13枚に1枚ずつ加えれば、待ちが分かる</h3><p>待ちを調べるには、13枚へ候補の牌を1枚加え、14枚が完成形かどうかを判定します。候補は34種類。同じ種類を既に4枚持っている場合は、5枚目を加えることはできないので除外します。</p>
+<p>例として1112223334567萬を調べると、待ちは1・2・3・4・5・7・8萬の7種類です。単に末尾の7へ着目するだけでは見落とします。待ち牌を加えた後に、雀頭と面子の取り方を組み直す必要があります。</p>
+<p>以下は各待ちについて、実際に成立する分解を一つずつ示したものです。角括弧が雀頭、それ以外は面子です。複数の分解がある場合も、一例に絞っています。</p><div class="table-scroll"><table><caption>七面待ちの各待ち牌と、完成する分解の一例（すべて萬子）</caption><thead><tr><th scope="col">加える牌</th><th scope="col">4面子 ＋ 雀頭</th></tr></thead><tbody><tr><th scope="row">1萬</th><td>123 ・ 123 ・ 234 ・ 567 ・ 〈11〉</td></tr><tr><th scope="row">2萬</th><td>111 ・ 222 ・ 234 ・ 567 ・ 〈33〉</td></tr><tr><th scope="row">3萬</th><td>111 ・ 333 ・ 234 ・ 567 ・ 〈22〉</td></tr><tr><th scope="row">4萬</th><td>123 ・ 234 ・ 234 ・ 567 ・ 〈11〉</td></tr><tr><th scope="row">5萬</th><td>111 ・ 222 ・ 345 ・ 567 ・ 〈33〉</td></tr><tr><th scope="row">7萬</th><td>111 ・ 222 ・ 333 ・ 456 ・ 〈77〉</td></tr><tr><th scope="row">8萬</th><td>111 ・ 222 ・ 345 ・ 678 ・ 〈33〉</td></tr></tbody></table></div><aside class="summary"><strong>ここに注目</strong><p>ここでの待ちは「形を完成させる牌種」。残り枚数、山にある可能性、ロンできるかどうかは別の情報。<span class="citations">［<a href="#ref9" aria-label="参考文献9">9</a>］</span></p></aside></section><section class="subsection" id="s32"><h3>5.7　例外の形と、三人麻雀への応用</h3><p>日本式麻雀には、4面子1雀頭に属さない完成形があります。七対子は異なる7種類の対子、国士無双は各系列の1・9と7種類の字牌を1枚ずつ、さらにそのいずれか1枚を加えた形です。標準形だけの判定では、この二つを見落とします。<span class="citations">［<a href="#ref9" aria-label="参考文献9">9</a>］</span></p>
+<p>七対子では同じ牌4枚を二つの対子と数えません。14枚の入力なら「枚数が2の種類が7個」で判定できます。国士無双では13種類すべてを含み、それらだけで14枚あるかを調べます。通常形、七対子、国士無双のいずれかが成立すれば、形として完成です。</p>
+<p>既存の実装例としてMahjongRepositoryのAgariも、この三つの形と、役や点数の判定を分けています。ただし、その高速化された実装は本書の単純な探索木と同一ではありません。本書のコードは仕組みを説明するために独立に書いたものです。<span class="citations">［<a href="#ref10" aria-label="参考文献10">10</a>］</span></p>
+<p>三人麻雀でも、通常形の分解原理は変わりません。たとえば2～8萬を使わないルールなら、入力と追加候補を、その牌を除いた集合へ制限します。萬子の順子は成立しなくなりますが、筒子・索子・字牌の分解は同じです。</p>
+<p>抜き北を採用する場合、既に抜いた北を通常の手牌へ数えない扱いも必要です。副露や槓がある場合は、確定済みの面子を分離し、残りに必要な面子数を調整します。付属の待ち関数は、こうした拡張を入れる前の、閉じた13枚に対象を限定しています。</p></section><section class="subsection" id="s33"><h3>5.8　同じ残り牌は、同じ問いになる</h3><p>111222333456という残り牌から、111、222、333を除くと456が残ります。一方、123を3回除いても456です。取り出した面子は違っても、残り牌の分解可能性を問うだけなら、最後に残った問題は同じです。</p>
+<p>一度456が分解できると分かれば、別の枝から来たときも同じ答えを使えます。そのために保存するキーは、牌の並び順ではなく、34種類の枚数列です。@cacheがこの引数と返り値を対応づけて記録します。<span class="citations">［<a href="#ref11" aria-label="参考文献11">11</a>］</span></p>
+<p>ただし、この単純な例では、成功が一つ見つかった時点で探索を打ち切るため、両方の枝を実際にたどるとは限りません。図は可能な分岐を示しており、実行された呼び出しの木は、枝の順番や早期終了によってもっと小さくなります。</p>
+<p>また、「残り牌だけで答えが決まる」という条件が重要です。得点や役まで調べるなら、それ以前に選んだ面子や和了牌の位置などが関係することがあります。分解の有無を返す関数のキャッシュを、そのまま点数計算に転用することはできません。</p>
+<aside class="summary"><strong>この章のまとめ</strong><p>雀頭候補を選び、面子を除き、残りを同じ規則で調べると探索木が生まれます。成功も失敗も親へ返せます。待ち判定はその外側で34種類を試す処理です。形、役、実際の和了可能性を区別すれば、アルゴリズムの担当範囲が明確になります。</p></aside></section></section><section class="chapter" id="ch6"><header class="chapter-heading"><span class="eyebrow">RECURSION / CH6</span><h2>第6章　親子関係があるから迷子にならない</h2></header><section class="subsection" id="s34"><h3>6.1　「誰が呼んだか」は、一つに決まる</h3><p>ここまでの四つの題材には、前へ進む規則の違いがありました。迷路では隣の頂点、ハノイでは小さい塔、三角形では縮小領域、麻雀では面子を除いた残り牌です。それでも、子の処理を終えた後に戻る関係は共通です。</p>
+<p>通常の同期的な呼び出しでは、一つの実行を始めた呼び出し元は一つです。したがって、出来事ごとにノードを作れば、根以外のノードに親が一意に定まります。親を繰り返したどると、根への経路も一つに決まります。</p>
+<p>同じ関数が何度も現れても問題ありません。父親の名前を関数名だと思うと紛らわしくなりますが、親とは「今回のこの実行を始めた、特定の実行」です。呼び出しごとの番号を振れば、区別は明確になります。</p>
+<p>では、木を描くだけで計算機が帰り先を知るのでしょうか。そうではありません。木は関係の表現であり、実際の再開位置を保持するのがフレームやスタックです。数学的に親が一意であることと、機械がその情報を記録していることの両方が必要です。</p>
+<p>再帰を木として理解する実用的な価値は、「全部を一度に考えなくてよい」点にあります。子には契約した仕事を任せ、親はその結果を受け取った後の続きを持ちます。どの枝にいるのかを図にすれば、局所的な手順と全体の位置を結びつけられます。</p><aside class="summary"><strong>ここに注目</strong><p>親が一意なのは、状態をまとめる前の「呼び出しの出来事」の木。</p></aside></section><section class="subsection" id="s35"><h3>6.2　スタックに載っているのは、一つの枝</h3><p>図6.1の左は履歴全体の模式図です。濃い線だけが、いま保留されている呼び出しをたどる経路です。右のスタックは、その順序を重ねて表しています。<span class="citations">［<a href="#ref2" aria-label="参考文献2">2</a>］</span></p>
+<p>現在の呼び出しが返ると、そのすぐ下のSが再開します。Sが終わればP、その後に根です。右の枝Qがまだ始まっていないなら、その呼び出しのフレームはまだありません。木全体をいつも持っているのではないのです。</p><figure id="fig-14_parent_stack" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-14_parent_stack" aria-label="図6.1を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図6.1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 280" width="500" height="280" role="img" aria-labelledby="title-14_parent_stack"><title id="title-14_parent_stack">図6.1　根→P→S→現在という経路とコールスタック。淡い枝は、既に終わったか、後で実行する呼び出しを表す。</title>
+<line x1="160" y1="30" x2="90" y2="95" stroke="#236675" stroke-width="2"/>
+<line x1="160" y1="30" x2="270" y2="95" stroke="#d3dce0" stroke-width="2"/>
+<line x1="90" y1="95" x2="40" y2="168" stroke="#d3dce0" stroke-width="2"/>
+<line x1="90" y1="95" x2="145" y2="168" stroke="#236675" stroke-width="2"/>
+<line x1="270" y1="95" x2="270" y2="168" stroke="#d3dce0" stroke-width="2"/>
+<line x1="145" y1="168" x2="145" y2="243" stroke="#236675" stroke-width="2"/>
+<circle cx="160" cy="30" r="15" fill="#eaf2f3" stroke="#236675"/>
+<text x="160" y="34" font-size="12" fill="#202a30" text-anchor="middle">根</text>
+<circle cx="90" cy="95" r="15" fill="#eaf2f3" stroke="#236675"/>
+<text x="90" y="99" font-size="12" fill="#202a30" text-anchor="middle">P</text>
+<circle cx="270" cy="95" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="270" y="99" font-size="12" fill="#202a30" text-anchor="middle">Q</text>
+<circle cx="40" cy="168" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="40" y="172" font-size="12" fill="#202a30" text-anchor="middle">R</text>
+<circle cx="145" cy="168" r="15" fill="#eaf2f3" stroke="#236675"/>
+<text x="145" y="172" font-size="12" fill="#202a30" text-anchor="middle">S</text>
+<circle cx="270" cy="168" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="270" y="172" font-size="12" fill="#202a30" text-anchor="middle">T</text>
+<circle cx="145" cy="243" r="20" fill="#eaf2f3" stroke="#236675"/>
+<text x="145" y="247" font-size="12" fill="#202a30" text-anchor="middle">現在</text>
+<text x="397" y="25" font-size="12" fill="#202a30" text-anchor="middle">いま生きている呼び出し</text>
+<rect x="309.5" y="219.0" width="175" height="38" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="397" y="241.85" font-size="11" fill="#202a30" text-anchor="middle">根：Pの結果を待つ</text>
+<rect x="309.5" y="171.0" width="175" height="38" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="397" y="193.85" font-size="11" fill="#202a30" text-anchor="middle">P：Sの結果を待つ</text>
+<rect x="309.5" y="123.0" width="175" height="38" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="397" y="145.85" font-size="11" fill="#202a30" text-anchor="middle">S：子の結果を待つ</text>
+<rect x="309.5" y="75.0" width="175" height="38" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="397" y="97.85" font-size="11" fill="#202a30" text-anchor="middle">現在：実行中</text>
+<text x="397" y="270" font-size="11" fill="#78858a" text-anchor="middle">下が古く、上が新しい</text></svg></div><figcaption>図6.1　根→P→S→現在という経路とコールスタック。淡い枝は、既に終わったか、後で実行する呼び出しを表す。</figcaption></figure><aside class="summary"><strong>ここに注目</strong><p>呼び出しの総数と、同時に生きている呼び出しの数は違う。木の大きさと深さを別々に見る。</p></aside></section><section class="subsection" id="s36"><h3>6.3　帰り道があることと、帰れること</h3><p>「親がいるから迷子にならない」は、戻る相手を特定できるという意味です。いつか必ずそこへ戻るという保証ではありません。子がさらに子を呼び続ければ、親は待ったままです。</p>
+<p>たとえばf(n)が無条件にf(n+1)を呼ぶなら、自然数の列はいつまでも先へ進めます。各ノードの親は一意ですが、基本条件には到達しません。実際のPythonでは有限の資源や再帰深度の制約により、正常終了より先に例外が起こりえます。</p>
+<p>停止を証明する一つの方法は、呼び出すたびに厳密に減る0以上の整数を見つけることです。階乗ならn、ハノイなら枚数、図形なら残りの段数、麻雀なら残り牌数。有限の分岐と、各呼び出し内の有限の処理も確認すれば、全体が有限で終わることを説明できます。</p>
+<p>迷路では、位置に大小を付ける代わりに、未訪問の頂点を一つずつ減らします。有限グラフで再訪問を防ぐから、いつまでも新しい頂点へ進むことはできません。ただし出口が見つかる保証と、探索が終了する保証は別です。出口がなければ、有限の探索を終えて失敗を返します。</p>
+<p>もう一つ、復帰してもデータの変更が自動で取り消されるとは限りません。共有の配列から牌を引いたなら、別の枝を試す前に戻すか、コピーで分離する必要があります。スタックは制御の続きを記憶しますが、プログラム中の変更すべてを巻き戻す装置ではありません。</p><aside class="summary"><strong>ここに注目</strong><p>停止の目印を用意するだけでは足りない。その目印へ到達する理由も必要。</p></aside></section><section class="subsection" id="s37"><h3>6.4　木を描くと、何を点検できるか</h3><p>再帰を考えるときは、最初に根へ「この呼び出しが完成させる仕事」を書きます。次に、子へ渡す入力と、返ってきた後の処理を書きます。最後に葉が何を意味するかを確かめます。この三段階で、関数名だけでは見えなかった契約が現れます。</p>
+<p>ハノイなら「n枚を出発から到着へ合法的に移す」、麻雀なら「この残り牌をすべて面子に分けられるか」です。子が何を保証するのかが曖昧だと、親の続きを正しく書くことも難しくなります。</p>
+<p>図の枝が同じ大きさの問題へ戻っていれば、停止条件を疑えます。似たラベルの部分木が大量に現れれば、重複計算に気づけます。深い一本道なら、仕事量が少なくてもスタックの深さが問題になりえます。広い木なら、同時に全ノードを保存する方法の負担を予測できます。</p>
+<p>木は、処理の順番までは完全に指定しません。左右どちらから進むか、自分の仕事を子の前・間・後のどこで行うかは、別に決めます。ハノイの中順走査と、階乗の戻りながらの乗算が異なるのは、この位置が違うからです。</p>
+<aside class="summary"><strong>この章のまとめ</strong><p>親子関係は復帰先を一意にします。スタックはその関係に沿って続きを再開します。しかし、停止、入力の正しさ、共有データの復元は別途点検する必要があります。「帰り道が分かる」という直感を、この範囲で使うと強力です。</p></aside></section></section><section class="chapter" id="ch7"><header class="chapter-heading"><span class="eyebrow">RECURSION / CH7</span><h2>第7章　木からグラフへ</h2></header><section class="subsection" id="s38"><h3>7.1　同じ問いを、別々の枝で解いている</h3><p>フィボナッチ数をF(0) = 0、F(1) = 1、F(n) = F(n−1) + F(n−2)で定めます。F(4)を素直に計算すると、左のF(3)の中にも、右にもF(2)が現れます。二つは別の呼び出しですが、求めている値は同じです。<span class="citations">［<a href="#ref12" aria-label="参考文献12">12</a>］</span></p>
+<p>図7.1の右では、同じ引数のノードを一つにまとめました。辺は「計算するために、その値が必要」という依存を表します。F(2)には二つの呼び出し元から辺が入るため、もう木ではありません。</p><figure id="fig-15_dag" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-15_dag" aria-label="図7.1を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図7.1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 345" width="500" height="345" role="img" aria-labelledby="title-15_dag"><title id="title-15_dag">図7.1　木の9ノードを、F(0)～F(4)の5状態へまとめる。矢印は必要な小問題へ向く。キャッシュ参照そのものの呼び出し回数を表した図ではない。</title>
+<text x="125" y="20" font-size="14" fill="#202a30" text-anchor="middle">呼び出しの木</text>
+<text x="390" y="20" font-size="13" fill="#202a30" text-anchor="middle">同じ引数を統合したDAG</text>
+<line x1="120" y1="57" x2="72" y2="115" stroke="#78858a" stroke-width="1"/>
+<line x1="120" y1="57" x2="197" y2="115" stroke="#78858a" stroke-width="1"/>
+<line x1="72" y1="115" x2="35" y2="179" stroke="#78858a" stroke-width="1"/>
+<line x1="72" y1="115" x2="116" y2="179" stroke="#78858a" stroke-width="1"/>
+<line x1="197" y1="115" x2="178" y2="179" stroke="#78858a" stroke-width="1"/>
+<line x1="197" y1="115" x2="238" y2="179" stroke="#78858a" stroke-width="1"/>
+<line x1="35" y1="179" x2="20" y2="241" stroke="#78858a" stroke-width="1"/>
+<line x1="35" y1="179" x2="65" y2="241" stroke="#78858a" stroke-width="1"/>
+<rect x="99.0" y="44.0" width="42" height="26" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="120" y="60.85" font-size="11" fill="#202a30" text-anchor="middle">F4</text>
+<rect x="51.0" y="102.0" width="42" height="26" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="72" y="118.85" font-size="11" fill="#202a30" text-anchor="middle">F3</text>
+<rect x="176.0" y="102.0" width="42" height="26" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="197" y="118.85" font-size="11" fill="#202a30" text-anchor="middle">F2</text>
+<rect x="14.0" y="166.0" width="42" height="26" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="35" y="182.85" font-size="11" fill="#202a30" text-anchor="middle">F2</text>
+<rect x="95.0" y="166.0" width="42" height="26" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="116" y="182.85" font-size="11" fill="#202a30" text-anchor="middle">F1</text>
+<rect x="157.0" y="166.0" width="42" height="26" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="178" y="182.85" font-size="11" fill="#202a30" text-anchor="middle">F1</text>
+<rect x="217.0" y="166.0" width="42" height="26" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="238" y="182.85" font-size="11" fill="#202a30" text-anchor="middle">F0</text>
+<rect x="-1.0" y="228.0" width="42" height="26" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="20" y="244.85" font-size="11" fill="#202a30" text-anchor="middle">F1</text>
+<rect x="44.0" y="228.0" width="42" height="26" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="65" y="244.85" font-size="11" fill="#202a30" text-anchor="middle">F0</text>
+<line x1="377.0389240599974" y1="73.77595608723767" x2="350.54702158353217" y2="110.41369355468952" stroke="#236675" stroke-width="1.5"/>
+<polygon points="350.54702158353217,110.41369355468952 351.5978530667482,104.50643080499893 355.8275467825446,107.56482472257477" fill="#236675" stroke="none"/>
+<line x1="392.80963207247396" y1="75.97648819930343" x2="428.84862486443933" y2="175.08371837720813" stroke="#236675" stroke-width="1.5"/>
+<polygon points="428.84862486443933,175.08371837720813 424.5496290685948,170.89819151105243 429.45496204941725,169.11443406348064" fill="#236675" stroke="none"/>
+<line x1="353.89250524343" y1="134.79787211905062" x2="420.29028856578" y2="181.6257824621817" stroke="#236675" stroke-width="1.5"/>
+<polygon points="420.29028856578,181.6257824621817 414.3710405292097,180.64471025201593 417.3793252440919,176.3792319249442" fill="#236675" stroke="none"/>
+<line x1="340.0" y1="142.0" x2="340.0" y2="239.0" stroke="#236675" stroke-width="1.5"/>
+<polygon points="340.0,239.0 337.39020679533263,233.59731738588394 342.60979320466737,233.59731738588394" fill="#236675" stroke="none"/>
+<line x1="420.96977655875287" y1="201.59962656506383" x2="354.855530702497" y2="246.83568951934419" stroke="#236675" stroke-width="1.5"/>
+<polygon points="354.855530702497,246.83568951934419 357.8406956484583,241.6310002639319 360.78811213985216,245.93876282827682" fill="#236675" stroke="none"/>
+<line x1="435.0" y1="209.0" x2="435.0" y2="297.0" stroke="#236675" stroke-width="1.5"/>
+<polygon points="435.0,297.0 432.39020679533263,291.5973173858839 437.60979320466737,291.5973173858839" fill="#236675" stroke="none"/>
+<rect x="365.0" y="46.0" width="44" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="387" y="64.2" font-size="12" fill="#202a30" text-anchor="middle">F4</text>
+<rect x="318.0" y="111.0" width="44" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="340" y="129.2" font-size="12" fill="#202a30" text-anchor="middle">F3</text>
+<rect x="413.0" y="178.0" width="44" height="28" fill="#eaf2f3" stroke="#236675" stroke-width=".8"/>
+<text x="435" y="196.2" font-size="12" fill="#202a30" text-anchor="middle">F2</text>
+<rect x="318.0" y="243.0" width="44" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="340" y="261.2" font-size="12" fill="#202a30" text-anchor="middle">F1</text>
+<rect x="413.0" y="301.0" width="44" height="28" fill="#ffffff" stroke="#236675" stroke-width=".8"/>
+<text x="435" y="319.2" font-size="12" fill="#202a30" text-anchor="middle">F0</text>
+<text x="125" y="299" font-size="12" fill="#202a30" text-anchor="middle">9回の呼び出し</text>
+<text x="125" y="323" font-size="11" fill="#236675" text-anchor="middle">同じF2が2回現れる</text></svg></div><figcaption>図7.1　木の9ノードを、F(0)～F(4)の5状態へまとめる。矢印は必要な小問題へ向く。キャッシュ参照そのものの呼び出し回数を表した図ではない。</figcaption></figure></section><section class="subsection" id="s39"><h3>7.2　メモ化と、下から埋める計算</h3><p>一度求めた答えを引数とともに保存し、同じ引数なら再利用する方法がメモ化です。F(2)を初めて計算したときに1を保存すれば、次はその値を取り出せます。保存できるのは、必要な状態が同じなら答えも同じになる場合です。<span class="citations">［<a href="#ref11" aria-label="参考文献11">11</a>］</span></p>
+<p>呼び出された値だけを必要に応じて計算する方法を、上から解く方法、トップダウンと呼びます。逆に、F(0)、F(1)、F(2)、…と依存先を先に計算して表を埋める方法は、ボトムアップです。重なる部分問題の結果を再利用する動的計画法には、どちらの進め方もあります。<span class="citations">［<a href="#ref12" aria-label="参考文献12">12</a>］</span></p>
+<p>F(n)までの異なる状態はn+1個。メモ化または順序を決めた表の計算なら、足し算の回数はnに比例します。ただし数値自体が大きくなるので、巨大な整数の足し算を常に一定時間とみなせるわけではありません。ここで数えているのは足し算の回数です。</p>
+<p>木全体を描くと指数的に多く見える仕事が、状態の種類で数えるとずっと少ない。この二つの数を区別するのが効率化の出発点です。とはいえ、ハノイのように実際の全移動を出力する仕事では、似た形をまとめても2ⁿ − 1回分の出力そのものは消せません。</p><details class="code"><summary>Pythonコードを読む</summary><pre><code>from functools import cache
+
+@cache
+def fib(n):
+    if n &lt; 2:
+        return n
+    return fib(n - 1) + fib(n - 2)</code></pre></details><aside class="summary"><strong>ここに注目</strong><p>この例の入力は0以上の整数。fib(4) = 3、fib(10) = 55。</p></aside></section><section class="subsection" id="s40"><h3>7.3　まとめれば、いつでもDAGになるか</h3><p>有向非巡回グラフ、DAGは、矢印に沿って進んでも同じ頂点へ戻る輪がない有向グラフです。フィボナッチでは辺をたどるごとにnが減るので、DAGになります。麻雀の残り牌も、面子を除くたびに枚数が減るため同様です。</p>
+<p>しかし、どんな再帰でも状態をまとめればDAGになるわけではありません。迷路の通行可能性を位置だけでまとめれば輪が残ります。状態AがBを要求し、BがAを要求するなら、計算済みの結果だけを保存するメモ化では、最初の答えが一つも完成しないことがあります。</p>
+<p>そのような問題では、計算中の印による循環検出や、問題に応じた別の解法が必要です。メモ化は停止性の証明の代わりにはなりません。また、引数が同じでも共有状態が変わる処理では、引数だけをキーにすると異なる問題を誤って統合するおそれがあります。</p>
+<p>木からDAGへまとめた後も、実行中の復帰先が複数になって迷うわけではありません。いま結果を要求した具体的な呼び出しには、その呼び出し元があります。DAGが表すのは部分問題の共有であり、コールスタックが表す実行の入れ子とは別の関係だからです。</p>
+<p>ハノイの状態グラフは逆向きにも移動でき、周期を持ちます。第3章の解法の呼び出し木は枚数が減り続けます。同じ題材から作った二つの図でも、非巡回性の理由はまったく違います。どの対象をノードにしたかを、ここでも先に確認しましょう。</p><aside class="summary"><strong>ここに注目</strong><p>DAGである理由を、図の見た目ではなく「減る量」や依存の順序で説明する。</p></aside></section><section class="subsection" id="s41"><h3>7.4　深さから見るか、距離から見るか</h3><p>DFSは、いま選んだ枝の先を優先します。幅優先探索、BFSは、入口から辺1本で届く頂点、その次は2本で届く頂点という順で調べます。前者ではスタック、後者では先に入れたものから取り出すキューが基本です。<span class="citations">［<a href="#ref3" aria-label="参考文献3">3</a>］</span></p><figure id="fig-16_dfs_bfs" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-16_dfs_bfs" aria-label="図7.2を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図7.2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 230" width="500" height="230" role="img" aria-labelledby="title-16_dfs_bfs"><title id="title-16_dfs_bfs">図7.2　同じ木でも訪問順は違う。ここでは各親の左の子を先に調べ、DFSはノードに入った時点の順序を示す。</title>
+<line x1="250" y1="40" x2="120" y2="100" stroke="#78858a" stroke-width="1"/>
+<line x1="250" y1="40" x2="380" y2="100" stroke="#78858a" stroke-width="1"/>
+<line x1="120" y1="100" x2="55" y2="160" stroke="#78858a" stroke-width="1"/>
+<line x1="120" y1="100" x2="185" y2="160" stroke="#78858a" stroke-width="1"/>
+<line x1="380" y1="100" x2="315" y2="160" stroke="#78858a" stroke-width="1"/>
+<line x1="380" y1="100" x2="445" y2="160" stroke="#78858a" stroke-width="1"/>
+<circle cx="250" cy="40" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="250" y="44" font-size="12" fill="#202a30" text-anchor="middle">A</text>
+<circle cx="120" cy="100" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="120" y="104" font-size="12" fill="#202a30" text-anchor="middle">B</text>
+<circle cx="380" cy="100" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="380" y="104" font-size="12" fill="#202a30" text-anchor="middle">C</text>
+<circle cx="55" cy="160" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="55" y="164" font-size="12" fill="#202a30" text-anchor="middle">D</text>
+<circle cx="185" cy="160" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="185" y="164" font-size="12" fill="#202a30" text-anchor="middle">E</text>
+<circle cx="315" cy="160" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="315" y="164" font-size="12" fill="#202a30" text-anchor="middle">F</text>
+<circle cx="445" cy="160" r="15" fill="#ffffff" stroke="#236675"/>
+<text x="445" y="164" font-size="12" fill="#202a30" text-anchor="middle">G</text>
+<text x="250" y="205" font-size="13" fill="#236675" text-anchor="middle">DFS：A B D E C F G</text>
+<text x="250" y="227" font-size="13" fill="#236675" text-anchor="middle">BFS：A B C D E F G</text></svg></div><figcaption>図7.2　同じ木でも訪問順は違う。ここでは各親の左の子を先に調べ、DFSはノードに入った時点の順序を示す。</figcaption></figure><p>各辺の移動コストが同じなら、BFSで初めて到達したときの辺数は最小です。図2.1なら、SからDを1本で発見し、E、Gへと広げて3本の道を得ます。重みの違う辺では、この保証をそのまま使うことはできません。</p>
+<p>DFSもBFSも、訪問済み管理と隣接リストを用いれば、有限グラフを調べる時間はO(V + E)です。Vは頂点数、Eは辺数。違いは主に調べる順序と途中で保持する境界の形です。どちらも最悪時にはO(V)の領域を使います。</p><aside class="summary"><strong>この章のまとめ</strong><p>呼び出しを数える木と、異なる部分問題を数えるDAGを区別する。重複を共有し、目的に合う探索順序を選ぶ。</p></aside></section></section><section class="chapter" id="ending"><header class="chapter-heading"><span class="eyebrow">RECURSION / ENDING</span><h2>終章</h2></header><section class="subsection" id="s42"><h3>再帰という木構造生成装置</h3><p>迷路では隣を探し、ハノイでは小さい塔を移し、図形では縮小コピーを作り、麻雀では面子を除きました。問題固有の規則が子を生み、呼び出したという事実が親子関係を与えます。</p><figure id="fig-17_compare" class=""><div class="figure-tools"><span>横にスクロールできます</span><button class="enlarge" type="button" data-figure="fig-17_compare" aria-label="図終.1を拡大">図を拡大 ↗</button></div><div class="figure-scroll" tabindex="0" role="region" aria-label="図終.1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 340" width="500" height="340" role="img" aria-labelledby="title-17_compare"><title id="title-17_compare">図終.1　四つの題材と導入の階乗を、同じ項目で並べる。表の停止の目印に加えて、到達する理由と各処理の有限性を確認する。</title>
+<rect x="0" y="0" width="500" height="52" fill="#eaf2f3" stroke="#d3dce0" stroke-width=".8"/>
+<text x="38.5" y="31" font-size="12" fill="#236675" text-anchor="middle">題材</text>
+<text x="156.5" y="31" font-size="11" fill="#236675" text-anchor="middle">1ノードの意味</text>
+<text x="315.5" y="31" font-size="11" fill="#236675" text-anchor="middle">子を作る規則</text>
+<text x="447.5" y="31" font-size="11" fill="#236675" text-anchor="middle">止まる目印</text>
+<rect x="0" y="52" width="500" height="52" fill="#ffffff" stroke="#d3dce0" stroke-width=".8"/>
+<text x="38.5" y="83" font-size="12" fill="#202a30" text-anchor="middle">階乗</text>
+<text x="156.5" y="83" font-size="11" fill="#202a30" text-anchor="middle">n! の計算</text>
+<text x="315.5" y="83" font-size="11" fill="#202a30" text-anchor="middle">n を1減らす</text>
+<text x="447.5" y="83" font-size="11" fill="#202a30" text-anchor="middle">n = 0</text>
+<rect x="0" y="104" width="500" height="52" fill="#ffffff" stroke="#d3dce0" stroke-width=".8"/>
+<text x="38.5" y="135" font-size="12" fill="#202a30" text-anchor="middle">迷路</text>
+<text x="156.5" y="135" font-size="11" fill="#202a30" text-anchor="middle">頂点での探索</text>
+<text x="315.5" y="135" font-size="11" fill="#202a30" text-anchor="middle">未訪問の隣へ</text>
+<text x="447.5" y="135" font-size="11" fill="#202a30" text-anchor="middle">出口／候補なし</text>
+<rect x="0" y="156" width="500" height="52" fill="#ffffff" stroke="#d3dce0" stroke-width=".8"/>
+<text x="38.5" y="187" font-size="12" fill="#202a30" text-anchor="middle">ハノイ</text>
+<text x="156.5" y="187" font-size="11" fill="#202a30" text-anchor="middle">n枚の移動課題</text>
+<text x="315.5" y="187" font-size="11" fill="#202a30" text-anchor="middle">n−1枚の課題2個</text>
+<text x="447.5" y="187" font-size="11" fill="#202a30" text-anchor="middle">n = 1</text>
+<rect x="0" y="208" width="500" height="52" fill="#ffffff" stroke="#d3dce0" stroke-width=".8"/>
+<text x="38.5" y="239" font-size="12" fill="#202a30" text-anchor="middle">三角形</text>
+<text x="156.5" y="239" font-size="11" fill="#202a30" text-anchor="middle">領域の描画</text>
+<text x="315.5" y="239" font-size="11" fill="#202a30" text-anchor="middle">半分の領域3個</text>
+<text x="447.5" y="239" font-size="11" fill="#202a30" text-anchor="middle">深さ = 0</text>
+<rect x="0" y="260" width="500" height="52" fill="#ffffff" stroke="#d3dce0" stroke-width=".8"/>
+<text x="38.5" y="291" font-size="12" fill="#202a30" text-anchor="middle">麻雀</text>
+<text x="156.5" y="291" font-size="11" fill="#202a30" text-anchor="middle">残り牌の判定</text>
+<text x="315.5" y="291" font-size="11" fill="#202a30" text-anchor="middle">面子を3枚除く</text>
+<text x="447.5" y="291" font-size="11" fill="#202a30" text-anchor="middle">空／分解不能</text>
+<text x="250" y="336" font-size="12" fill="#202a30" text-anchor="middle">子の作り方が違っても、呼び出しと復帰の関係は共通</text></svg></div><figcaption>図終.1　四つの題材と導入の階乗を、同じ項目で並べる。表の停止の目印に加えて、到達する理由と各処理の有限性を確認する。</figcaption></figure><p>「木構造生成装置」は、この働きに付けた本書の呼び名です。新しい数学的定理の名称ではありません。再帰をこの視点から見ると、分岐、復帰、深さ、仕事量、重複を一つの図で調べられます。</p>
+<p>重要なのは、何でも木に見立てることではありません。何を1ノードとし、何を辺としたかを明示することです。それができれば、木の背後にあるグラフも、木に加わる幾何学も見えてきます。</p></section></section><section class="chapter" id="exercises"><header class="chapter-heading"><span class="eyebrow">RECURSION / EXERCISES</span><h2>付録A　自分で確かめる</h2></header><section class="subsection" id="s43"><h3>小さな問いを、木にしてみる</h3><p>【問1　階乗】factorial(4)を実行し、0で止まる場合の呼び出し数と、同時に生きているフレームの最大数を数えてください。1で止める実装では、何が変わりますか。</p>
+<p>【問2　迷路】図2.1でSからDを先に調べると、Gへ到達するまでの呼び出し木はどう変わりますか。DではEをCより先に調べるとします。迷路の通路そのものは変わるでしょうか。</p>
+<p>【問3　ハノイ】5枚のとき、1枚で止まる呼び出し木のノード数、葉の数、最大深さを求めてください。最大深さは根を0とします。移動回数がノード数と一致する理由も説明してみましょう。</p>
+<p>【問4　三角形】段階4に残る小三角形の個数と、一つの辺長、全体の面積の割合を求めてください。その有限段階の黒い集合のハウスドルフ次元は、1.585でしょうか。</p>
+<p>【問5　麻雀】111222333456から、111・222・333を除く道と、123を3回除く道を描いてください。合流する状態は何ですか。分解の有無を判定する場合と、全分解を表示する場合で、早期終了の扱いは変わるでしょうか。</p>
+<p>【問6　停止】f(n)がf(n+1)を呼び続ける例で、各ノードの親は何ですか。親が一意であることから、停止すると結論できますか。</p>
+<p>【問7　共有】F(5)の呼び出し木を描き、同じnのノードを統合してください。残る状態の個数と、「辺に沿って減る量」を答えてください。</p></section></section><section class="chapter" id="answers"><header class="chapter-heading"><span class="eyebrow">RECURSION / ANSWERS</span><h2>付録B　解答と検算</h2></header><section class="subsection" id="s44"><h3>図と計算の対応を確かめる</h3><p>問1：0で止まると5呼び出し、最大5フレームです。1で止まるとどちらも4です。呼び出し元のプログラム全体や、補助関数のフレームは数えません。</p>
+<p>問2：S-D-E-Gという一本道で出口へ達します。迷路の辺は不変で、探索の順序と初訪問の親が変わります。</p>
+<p>問3：31ノード、16個の葉、最大深さ4です。すべてのノードが自身の円盤を1回動かすため、31移動になります。葉ノードの数と円盤の枚数は異なります。</p>
+<p>問4：81個、辺長1/16、面積81/256です。有限段階では内部を持つため次元は2。無限の極限集合の次元がlog(3)/log(2)です。</p>
+<p>問5：どちらも456へ到達します。有無だけなら成功を一つ見つけて終了できます。全分解を示すなら、別の成功枝を捨てないよう列挙します。</p>
+<p>問6：各子の親は直前の呼び出しですが、終わるとは言えません。問7：F(0)～F(5)の6状態で、依存先へ進むとnが減ります。</p>
+<p>【制作時の検算】階乗、迷路の経路、三角形の段階ごとの個数を実行確認しました。ハノイは1～8枚の全移動の合法性と2ⁿ−1回を確認し、1～5枚の状態グラフではBFSの最短距離とも照合しています。麻雀は本文の七面待ち、成功・失敗の分岐、七対子、国士無双を確認しました。追加の照合範囲と結果は、この節の末尾にも記載しています。</p>
+<p>検算は具体例と実装の誤りを探すためのものです。一般の入力についての正確さは、第3章の下限の議論や第5章の分解の説明によって別に支えています。</p><p>単一の数牌スートに限定し、各牌4枚以下・合計14枚の118,800通りを、独立した面子組合せの列挙と照合しました。通常形として成立する13,277通りを含め、判定は全件一致しました。全34種の全入力を網羅した検査ではありません。</p></section></section><section class="chapter" id="references"><header class="chapter-heading"><span class="eyebrow">REFERENCES</span><h2>参考文献</h2></header><p>原稿制作時に実在と内容を確認した資料です。番号は本文の参照番号に対応します。</p><ol class="refs"><li id="ref1"><span class="ref-author">Princeton University</span><a href="https://introcs.cs.princeton.edu/java/23recursion/">Introduction to Programming in Java, §2.3 Recursion</a><p>再帰・階乗・ハノイ。本文を直接取得して確認。</p></li><li id="ref2"><span class="ref-author">Cornell University</span><a href="https://courses.cs.cornell.edu/courses/cs2110/2026sp/lectures/lec22/">CS 2110, 22. Graph Traversals（Spring 2026）</a><p>DFSのフレーム、訪問済み管理、BFS。</p></li><li id="ref3"><span class="ref-author">Cornell University</span><a href="https://www.cs.cornell.edu/courses/cs2112/2012sp/lectures/lec24/lec24-12sp.html">CS 2112, Lecture 24: Graph traversals（Spring 2012）</a><p>DFSの呼び出し木、BFS、計算量。</p></li><li id="ref4"><span class="ref-author">Carnegie Mellon University掲載教材</span><a href="https://www.cs.cmu.edu/~cburch/survey/recurse/hanoitime.html">Recursion: Towers of Hanoi — Will the world end soon?</a><p>移動回数の漸化式。最小性の証明は本文で独立に展開。</p></li><li id="ref5"><span class="ref-author">University of St Andrews, MacTutor</span><a href="https://mathshistory.st-andrews.ac.uk/Extras/Sierpinski_triangle/">Sierpiński’s triangle or gasket</a><p>生成法・面積・極限集合の次元。</p></li><li id="ref6"><span class="ref-author">Kenneth Falconer</span><a href="https://www.ma.imperial.ac.uk/~jswlamb/M345PA46/Fractal%20Geometry_%20Mathematical%20Foundations%20and%20Applications%20-%20Kenneth%20Falconer.pdf">Fractal Geometry: Mathematical Foundations and Applications, 2nd ed.（2003）, Chapter 9, Example 9.4, p. 132</a><p>大学掲載PDF。相似次元、開集合条件、シェルピンスキーの次元。</p></li><li id="ref7"><span class="ref-author">University of Oxford, The Turtle System</span><a href="https://www.turtle.ox.ac.uk/downloads/docs/Turtle_Python_8_Iterated_Function_Systems.pdf">Turtle Python 8 — Iterated Function Systems, pp. 1–4</a><p>三角形の再帰的生成と縮小写像。</p></li><li id="ref8"><span class="ref-author">Shu-Chiuan Chang / Robert Shrock</span><a href="https://arxiv.org/abs/2409.19863">Potts Partition Function Zeros and Ground State Entropy on Hanoi Graphs（2024）, §II.2 / Appendix B</a><p>HTML本文も確認。Hanoi graphとSierpiński gasket graphの区別。本書は円盤数n、資料は反復数mで添字を付け、n = m + 1。</p></li><li id="ref9"><span class="ref-author">World Riichi Championship</span><a href="https://static1.squarespace.com/static/634a7884c297a25f06589b79/t/636136c78306ca6579c03fd0/1667315409318/WRC_Rules_2022_20220708_site.pdf">World Riichi Championship Rules 2022, V1.1, pp. 7–9, 42, 44</a><p>牌・面子・完成形・七対子・国士無双。2022版の定義を参照。</p></li><li id="ref10"><span class="ref-author">MahjongRepository</span><a href="https://raw.githubusercontent.com/MahjongRepository/mahjong/master/mahjong/agari.py">mahjong / mahjong/agari.py</a><p>公開ソース本文。形判定と役・点数の分離を確認。本文コードの転載元ではない。</p></li><li id="ref11"><span class="ref-author">Python Software Foundation</span><a href="https://docs.python.org/3/library/functools.html">Python 3 documentation, functools</a><p>cacheによるメモ化。付属コードはPython 3.9以降を想定。</p></li><li id="ref12"><span class="ref-author">Erik Demaine / Jason Ku / Justin Solomon, MIT</span><a href="https://live.ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/9eb3e9a51a7b5b60b0f67c2277f8b0ee_MIT6_006S20_lec15.pdf">6.006, Lecture 15: Recursive Algorithms（Spring 2020）, pp. 1–4</a><p>部分問題DAG、メモ化、トップダウンとボトムアップ。</p></li></ol></section><section class="chapter" id="glossary"><header class="chapter-heading"><span class="eyebrow">INDEX</span><h2>用語索引</h2></header><dl class="glossary"><dt><a href="#s4">再帰</a></dt><dd>同じ手順を、入力を変えて呼び出すこと。</dd><dt><a href="#s4">基本条件</a></dt><dd>ほかの呼び出しに頼らず答えられる場合。</dd><dt><a href="#s6">コールスタック</a></dt><dd>まだ終わっていない呼び出しのフレームを保持する仕組み。</dd><dt><a href="#s9">深さ優先探索（DFS）</a></dt><dd>選んだ枝を奥まで調べてから別の枝へ移る探索。</dd><dt><a href="#s9">バックトラック</a></dt><dd>選択を取り消し、前の分岐から別の可能性を調べる操作。</dd><dt><a href="#s14">完全二分木（本書の定義）</a></dt><dd>葉の深さが揃い、葉以外が子を二つ持つ木。</dd><dt><a href="#s17">中順走査</a></dt><dd>左部分木、自分自身、右部分木の順に処理すること。</dd><dt><a href="#s20">自己相似性</a></dt><dd>部分に、全体を縮小した形が現れる性質。</dd><dt><a href="#s22">フラクタル次元</a></dt><dd>縮尺と複雑さの関係を捉える次元。本文では極限集合の次元を扱う。</dd><dt><a href="#s23">反復関数系（IFS）</a></dt><dd>複数の縮小写像を繰り返し適用して集合を作る仕組み。</dd><dt><a href="#s26">面子・雀頭</a></dt><dd>面子は刻子または順子、雀頭は同一牌2枚の組。</dd><dt><a href="#s33">メモ化</a></dt><dd>同じ部分問題の計算結果を保存して再利用すること。</dd><dt><a href="#s36">停止性</a></dt><dd>処理が有限の手順で終了するという性質。</dd><dt><a href="#s40">DAG</a></dt><dd>有向の閉路を持たないグラフ。</dd><dt><a href="#s41">幅優先探索（BFS）</a></dt><dd>入口から辺の本数が少ない順に広げる探索。</dd></dl></section><section class="chapter" id="code-download"><header class="chapter-heading"><span class="eyebrow">RESOURCES</span><h2>コードと検証記録</h2></header><p>Python 3.9以降を想定しています。examples.py は標準ライブラリだけで実行できます。verify.py と同じフォルダーに置くと、追加の全数照合も実行できます。</p><div class="downloads"><a download="examples.py" href="data:application/octet-stream;base64,IiIi5YaN5biw44Go44GE44GG5pyo5qeL6YCg55Sf5oiQ6KOF572u77ya5pys5paH5o6y6LyJ5L6L44CCUHl0aG9uIDMuOSvjgIHmqJnmupbjg6njgqTjg5bjg6njg6rjga7jgb/jgIIiIiIKZnJvbSBmdW5jdG9vbHMgaW1wb3J0IGNhY2hlCmZyb20gaXRlcnRvb2xzIGltcG9ydCBwcm9kdWN0CmZyb20gY29sbGVjdGlvbnMgaW1wb3J0IGRlcXVlCgpkZWYgZmFjdG9yaWFsKG4pOgogICAgaWYgbiA8IDA6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcignbiBtdXN0IGJlIG5vbm5lZ2F0aXZlJykKICAgIGlmIG4gPT0gMDoKICAgICAgICByZXR1cm4gMQogICAgcmV0dXJuIG4gKiBmYWN0b3JpYWwobiAtIDEpCgpkZWYgaGFub2kobiwgc3JjLCBkc3QsIGF1eCwgbW92ZXMpOgogICAgaWYgbiA8IDE6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcignbiBtdXN0IGJlIHBvc2l0aXZlJykKICAgIGlmIG4gPT0gMToKICAgICAgICBtb3Zlcy5hcHBlbmQoKDEsIHNyYywgZHN0KSkKICAgICAgICByZXR1cm4KICAgIGhhbm9pKG4gLSAxLCBzcmMsIGF1eCwgZHN0LCBtb3ZlcykKICAgIG1vdmVzLmFwcGVuZCgobiwgc3JjLCBkc3QpKQogICAgaGFub2kobiAtIDEsIGF1eCwgZHN0LCBzcmMsIG1vdmVzKQoKIyDlm7MyLjHjgILpmqPmjqXngrnjgpLjgZPjga7poIbjgafoqr/jgbnjgovjgIIKTUFaRSA9IHsnUyc6WydBJywnRCddLCAnQSc6WydTJywnQicsJ0MnXSwKICAgICAgICAnQic6WydBJ10sICdDJzpbJ0EnLCdEJ10sCiAgICAgICAgJ0QnOlsnUycsJ0MnLCdFJ10sICdFJzpbJ0QnLCdHJ10sICdHJzpbJ0UnXX0KCmRlZiBkZnNfcGF0aChncmFwaCwgc3RhcnQsIGdvYWwpOgogICAgdmlzaXRlZCA9IHNldCgpCiAgICBwYXRoID0gW10KICAgIGRlZiB2aXNpdCh2KToKICAgICAgICB2aXNpdGVkLmFkZCh2KQogICAgICAgIHBhdGguYXBwZW5kKHYpCiAgICAgICAgaWYgdiA9PSBnb2FsOgogICAgICAgICAgICByZXR1cm4gVHJ1ZQogICAgICAgIGZvciB3IGluIGdyYXBoW3ZdOgogICAgICAgICAgICBpZiB3IG5vdCBpbiB2aXNpdGVkIGFuZCB2aXNpdCh3KToKICAgICAgICAgICAgICAgIHJldHVybiBUcnVlCiAgICAgICAgcGF0aC5wb3AoKQogICAgICAgIHJldHVybiBGYWxzZQogICAgcmV0dXJuIHBhdGggaWYgdmlzaXQoc3RhcnQpIGVsc2UgTm9uZQoKQGNhY2hlCmRlZiBtZWxkYWJsZShjb3VudHMpOgogICAgaWYgbm90IGFueShjb3VudHMpOgogICAgICAgIHJldHVybiBUcnVlCiAgICBpID0gbmV4dChpIGZvciBpLCB4IGluIGVudW1lcmF0ZShjb3VudHMpIGlmIHgpCiAgICBjID0gbGlzdChjb3VudHMpCiAgICBpZiBjW2ldID49IDM6CiAgICAgICAgY1tpXSAtPSAzCiAgICAgICAgaWYgbWVsZGFibGUodHVwbGUoYykpOgogICAgICAgICAgICByZXR1cm4gVHJ1ZQogICAgICAgIGNbaV0gKz0gMwogICAgaWYgaSA8IDI3IGFuZCBpICUgOSA8PSA2OgogICAgICAgIGlmIGNbaSArIDFdIGFuZCBjW2kgKyAyXToKICAgICAgICAgICAgZm9yIGogaW4gKGksIGkgKyAxLCBpICsgMik6CiAgICAgICAgICAgICAgICBjW2pdIC09IDEKICAgICAgICAgICAgaWYgbWVsZGFibGUodHVwbGUoYykpOgogICAgICAgICAgICAgICAgcmV0dXJuIFRydWUKICAgIHJldHVybiBGYWxzZQoKZGVmIHN0YW5kYXJkKGMpOgogICAgZm9yIGksIHggaW4gZW51bWVyYXRlKGMpOgogICAgICAgIGlmIHggPj0gMjoKICAgICAgICAgICAgciA9IGxpc3QoYykKICAgICAgICAgICAgcltpXSAtPSAyCiAgICAgICAgICAgIGlmIG1lbGRhYmxlKHR1cGxlKHIpKToKICAgICAgICAgICAgICAgIHJldHVybiBUcnVlCiAgICByZXR1cm4gRmFsc2UKCk9SUEhBTlMgPSAoMCwgOCwgOSwgMTcsIDE4LCAyNiwgMjcsIDI4LCAyOSwgMzAsIDMxLCAzMiwgMzMpCgpkZWYgd2lubmluZ19zaGFwZShjKToKICAgIGlmIGxlbihjKSAhPSAzNCBvciBzdW0oYykgIT0gMTQ6CiAgICAgICAgcmV0dXJuIEZhbHNlCiAgICBpZiBhbnkodHlwZSh4KSBpcyBub3QgaW50IG9yIG5vdCAwIDw9IHggPD0gNCBmb3IgeCBpbiBjKToKICAgICAgICByZXR1cm4gRmFsc2UKICAgIHNldmVuID0gc3VtKHggPT0gMiBmb3IgeCBpbiBjKSA9PSA3CiAgICBvcnBoYW4gPSAoYWxsKGNbaV0gPj0gMSBmb3IgaSBpbiBPUlBIQU5TKQogICAgICAgICAgICAgIGFuZCBzdW0oY1tpXSBmb3IgaSBpbiBPUlBIQU5TKSA9PSAxNCkKICAgIHJldHVybiBzZXZlbiBvciBvcnBoYW4gb3Igc3RhbmRhcmQoYykKCmRlZiB3YWl0cyhjKToKICAgIGlmIGxlbihjKSAhPSAzNCBvciBzdW0oYykgIT0gMTM6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcignbmVlZCAxMyB0aWxlcyBpbiAzNC1jb3VudCBmb3JtYXQnKQogICAgaWYgYW55KHR5cGUoeCkgaXMgbm90IGludCBvciBub3QgMCA8PSB4IDw9IDQgZm9yIHggaW4gYyk6CiAgICAgICAgcmFpc2UgVmFsdWVFcnJvcignaW52YWxpZCB0aWxlIGNvdW50JykKICAgIGFuc3dlciA9IFtdCiAgICBmb3IgaSBpbiByYW5nZSgzNCk6CiAgICAgICAgaWYgY1tpXSA9PSA0OgogICAgICAgICAgICBjb250aW51ZQogICAgICAgIHIgPSBsaXN0KGMpCiAgICAgICAgcltpXSArPSAxCiAgICAgICAgaWYgd2lubmluZ19zaGFwZShyKToKICAgICAgICAgICAgYW5zd2VyLmFwcGVuZChpKQogICAgcmV0dXJuIGFuc3dlcgoKZGVmIG1hbihzKToKICAgIGMgPSBbMF0gKiAzNAogICAgZm9yIGNoIGluIHM6CiAgICAgICAgY1tpbnQoY2gpIC0gMV0gKz0gMQogICAgcmV0dXJuIHR1cGxlKGMpCgpAY2FjaGUKZGVmIGZpYihuKToKICAgIGlmIG4gPCAyOgogICAgICAgIHJldHVybiBuCiAgICByZXR1cm4gZmliKG4gLSAxKSArIGZpYihuIC0gMikKCmRlZiBzaWVycGluc2tpKGEsIGIsIGMsIGRlcHRoKToKICAgIGlmIGRlcHRoID09IDA6CiAgICAgICAgcmV0dXJuIFsoYSwgYiwgYyldCiAgICBkZWYgbWlkKHAsIHEpOgogICAgICAgIHJldHVybiAoKHBbMF0rcVswXSkvMiwgKHBbMV0rcVsxXSkvMikKICAgIGFiLCBiYywgY2EgPSBtaWQoYSxiKSwgbWlkKGIsYyksIG1pZChjLGEpCiAgICByZXR1cm4gKHNpZXJwaW5za2koYSxhYixjYSxkZXB0aC0xKQogICAgICAgICAgICArIHNpZXJwaW5za2koYWIsYixiYyxkZXB0aC0xKQogICAgICAgICAgICArIHNpZXJwaW5za2koY2EsYmMsYyxkZXB0aC0xKSkKCmRlZiBoYW5vaV9ncmFwaChuKToKICAgIHN0YXRlcyA9IGxpc3QocHJvZHVjdChyYW5nZSgzKSwgcmVwZWF0PW4pKSAjIOWwj+OBleOBhOWGhuebpOOBi+OCiQogICAgZWRnZXMgPSBbXQogICAgZm9yIHMgaW4gc3RhdGVzOgogICAgICAgIHRvcHMgPSB7cDpuZXh0KChpIGZvciBpIGluIHJhbmdlKG4pIGlmIHNbaV09PXApLG4pIGZvciBwIGluIHJhbmdlKDMpfQogICAgICAgIGZvciBwIGluIHJhbmdlKDMpOgogICAgICAgICAgICBpPXRvcHNbcF0KICAgICAgICAgICAgaWYgaT09bjogY29udGludWUKICAgICAgICAgICAgZm9yIHEgaW4gcmFuZ2UoMyk6CiAgICAgICAgICAgICAgICBpZiBwIT1xIGFuZCBpPHRvcHNbcV06CiAgICAgICAgICAgICAgICAgICAgdD1saXN0KHMpO3RbaV09cTt0PXR1cGxlKHQpCiAgICAgICAgICAgICAgICAgICAgaWYgczx0OmVkZ2VzLmFwcGVuZCgocyx0KSkKICAgIHJldHVybiBzdGF0ZXMsZWRnZXMKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhc3NlcnQgZmFjdG9yaWFsKDQpPT0yNAogICAgYXNzZXJ0IGRmc19wYXRoKE1BWkUsJ1MnLCdHJyk9PVsnUycsJ0EnLCdDJywnRCcsJ0UnLCdHJ10KICAgIGZvciBuIGluIHJhbmdlKDEsOSk6CiAgICAgICAgbW92ZXM9W107aGFub2kobiwnQScsJ0MnLCdCJyxtb3ZlcykKICAgICAgICBwZWdzPXsnQSc6bGlzdChyYW5nZShuLDAsLTEpKSwnQic6W10sJ0MnOltdfQogICAgICAgIGZvciBkLHMsdCBpbiBtb3ZlczoKICAgICAgICAgICAgYXNzZXJ0IHBlZ3Nbc11bLTFdPT1kCiAgICAgICAgICAgIGFzc2VydCBub3QgcGVnc1t0XSBvciBwZWdzW3RdWy0xXT5kCiAgICAgICAgICAgIHBlZ3Nbc10ucG9wKCk7cGVnc1t0XS5hcHBlbmQoZCkKICAgICAgICBhc3NlcnQgbGVuKG1vdmVzKT09Mioqbi0xIGFuZCBwZWdzWydDJ109PWxpc3QocmFuZ2UobiwwLC0xKSkKICAgIGZvciBuIGluIHJhbmdlKDEsNik6CiAgICAgICAgc3RhdGVzLGVkZ2VzPWhhbm9pX2dyYXBoKG4pCiAgICAgICAgYXNzZXJ0IGxlbihzdGF0ZXMpPT0zKipuIGFuZCBsZW4oZWRnZXMpPT0zKigzKipuLTEpLy8yCiAgICAgICAgYWRqPXtzOltdIGZvciBzIGluIHN0YXRlc30KICAgICAgICBmb3Igcyx0IGluIGVkZ2VzOmFkaltzXS5hcHBlbmQodCk7YWRqW3RdLmFwcGVuZChzKQogICAgICAgIGQ9eygwLCkqbjowfTtxPWRlcXVlKGQpCiAgICAgICAgd2hpbGUgcToKICAgICAgICAgICAgcz1xLnBvcGxlZnQoKQogICAgICAgICAgICBmb3IgdCBpbiBhZGpbc106CiAgICAgICAgICAgICAgICBpZiB0IG5vdCBpbiBkOmRbdF09ZFtzXSsxO3EuYXBwZW5kKHQpCiAgICAgICAgYXNzZXJ0IGRbKDIsKSpuXT09Mioqbi0xCiAgICBhc3NlcnQgW2krMSBmb3IgaSBpbiB3YWl0cyhtYW4oJzExMTIyMjMzMzQ1NjcnKSldPT1bMSwyLDMsNCw1LDcsOF0KICAgIGFzc2VydCB3aW5uaW5nX3NoYXBlKG1hbignMTExMjIyMzMzNDU2NzcnKSkKICAgIGFzc2VydCBtZWxkYWJsZShtYW4oJzMzMzQ1NicpKSBhbmQgbm90IG1lbGRhYmxlKG1hbignMzM2JykpCiAgICBhc3NlcnQgbGVuKHdhaXRzKG1hbignMTExMjM0NTY3ODk5OScpKSk9PTkKICAgIGFzc2VydCB3aW5uaW5nX3NoYXBlKG1hbignMTEyMjMzNDQ1NTY2NzcnKSkKICAgIG89WzBdKjM0CiAgICBmb3IgaSBpbiBPUlBIQU5TOm9baV09MQogICAgYXNzZXJ0IHdhaXRzKHR1cGxlKG8pKT09bGlzdChPUlBIQU5TKQogICAgZm9yIGQgaW4gcmFuZ2UoNyk6YXNzZXJ0IGxlbihzaWVycGluc2tpKCgwLDApLCgxLDApLCgwLDEpLGQpKT09MyoqZAogICAgcHJpbnQoJ0FsbCBleGFtcGxlcyBwYXNzZWQ7IG1haW4gaGFuZCB3YWl0cyA9IDFtLCAybSwgM20sIDRtLCA1bSwgN20sIDhtLicpCg==">掲載例の完全なPythonコード<span>examples.py ↓</span></a><a download="verify.py" href="data:application/octet-stream;base64,IiIi5o6y6LyJ5L6L44Gu54us56uL54Wn5ZCI44CCcHl0aG9uIHZlcmlmeS5weSDjgaflrp/ooYzjgIIiIiIKZnJvbSBleGFtcGxlcyBpbXBvcnQgKgpmcm9tIGl0ZXJ0b29scyBpbXBvcnQgY29tYmluYXRpb25zX3dpdGhfcmVwbGFjZW1lbnQsIHByb2R1Y3QKZnJvbSBjb2xsZWN0aW9ucyBpbXBvcnQgQ291bnRlcgpmcm9tIHBhdGhsaWIgaW1wb3J0IFBhdGgKaW1wb3J0IGpzb24sIHJhbmRvbQoKZGVmIGRlY29tcG9zaXRpb25zKGMpOgogICAgIyDmpJzoqLznlKjvvJrmnIDlsI/niYzjgavkvp3jgonjgZrjgIHlgJnoo5zpnaLlrZDjga7lhajntYTlkIjjgZvjgpLnlJ/miJDjgZnjgovjgIIKICAgIG1lbGRzPVsoaSxpLGkpIGZvciBpIGluIHJhbmdlKDM0KSBpZiBjW2ldPj0zXQogICAgbWVsZHMgKz0gWyhpLGkrMSxpKzIpIGZvciBpIGluIHJhbmdlKDI3KSBpZiBpJTk8PTYgYW5kIGFsbChjW2pdIGZvciBqIGluIChpLGkrMSxpKzIpKV0KICAgIHJlc3VsdD1bXQogICAgZm9yIGhlYWQgaW4gcmFuZ2UoMzQpOgogICAgICAgIGlmIGNbaGVhZF08Mjpjb250aW51ZQogICAgICAgIGZvciBwYXJ0cyBpbiBjb21iaW5hdGlvbnNfd2l0aF9yZXBsYWNlbWVudChtZWxkcyw0KToKICAgICAgICAgICAgej1Db3VudGVyKChoZWFkLGhlYWQpKQogICAgICAgICAgICBmb3IgcGFydCBpbiBwYXJ0czp6LnVwZGF0ZShwYXJ0KQogICAgICAgICAgICBpZiBhbGwoeltpXT09Y1tpXSBmb3IgaSBpbiByYW5nZSgzNCkpOnJlc3VsdC5hcHBlbmQoKGhlYWQscGFydHMpKQogICAgcmV0dXJuIHJlc3VsdAoKd2l0bmVzcz17fQpmb3IgaSBpbiB3YWl0cyhtYW4oJzExMTIyMjMzMzQ1NjcnKSk6CiAgICBjPWxpc3QobWFuKCcxMTEyMjIzMzM0NTY3JykpO2NbaV0rPTEKICAgIGQ9ZGVjb21wb3NpdGlvbnMoYyk7YXNzZXJ0IGQKICAgIGgscGFydHM9ZFswXQogICAgd2l0bmVzc1tzdHIoaSsxKV09JyAnLmpvaW4oJycuam9pbihzdHIoeCsxKSBmb3IgeCBpbiBwYXJ0KSBmb3IgcGFydCBpbiBwYXJ0cykrZicgW3toKzF9e2grMX1dJwoKIyDkuIDoibLjga406Z2i5a2QMembgOmgreOCkueUn+aIkOOBmeOCi+WIpeaWueW8j+OBqOOAgeWFqOWQiOazlTE05p6a44OZ44Kv44OI44Or44Gn5LiA6Ie044KS56K66KqN44CCCm1lbGRzPVsoaSxpLGkpIGZvciBpIGluIHJhbmdlKDkpXStbKGksaSsxLGkrMikgZm9yIGkgaW4gcmFuZ2UoNyldCnZhbGlkPXNldCgpCmZvciBwYXJ0cyBpbiBjb21iaW5hdGlvbnNfd2l0aF9yZXBsYWNlbWVudChtZWxkcyw0KToKICAgIGM9WzBdKjkKICAgIGZvciBwYXJ0IGluIHBhcnRzOgogICAgICAgIGZvciBpIGluIHBhcnQ6Y1tpXSs9MQogICAgZm9yIGhlYWQgaW4gcmFuZ2UoOSk6CiAgICAgICAgcj1jLmNvcHkoKTtyW2hlYWRdKz0yCiAgICAgICAgaWYgbWF4KHIpPD00OnZhbGlkLmFkZCh0dXBsZShyKSkKIyBzcGVjaWFsIHNldmVuIHBhaXJzIG1heSBjb2V4aXN0IHdpdGggc3RhbmRhcmQ7IGNoZWNrIGZ1bGwgcHJlZGljYXRlCnZhbGlkIHw9IHt0dXBsZSgyIGlmIGkgaW4gcGFpciBlbHNlIDAgZm9yIGkgaW4gcmFuZ2UoOSkpIGZvciBwYWlyIGluIF9faW1wb3J0X18oJ2l0ZXJ0b29scycpLmNvbWJpbmF0aW9ucyhyYW5nZSg5KSw3KX0KY291bnQ9MApmb3IgYyBpbiBwcm9kdWN0KHJhbmdlKDUpLHJlcGVhdD05KToKICAgIGlmIHN1bShjKSE9MTQ6Y29udGludWUKICAgIGFzc2VydCB3aW5uaW5nX3NoYXBlKGMrKDAsKSoyNSk9PShjIGluIHZhbGlkKSwgYwogICAgY291bnQrPTEKIyBCb3VuZGFyeSBjYXNlczogbm8gc2VxdWVuY2UgYWNyb3NzIHN1aXRzIC8gaG9ub3IgdGlsZXM7IDV0aCB0aWxlIGludmFsaWQKYz1bMF0qMzQKZm9yIGkgaW4gWzcsOCw5LDEwLDExLDEyLDE4LDE5LDIwLDI3LDI3LDI3LDI4LDI4XTpjW2ldKz0xCmFzc2VydCBub3Qgd2lubmluZ19zaGFwZSh0dXBsZShjKSkKYz1bMF0qMzQ7Y1swXT01O2NbMV09MztjWzJdPTM7Y1szXT0zCmFzc2VydCBub3Qgd2lubmluZ19zaGFwZShjKQpyZXBvcnQ9eydvbmVfc3VpdF9hbGxfbGVnYWxfMTR0aWxlX3ZlY3RvcnMnOmNvdW50LCd3aW5uaW5nX3ZlY3RvcnMnOmxlbih2YWxpZCksJ21haW5fd2FpdF93aXRuZXNzZXMnOndpdG5lc3MsJ2hhbm9pX2xlZ2FsX21vdmVzX3Rlc3Rfbic6JzEuLjgnLCdoYW5vaV9ncmFwaF9iZnNfdGVzdF9uJzonMS4uNScsJ3NpZXJwaW5za2lfbGVhZl9jb3VudF9kZXB0aCc6JzAuLjYnLCdzdGF0dXMnOidQQVNTJ30KUGF0aChfX2ZpbGVfXykud2l0aF9uYW1lKCd2ZXJpZmljYXRpb24uanNvbicpLndyaXRlX3RleHQoanNvbi5kdW1wcyhyZXBvcnQsZW5zdXJlX2FzY2lpPUZhbHNlLGluZGVudD0yKSkKcHJpbnQoanNvbi5kdW1wcyhyZXBvcnQsZW5zdXJlX2FzY2lpPUZhbHNlLGluZGVudD0yKSkK">独立した全数照合コード<span>verify.py ↓</span></a><a download="検証記録.md" href="data:application/octet-stream;base64,IyDmpJzoqLzoqJjpjLIKCuaknOiovOaXpe+8mjIwMjblubQxMOaciDEy5pel77yI5pel5pys5pmC6ZaT77yJCgotIFBERu+8mkE157im44CBNDjjg5rjg7zjgrjjgILlhajjg5rjg7zjgrjjgpLnlLvlg4/ljJbjgZfjgabngrnmpJzjgILmnKzmlofjg7vlm7PniYjjg7vjg5rjg7zjgrjnlarlj7fjga7jga/jgb/lh7rjgZfjgpLkv67mraPmuIjjgb/jgIIKLSDlm7PniYjvvJoxN+eCueOAglBERuOBq+OBr+eUu+WDj+OCquODluOCuOOCp+OCr+ODiOOCkuWQq+OBvuOBmuOAgee3muODu+Wbs+W9ouODu+aWh+Wtl+OBr+ODmeOCr+OCv+ODvOOAguaXpeacrOiqnuODleOCqeODs+ODiOOBr+Wfi+OCgei+vOOBv+OAggotIOODj+ODjuOCpO+8mjHvvZ445p6a44Gn5YWo56e75YuV44Gu5ZCI5rOV5oCn44CB5a6M5LqG54q25oWL44CBMl5u4oiSMeWbnuOCkueiuuiqjeOAgjHvvZ415p6a44Gn5YWo54q25oWL44Kw44Op44OV44Gu6aCC54K55pWwM15u44CB6L665pWwMygzXm7iiJIxKS8y44CBQkZT44Gu5pyA55+t6Led6Zui44KS56K66KqN44CCCi0g6KaL6ZaL44GN5Zuz77yaMTXlgIvjga7np7vli5Xnlarlj7fjgYwx772eMTXjgb7jgafph43opIfjgarjgY/lrZjlnKjjgZfjgIHlm7Pjga7lhobnm6Tnlarlj7fjg7vlh7rnmbrmo5Ljg7vliLDnnYDmo5LjgYzlrp/ooYzjgaflvpfjgonjgozjgZ8xNeaJi+OBqOS4gOiHtOOBmeOCi+OBk+OBqOOCkueiuuiqjeOAggotIOi/t+i3r++8muacrOaWh+OBrumao+aOpemghuOBp1MtQS1DLUQtRS1H44KS6L+U44GZ44GT44Go44KS56K66KqN44CCCi0g5LiJ6KeS5b2i77ya5rex44GVMO+9njbjga7okYnjga7mlbDjgYwzXmvjgajkuIDoh7TjgIIKLSDpurvpm4DvvJoxMTEyMjIzMzM0NTY36JCs44Gu5b6F44Gh44GMMeODuzLjg7sz44O7NOODuzXjg7s344O7OOiQrOOBp+OBguOCi+OBk+OBqOOCkueiuuiqjeOAguWQhOW+heOBoeOBq+OBpOOBhOOBpuOAgeWIpeaWueW8j+OBq+OCiOOCi+mdouWtkOWFqOe1hOWQiOOBm+WIl+aMmeOBi+OCieWFt+S9k+eahOOBquWIhuino+OCkuW+l+OBn+OAggotIOm6u+mbgOOBruW6g+OBhOeFp+WQiO+8mjHnqK7poZ7jga7mlbDniYzjga7jgb/jgpLkvb/jgYYxNOaemuOBq+OBpOOBhOOBpuOAgeWQhOeJjDDvvZ405p6a44Gu5YWoMTE4LDgwMOani+aIkOOCkuaknOafu+OAgjTpnaLlrZAx6ZuA6aCt44KS6Z2i5a2Q44Gu57WE5ZCI44Gb44GL44KJ55Sf5oiQ44GX44CB5LiD5a++5a2Q44KC5Yqg44GI44GfMTMsMjc35a6M5oiQ5qeL5oiQ44Gu6ZuG5ZCI44Go44CB5YaN5biw5Yik5a6a44GM5a6M5YWo5LiA6Ie044CCCi0g54m55q6K5b2i77ya57SU5q2j5Lmd6JOu5b2i44Gu5Lmd6Z2i5b6F44Gh44CB5Zu95aOr54Sh5Y+M44Gu5Y2B5LiJ6Z2i5b6F44Gh44CB5LiD5a++5a2Q44CB57O75YiX44KS44G+44Gf44GQ5LiN5q2j44Gq6aCG5a2Q44CB5ZCM56iuNeaemuOBruS4jeato+WFpeWKm+OCkueiuuiqjeOAggotIOWPguiAg+aWh+eMru+8mjEy5Lu244Go44KCV2Vi5pys5paH44O7UERG5pys5paH44G+44Gf44Gv5YWs6ZaL44K944O844K544KS56K66KqN44CCRmFsY29uZXLjga/nrKwy54mI77yIMjAwM++8iXAuMTMy44GuRXhhbXBsZSA5LjTjgpLnorroqo3jgIIKCuOBk+OBrueFp+WQiOOBr+S4gOiJsuOBruWFqOani+aIkOOBqOWAi+WIpeS+i+OBruaknOeul+OBp+OBguOCiuOAgTM056iu6aGe5YWo5L2T44Gu5YWo57WE5ZCI44Gb44KS57eP5b2T44Gf44KK44GX44Gf44KC44Gu44Gn44Gv44GC44KK44G+44Gb44KT44CC5LiA6Iis55qE44Gq5q2j56K644GV44Gv5pys5paH5Lit44Gu5biw57SN55qE44Gq6Kqs5piO44Go5L2144Gb44Gm6KmV5L6h44GX44G+44GZ44CCCg==">検証記録（Markdown）<span>検証記録.md ↓</span></a></div><p class="small">HTML版：2026年10月12日。全7章、はじめに・終章・付録、図版17点。図と具体例は本書用に制作しました。</p></section></main></div><footer><a href="./index.html">business 資料リンク集へ</a><a href="#top">ページの先頭へ ↑</a><span>再帰という木構造生成装置 · 2026</span></footer><dialog id="figure-modal" aria-label="図の拡大表示"><div class="dialog-bar"><strong>図の拡大表示</strong><label>拡大率 <input id="zoom" type="range" min="70" max="250" value="100" step="10" aria-label="図の拡大率"></label><button id="close-modal" type="button" autofocus>閉じる ×</button></div><div class="dialog-scroll" tabindex="0" role="region" aria-label="拡大図。縦横にスクロールできます"></div><p id="figure-caption"></p></dialog><script>
+const toc = document.querySelector('.toc');
+if (matchMedia('(max-width:900px)').matches) toc.open = false;
+const modal = document.querySelector('#figure-modal');
+const viewport = document.querySelector('.dialog-scroll');
+const zoom = document.querySelector('#zoom');
+let activeSvg;
+document.querySelectorAll('.enlarge').forEach(button => button.addEventListener('click', () => {
+ const figure = document.getElementById(button.dataset.figure);
+ activeSvg = figure.querySelector('svg').cloneNode(true);
+ activeSvg.querySelectorAll('[id]').forEach(el => {el.id = 'modal-' + el.id;});
+ activeSvg.setAttribute('aria-labelledby', 'modal-' + figure.querySelector('svg').getAttribute('aria-labelledby'));
+ viewport.replaceChildren(activeSvg);
+ document.querySelector('#figure-caption').textContent = figure.querySelector('figcaption').textContent;
+ zoom.value = 100;
+ modal.showModal();
+ document.body.classList.add('dialog-open');
+ activeSvg.style.width = Math.max(500, viewport.clientWidth - 24) + 'px';
+ activeSvg.dataset.baseWidth = Math.max(500, viewport.clientWidth - 24);
+ viewport.scrollTo(0,0);
+}));
+zoom.addEventListener('input', () => { if (activeSvg) activeSvg.style.width = Number(activeSvg.dataset.baseWidth) * Number(zoom.value) / 100 + 'px'; });
+document.querySelector('#close-modal').addEventListener('click', () => modal.close());
+modal.addEventListener('close', () => document.body.classList.remove('dialog-open'));
+modal.addEventListener('click', event => { if (event.target === modal) { const r=modal.getBoundingClientRect(); if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom) modal.close(); }});
+if ('IntersectionObserver' in window) {
+ const observer = new IntersectionObserver(entries => { entries.forEach(entry => { if (entry.isIntersecting) { document.querySelectorAll('.toc a').forEach(a => { if (a.hash === '#' + entry.target.id) a.setAttribute('aria-current','location'); else a.removeAttribute('aria-current'); }); } }); }, {rootMargin:'-5% 0px -75% 0px'});
+ document.querySelectorAll('.chapter').forEach(section => observer.observe(section));
+}
+window.addEventListener('beforeprint', () => document.querySelectorAll('.code').forEach(d => {d.dataset.preprint=d.open;d.open=true;}));
+window.addEventListener('afterprint', () => document.querySelectorAll('.code').forEach(d => {d.open=d.dataset.preprint==='true';}));
+</script></body></html>
