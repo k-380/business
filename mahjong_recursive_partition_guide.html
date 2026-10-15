@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>麻雀手牌の分割探索 — 再帰呼び出しとバックトラッキング</title>
+<style>
+:root{color-scheme:light dark;--bg:#f5f6f8;--fg:#192431;--card:#fff;--line:#d9e0e8;--accent:#156b80;--soft:#e7f4f6;--muted:#566573;--code:#142333}
+@media(prefers-color-scheme:dark){:root{--bg:#101820;--fg:#e9f0f5;--card:#1a2630;--line:#354651;--accent:#69c7d8;--soft:#203941;--muted:#b2c0cc;--code:#0a121a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;line-height:1.85}main{max-width:1000px;margin:auto;padding:28px 18px 90px}header{padding:50px 0 32px;border-bottom:2px solid var(--line)}h1{font-size:clamp(1.9rem,4vw,3rem);line-height:1.3;margin:.3em 0}h2{font-size:1.55rem;margin:2.1em 0 .7em;border-left:5px solid var(--accent);padding-left:14px}h3{font-size:1.15rem;margin:1.6em 0 .6em}p{margin:.8em 0}small,.muted{color:var(--muted)}.lead{font-size:1.15rem}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:18px 0}.point{background:var(--soft);border-radius:10px;padding:14px 18px;border-left:4px solid var(--accent)}.tiles{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}.tile{display:inline-flex;flex-direction:column;justify-content:center;align-items:center;border:1px solid #91a2ad;border-bottom:4px solid #9da9ad;background:#fff;color:#17232c;border-radius:5px;width:39px;height:55px;font-weight:700;font-size:24px;line-height:1.15;box-shadow:0 2px 3px #0001}.tile small{font-size:10px;color:#b43c3c}.tag{font-size:.8rem;background:var(--soft);padding:2px 8px;border-radius:6px;margin-right:6px}.step{display:grid;grid-template-columns:40px 1fr;gap:12px;margin:12px 0}.step>b{background:var(--accent);color:var(--bg);border-radius:50%;width:36px;height:36px;display:grid;place-items:center}table{border-collapse:collapse;width:100%;font-size:.95rem}th,td{border:1px solid var(--line);padding:8px 12px;text-align:left}th{background:var(--soft)}.scroll{overflow:auto}pre{background:var(--code);color:#e8f0f7;padding:20px;border-radius:10px;overflow:auto;line-height:1.55;font-size:.89rem}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}button{background:var(--accent);border:0;border-radius:8px;padding:10px 16px;color:#fff;font-weight:700;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;align-items:center}input{font:inherit;background:var(--card);color:var(--fg);padding:9px 12px;border:1px solid var(--line);border-radius:8px;max-width:220px}.outline{background:transparent;color:var(--fg);border:1px solid var(--line)}.node{border-left:3px solid var(--line);padding-left:14px;margin-left:12px;margin-top:10px}.node.current{border-color:var(--accent);background:var(--soft);border-radius:0 8px 8px 0;padding-top:5px;padding-bottom:5px}.branch{margin:9px 0}.kicker{color:var(--accent);font-weight:700;letter-spacing:.08em}.result{padding:9px 12px;margin:6px 0;border-radius:7px;border:1px solid var(--line)}.result b{color:var(--accent)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.grid .card{margin:0}a{color:var(--accent)}footer{border-top:1px solid var(--line);padding-top:20px;margin-top:60px;color:var(--muted)}
+</style>
+</head>
+<body><main>
+<header><div class="kicker">アルゴリズム入門・実行例つき</div><h1>麻雀の手牌をどう分割するか</h1><p class="lead">順子・刻子・塔子の候補列挙から、再帰呼び出しとバックトラッキングによる全パターン探索まで。</p><p class="muted">完成面子を見つけることと、同時に成立する組み合わせを選ぶことは、別の問題である。</p></header>
+<section><h2>1. 何を計算したいのか</h2><p>麻雀の手牌には複数の解釈がある。同じ牌を順子にするか刻子にするか、対子として残すかによって、全体の構造が変わる。したがって、候補を一つ見つけて確定するのではなく、複数の分割を比較したい。</p><div class="point"><strong>基本方針：</strong>①候補を列挙する → ②同じ実物の牌を重複して使わない組み合わせを作る → ③各分割を評価する。なお②は、再帰探索で候補生成と同時に実行することもできる。</div><h3>候補の種類</h3><div class="scroll"><table><thead><tr><th>種類</th><th>例</th><th>成立条件</th></tr></thead><tbody><tr><td>順子</td><td>③④⑤</td><td>同色の数牌が3連続</td></tr><tr><td>刻子</td><td>⑦⑦⑦</td><td>同種の牌が3枚</td></tr><tr><td>対子</td><td>⑦⑦</td><td>同種の牌が2枚</td></tr><tr><td>連続塔子</td><td>③④</td><td>同色の数牌が2連続。待ちの種類は位置次第</td></tr><tr><td>嵌張塔子</td><td>③⑤</td><td>同色の数牌が1つ飛び</td></tr><tr><td>孤立牌</td><td>⑨</td><td>他グループに使わず単独で残す</td></tr></tbody></table></div><p>ここでの「分割」は評価用の抽象的なグループ化であり、必ずしも最終的な和了形とは限らない。</p></section>
+<section><h2>2. 候補を列挙するだけでは足りない</h2><p>例えば萬子の <strong>23456</strong> からは、順子 <code>234</code>・<code>345</code>・<code>456</code> をそれぞれ候補として取り出せる。しかし <code>234</code> と <code>345</code> は3萬と4萬を共有するので、所持牌が各1枚なら同時採用できない。</p><p>最初の候補列挙では重複を許してよい。ただし、完成した分割では<strong>各牌の使用枚数 ≤ 手牌内の所持枚数</strong>を守らなければならない。</p><pre><code>関数 候補抽出(手牌):
+    枚数 = 牌種ごとに数える
+    候補 = []
+    全牌種 t について:
+        もし 枚数[t] ≥ 3: 刻子(t,t,t) を追加
+        もし 枚数[t] ≥ 2: 対子(t,t) を追加
+    各数牌の色 s と数字 n について:
+        もし n ≤ 7 かつ n,n+1,n+2 が各1枚以上:
+            順子(s:n,n+1,n+2) を追加
+        もし n ≤ 8 かつ n,n+1 が各1枚以上:
+            連続塔子(s:n,n+1) を追加
+        もし n ≤ 7 かつ n,n+2 が各1枚以上:
+            嵌張塔子(s:n,n+2) を追加
+    戻す 候補</code></pre><p class="muted">この処理は「牌種として作れる候補」の列挙。同じ形を2組以上取る多重度は、後の枚数管理で決まる。</p></section>
+<section><h2>3. 再帰探索という別解</h2><p>先に全候補を作らなくてもよい。<strong>残り手牌から最小の牌を1枚選び、その牌を含む合法なグループの各候補を試す</strong>。一つ選んだら、そのグループを除いた残り手牌を<strong>同じ関数</strong>に渡す。</p><div class="grid"><div class="card"><strong>引数A：残り手牌</strong><p>まだ使っていない牌。再帰が進むたびに減る。</p></div><div class="card"><strong>引数B：現在の分割</strong><p>すでに確定したグループの並び。</p></div><div class="card"><strong>終了条件</strong><p>残り手牌が空なら、その分割を結果一覧に保存する。</p></div></div><pre><code>関数 探索(残り, 分割):
+    もし 残り が空:
+        結果に 分割 を保存
+        戻る
+
+    t = 残りの最小牌
+
+    t を含む合法な各候補 g について:
+        # 刻子・順子・対子・連続塔子・嵌張塔子
+        # さらに孤立牌 [t] も必ず候補に含める
+        次の残り = 残り から g の牌を取り除く
+        探索(次の残り, 分割 + [g])</code></pre><p>最小牌を含むグループだけを選ぶと、同じグループ群を選択順序だけ変えて何度も生成する無駄を抑えられる。なお通常の実装では<strong>萬子・筒子・索子をまたぐ順子は不可</strong>、字牌の順子も不可である。</p></section>
+<section><h2>4. 実行例：2223345 萬</h2><p>左端の2萬をどのグループに使うかで、最初の枝が分かれる。</p><div class="card"><div class="tiles" id="exampleTiles"></div><p>例えば次の2つの道筋はいずれも合法。</p><div class="grid"><div><span class="tag">経路A</span><p><code>2223345</code> → <code>3345</code>（刻子222）→ <code>45</code>（対子33）→ 空（塔子45）</p><strong>結果：222 / 33 / 45</strong></div><div><span class="tag">経路B</span><p><code>2223345</code> → <code>2235</code>（順子234）→ <code>35</code>（対子22）→ 空（嵌張35）</p><strong>結果：234 / 22 / 35</strong></div></div></div><h3>クリックで再帰の1ステップを追跡する</h3><p>以下は「刻子222 → 対子33 → 連続塔子45」の経路だけを追うデモ。各段階で関数が新たに呼ばれ、末端に達すると呼び出し元へ戻る。</p><div class="card"><div class="controls"><button id="prev">1ステップ戻る</button><button id="next">次へ進む</button><button class="outline" id="reset">最初に戻す</button></div><div id="trace" aria-live="polite"></div></div><h3>探索木はどう広がるか</h3><pre><code>探索(2223345, [])
+├─ 刻子222 → 探索(3345, [222])
+│  ├─ 対子33 → 探索(45, [222,33])
+│  │  ├─ 塔子45 → 探索(空, [222,33,45]) ★保存
+│  │  └─ 孤立牌4 → さらに探索...
+│  └─ 孤立牌3 → さらに探索...
+├─ 順子234 → 探索(2235, [234])
+│  ├─ 対子22 → 探索(35, [234,22])
+│  │  └─ 嵌張35 → 探索(空, [234,22,35]) ★保存
+│  └─ その他の分割...
+├─ 対子22 → 別の分割...
+├─ 塔子23 → 別の分割...
+├─ 嵌張24 → 別の分割...
+└─ 孤立牌2 → 別の分割...</code></pre><p>枝を1つ最後まで試し、戻って別の枝を試すことを<strong>バックトラッキング</strong>という。</p></section>
+<section><h2>5. 実際に全分割を列挙する</h2><p>萬子だけの小さな手牌を入力し、実際の再帰探索で得られた結果を確認できる。牌は数字の連続（例：<code>2223345</code>）。</p><div class="card"><label for="hand"><strong>手牌（萬子のみ、1〜9）</strong></label><div class="controls"><input id="hand" value="2223345" inputmode="numeric" maxlength="14" aria-label="萬子手牌"><button id="run">全分割を探索</button></div><div id="handTiles" class="tiles"></div><p id="summary" aria-live="polite"></p><div id="results"></div></div><p class="muted">同一牌は4枚まで。列挙される分割には孤立牌も含めるため、これは標準形のシャンテン数そのものではない。大きな手牌では結果表示を先頭80件に制限する。</p></section>
+<section><h2>6. シャンテン数へ発展させる際の注意</h2><p>単純に「面子数が多ければ良い」とは限らない。標準形では<strong>4面子＋雀頭</strong>という構成、最大4組までの塔子、雀頭として使う対子の区別などを考慮する。七対子・国士無双は別の評価ロジックが必要となる。</p><div class="point"><strong>設計のコツ：</strong>候補生成・合法な分割探索・分割の評価を独立させる。そうすると、シャンテン数計算、受け入れ枚数計算、打牌比較へ段階的に発展させやすい。</div><h3>検証のポイント</h3><p>①各結果の牌を再結合すると元の手牌と一致すること。②1枚の牌を二重に使っていないこと。③同じ分割が順序違いで重複していないこと。④探索のすべての枝で残り牌の枚数が減り、必ず終了すること。</p></section>
+<footer>学習用HTML教材｜再帰探索の原理を理解するための簡略モデルです。本文の例と実行デモはすべて萬子を想定しています。</footer>
+</main>
+<script>
+'use strict';
+const el=id=>document.getElementById(id);
+function tiles(s){return [...s].map(x=>`<span class="tile">${x}<small>萬</small></span>`).join('')}
+el('exampleTiles').innerHTML=tiles('2223345');
+const steps=[
+ {rest:'2223345',groups:[],desc:'探索(2223345, []) を呼び出す。最小牌は2萬。'},
+ {rest:'3345',groups:['222'],desc:'2萬を刻子222に使い、残り3345で再帰呼び出し。'},
+ {rest:'45',groups:['222','33'],desc:'3萬を対子33に使い、残り45で再帰呼び出し。'},
+ {rest:'',groups:['222','33','45'],desc:'4萬と5萬を塔子45に使い、残りが空。'},
+ {rest:'',groups:['222','33','45'],desc:'終了条件に到達。分割 [222 / 33 / 45] を保存する。'},
+ {rest:'45',groups:['222','33'],desc:'直前の探索へ戻る。次は「4を孤立牌とする」別分岐を試せる。'}
+];
+let step=0;
+function renderTrace(){let x=steps[step];el('prev').disabled=step===0;el('next').disabled=step===steps.length-1;el('trace').innerHTML=`<strong>ステップ ${step+1} / ${steps.length}</strong><p>${x.desc}</p><p>残り：<strong>${x.rest||'空'}</strong> ｜ 確定：<strong>${x.groups.join(' / ')||'なし'}</strong></p><div class="tiles">${tiles(x.rest)}</div>`}
+el('prev').onclick=()=>{step--;renderTrace()};el('next').onclick=()=>{step++;renderTrace()};el('reset').onclick=()=>{step=0;renderTrace()};renderTrace();
+function enumerate(input){const arr=[...input].map(Number).sort((a,b)=>a-b),out=[];let nodes=0;function rec(rest,groups){nodes++;if(!rest.length){out.push(groups);return}const t=rest[0],count=rest.filter(n=>n===t).length;let options=[];if(count>=3)options.push([t,t,t]);if(t<=7&&rest.includes(t+1)&&rest.includes(t+2))options.push([t,t+1,t+2]);if(count>=2)options.push([t,t]);if(t<=8&&rest.includes(t+1))options.push([t,t+1]);if(t<=7&&rest.includes(t+2))options.push([t,t+2]);options.push([t]);for(const group of options){let next=rest.slice();for(const n of group)next.splice(next.indexOf(n),1);rec(next,[...groups,group])}}rec(arr,[]);return {out,nodes}}
+function run(){const input=el('hand').value.trim();el('handTiles').innerHTML=tiles(input);if(!/^[1-9]{1,14}$/.test(input)||[...new Set(input)].some(x=>[...input].filter(n=>n===x).length>4)){el('summary').textContent='1〜9の数字を1〜14文字、各数字4枚以下で入力してください。';el('results').innerHTML='';return}const {out,nodes}=enumerate(input);el('summary').textContent=`合法な分割 ${out.length} 通り／再帰呼び出し ${nodes} 回。表示は先頭 ${Math.min(80,out.length)} 通り。`;el('results').innerHTML=out.slice(0,80).map((g,i)=>`<div class="result"><b>${i+1}.</b> ${g.map(x=>x.join('')).join(' / ')}</div>`).join('')}
+el('run').onclick=run;el('hand').addEventListener('keydown',e=>{if(e.key==='Enter')run()});run();
+</script></body></html>
