@@ -33,6 +33,10 @@
     .desc{display:block;color:var(--muted);font-size:14px}
     .file{display:block;margin-top:7px;color:#7b8d91;font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
     .arrow{font-size:22px;color:var(--accent)}
+    .group-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:34px}
+    .group-heading h3{font-size:19px;margin:0}
+    .group-count{font-size:12px;color:var(--accent);white-space:nowrap}
+    .group-description{font-size:13px;color:var(--muted);margin:4px 0 12px}
     .note{margin:30px 0 0;color:var(--muted);font-size:13px}
     footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px 0 30px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
     @media(max-width:620px){
@@ -61,118 +65,12 @@
           <h2 id="html-list-title">HTML資料</h2>
           <span class="count">15 pages</span>
         </div>
+        <div class="group-heading"><h3>プログラミング・アルゴリズム</h3><span class="group-count">5件</span></div>
+        <p class="group-description">Python・再帰・探索・データ構造を学ぶ教材</p>
         <ul>
-          <li>
-            <a class="item" href="./resin_screw_fastening_textbook.html">
-              <span class="no" aria-hidden="true">01</span>
-              <span>
-                <span class="meta">構造設計 / 締結 / 教科書</span>
-                <span class="title">樹脂に着座するねじの締結工学</span>
-                <span class="desc">着座・軸力・クリープ・熱サイクル・量産締付け・軸力測定までを、全14章＋4付録で体系化。</span>
-                <span class="file">resin_screw_fastening_textbook.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./acoustic_metamaterials_textbook.html">
-              <span class="no" aria-hidden="true">02</span>
-              <span>
-                <span class="meta">音響 / 防音 / 教科書</span>
-                <span class="title">実用 音響メタマテリアル入門</span>
-                <span class="desc">1000 Hz以下の低周波防音を中心に、共鳴・有効物性・バンドギャップから実用設計までを整理。</span>
-                <span class="file">acoustic_metamaterials_textbook.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./work_flow_and_loop_article.html">
-              <span class="no" aria-hidden="true">03</span>
-              <span>
-                <span class="meta">業務設計 / 開発プロセス / 記事</span>
-                <span class="title">仕事にはフローとループの2種類がある</span>
-                <span class="desc">前へ進める仕事と、結果を戻して確かめる仕事を分けて考える。設計変更・会議・開発管理を題材にした解説。</span>
-                <span class="file">work_flow_and_loop_article.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./polymer_accelerated_testing_parts_1-6.html">
-              <span class="no" aria-hidden="true">04</span>
-              <span>
-                <span class="meta">材料 / 樹脂 / 加速試験 / 教科書</span>
-                <span class="title">射出成形用樹脂の加速試験論｜第1〜6部</span>
-                <span class="desc">加速試験の考え方からArrhenius、DLO、湿熱、TTS、締結、耐候、薬液までを量産設計の視点で整理。</span>
-                <span class="file">polymer_accelerated_testing_parts_1-6.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./polymer_accelerated_testing_parts_7-12.html">
-              <span class="no" aria-hidden="true">05</span>
-              <span>
-                <span class="meta">材料 / 樹脂 / 加速試験 / 教科書</span>
-                <span class="title">射出成形用樹脂の加速試験論｜第7〜12部・終章</span>
-                <span class="desc">材料別評価、測定、統計、試験計画、量産品質、失敗事例から、実務で使う試験仕様書までを扱う後編。</span>
-                <span class="file">polymer_accelerated_testing_parts_7-12.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./outdoor_unit_compliant_assembly.html">
-              <span class="no" aria-hidden="true">06</span>
-              <span>
-                <span class="meta">構造設計 / Compliant Assembly / 室外機</span>
-                <span class="title">組立変形を考慮した室外機筐体設計</span>
-                <span class="desc">部品の自由形状から、剛性・接触・ねじ締結・発泡材・FEM・Monte Carlo・量産検証まで、組立で「形と力が一緒に決まる」現象を体系化。</span>
-                <span class="file">outdoor_unit_compliant_assembly.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./onsen_geoscience.html">
-              <span class="no" aria-hidden="true">07</span>
-              <span>
-                <span class="meta">地球科学 / 温泉 / 教科書</span>
-                <span class="title">温泉から始める地球科学</span>
-                <span class="desc">温泉の水・熱・岩石・ガスを入口に、地下水、地球化学、火山、プレート、海底熱水、生命起源までを全7部28章でたどる読み物。</span>
-                <span class="file">onsen_geoscience.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./deformation_measurement_parts_1-3.html">
-              <span class="no" aria-hidden="true">08</span>
-              <span>
-                <span class="meta">測定 / 変形評価 / 量産設計 / 教科書</span>
-                <span class="title">変形の測定と評価の考え方｜第1〜3部</span>
-                <span class="desc">測定の思想から棒・板金の変形評価までを、初回測定・定期抜き取り・ジグ管理の三つの視点で整理した、量産設計者・測定担当者向けの教科書。</span>
-                <span class="file">deformation_measurement_parts_1-3.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./laplacian_intuition.html">
-              <span class="no" aria-hidden="true">09</span>
-              <span>
-                <span class="meta">数学 / 物理 / ラプラシアン / 解説</span>
-                <span class="title">ラプラシアンの直感的イメージ</span>
-                <span class="desc">ラプラシアンを「周囲との差」「山・谷度」として捉え、拡散・波動・ガウス分布・フーリエ空間・表面粗さまで直感的につなぐ解説。</span>
-                <span class="file">laplacian_intuition.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
+<li>
             <a class="item" href="./recursion_tree_generator.html">
-              <span class="no" aria-hidden="true">10</span>
+              <span class="no" aria-hidden="true">01</span>
               <span>
                 <span class="meta">数学 / 計算機科学 / 再帰 / 図解</span>
                 <span class="title">再帰という木構造生成装置</span>
@@ -182,9 +80,9 @@
               <span class="arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li>
+<li>
             <a class="item" href="./curry_python_book.html">
-              <span class="no" aria-hidden="true">11</span>
+              <span class="no" aria-hidden="true">02</span>
               <span>
                 <span class="meta">Python / プログラミング / 業務設計 / 教科書</span>
                 <span class="title">カレーづくりで学ぶPythonプログラミングの基礎</span>
@@ -194,9 +92,9 @@
               <span class="arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li>
+<li>
             <a class="item" href="./sekai_wa_omote_ni_osamaranai.html">
-              <span class="no" aria-hidden="true">12</span>
+              <span class="no" aria-hidden="true">03</span>
               <span>
                 <span class="meta">データ構造 / Python / オブジェクト指向 / 情報設計 / 教科書</span>
                 <span class="title">世界は表に収まらない</span>
@@ -206,9 +104,9 @@
               <span class="arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li>
+<li>
             <a class="item" href="./mahjong_recursive_partition_guide.html">
-              <span class="no" aria-hidden="true">13</span>
+              <span class="no" aria-hidden="true">04</span>
               <span>
                 <span class="meta">麻雀 / アルゴリズム / 再帰 / 実行教材</span>
                 <span class="title">麻雀の手牌をどう分割するか</span>
@@ -218,26 +116,142 @@
               <span class="arrow" aria-hidden="true">↗</span>
             </a>
           </li>
-          <li>
-            <a class="item" href="./history_of_cryptocurrency.html">
-              <span class="no" aria-hidden="true">14</span>
-              <span>
-                <span class="meta">暗号資産 / 技術史 / 金融史 / 電子書籍</span>
-                <span class="title">仮想通貨の歴史――暗号技術者の夢から、世界の金融市場へ</span>
-                <span class="desc">ビットコインの誕生から採掘産業、金融危機、制度、生成AIとの比較まで。全章収録の短縮稿（本文45,281字）。図表13点・参考文献74件、出典照合表と編集報告を収録。</span>
-                <span class="file">history_of_cryptocurrency.html</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
+<li>
             <a class="item" href="./search_algorithms_textbook.html">
-              <span class="no" aria-hidden="true">15</span>
+              <span class="no" aria-hidden="true">05</span>
               <span>
                 <span class="meta">Python / 探索アルゴリズム / 再帰 / 動的計画法 / 教科書</span>
                 <span class="title">Pythonで学ぶ探索アルゴリズム――全探索から再帰・動的計画法・最適化まで</span>
                 <span class="desc">線形探索・二分探索から、数独、麻雀、最短経路、モンテカルロ法まで。完成コード・図解・演習解答付きの全12回講義。</span>
                 <span class="file">search_algorithms_textbook.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ul>
+        <div class="group-heading"><h3>製造業・ものづくり</h3><span class="group-count">7件</span></div>
+        <p class="group-description">構造設計・材料・品質・開発プロセスを扱う技術資料</p>
+        <ul>
+<li>
+            <a class="item" href="./resin_screw_fastening_textbook.html">
+              <span class="no" aria-hidden="true">06</span>
+              <span>
+                <span class="meta">構造設計 / 締結 / 教科書</span>
+                <span class="title">樹脂に着座するねじの締結工学</span>
+                <span class="desc">着座・軸力・クリープ・熱サイクル・量産締付け・軸力測定までを、全14章＋4付録で体系化。</span>
+                <span class="file">resin_screw_fastening_textbook.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+<li>
+            <a class="item" href="./acoustic_metamaterials_textbook.html">
+              <span class="no" aria-hidden="true">07</span>
+              <span>
+                <span class="meta">音響 / 防音 / 教科書</span>
+                <span class="title">実用 音響メタマテリアル入門</span>
+                <span class="desc">1000 Hz以下の低周波防音を中心に、共鳴・有効物性・バンドギャップから実用設計までを整理。</span>
+                <span class="file">acoustic_metamaterials_textbook.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+<li>
+            <a class="item" href="./work_flow_and_loop_article.html">
+              <span class="no" aria-hidden="true">08</span>
+              <span>
+                <span class="meta">業務設計 / 開発プロセス / 記事</span>
+                <span class="title">仕事にはフローとループの2種類がある</span>
+                <span class="desc">前へ進める仕事と、結果を戻して確かめる仕事を分けて考える。設計変更・会議・開発管理を題材にした解説。</span>
+                <span class="file">work_flow_and_loop_article.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+<li>
+            <a class="item" href="./polymer_accelerated_testing_parts_1-6.html">
+              <span class="no" aria-hidden="true">09</span>
+              <span>
+                <span class="meta">材料 / 樹脂 / 加速試験 / 教科書</span>
+                <span class="title">射出成形用樹脂の加速試験論｜第1〜6部</span>
+                <span class="desc">加速試験の考え方からArrhenius、DLO、湿熱、TTS、締結、耐候、薬液までを量産設計の視点で整理。</span>
+                <span class="file">polymer_accelerated_testing_parts_1-6.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+<li>
+            <a class="item" href="./polymer_accelerated_testing_parts_7-12.html">
+              <span class="no" aria-hidden="true">10</span>
+              <span>
+                <span class="meta">材料 / 樹脂 / 加速試験 / 教科書</span>
+                <span class="title">射出成形用樹脂の加速試験論｜第7〜12部・終章</span>
+                <span class="desc">材料別評価、測定、統計、試験計画、量産品質、失敗事例から、実務で使う試験仕様書までを扱う後編。</span>
+                <span class="file">polymer_accelerated_testing_parts_7-12.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+<li>
+            <a class="item" href="./outdoor_unit_compliant_assembly.html">
+              <span class="no" aria-hidden="true">11</span>
+              <span>
+                <span class="meta">構造設計 / Compliant Assembly / 室外機</span>
+                <span class="title">組立変形を考慮した室外機筐体設計</span>
+                <span class="desc">部品の自由形状から、剛性・接触・ねじ締結・発泡材・FEM・Monte Carlo・量産検証まで、組立で「形と力が一緒に決まる」現象を体系化。</span>
+                <span class="file">outdoor_unit_compliant_assembly.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+<li>
+            <a class="item" href="./deformation_measurement_parts_1-3.html">
+              <span class="no" aria-hidden="true">12</span>
+              <span>
+                <span class="meta">測定 / 変形評価 / 量産設計 / 教科書</span>
+                <span class="title">変形の測定と評価の考え方｜第1〜3部</span>
+                <span class="desc">測定の思想から棒・板金の変形評価までを、初回測定・定期抜き取り・ジグ管理の三つの視点で整理した、量産設計者・測定担当者向けの教科書。</span>
+                <span class="file">deformation_measurement_parts_1-3.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ul>
+        <div class="group-heading"><h3>科学・技術史・その他</h3><span class="group-count">3件</span></div>
+        <p class="group-description">地球科学・数学・金融技術史に関する読み物</p>
+        <ul>
+<li>
+            <a class="item" href="./onsen_geoscience.html">
+              <span class="no" aria-hidden="true">13</span>
+              <span>
+                <span class="meta">地球科学 / 温泉 / 教科書</span>
+                <span class="title">温泉から始める地球科学</span>
+                <span class="desc">温泉の水・熱・岩石・ガスを入口に、地下水、地球化学、火山、プレート、海底熱水、生命起源までを全7部28章でたどる読み物。</span>
+                <span class="file">onsen_geoscience.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+<li>
+            <a class="item" href="./laplacian_intuition.html">
+              <span class="no" aria-hidden="true">14</span>
+              <span>
+                <span class="meta">数学 / 物理 / ラプラシアン / 解説</span>
+                <span class="title">ラプラシアンの直感的イメージ</span>
+                <span class="desc">ラプラシアンを「周囲との差」「山・谷度」として捉え、拡散・波動・ガウス分布・フーリエ空間・表面粗さまで直感的につなぐ解説。</span>
+                <span class="file">laplacian_intuition.html</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+<li>
+            <a class="item" href="./history_of_cryptocurrency.html">
+              <span class="no" aria-hidden="true">15</span>
+              <span>
+                <span class="meta">暗号資産 / 技術史 / 金融史 / 電子書籍</span>
+                <span class="title">仮想通貨の歴史――暗号技術者の夢から、世界の金融市場へ</span>
+                <span class="desc">ビットコインの誕生から採掘産業、金融危機、制度、生成AIとの比較まで。全章収録の短縮稿（本文45,281字）。図表13点・参考文献74件、出典照合表と編集報告を収録。</span>
+                <span class="file">history_of_cryptocurrency.html</span>
               </span>
               <span class="arrow" aria-hidden="true">↗</span>
             </a>
@@ -251,8 +265,10 @@
           <h2 id="pdf-list-title">PDF資料</h2>
           <span class="count">7 files</span>
         </div>
+        <div class="group-heading"><h3>製造業・技術実務</h3><span class="group-count">3件</span></div>
+        <p class="group-description">品質・実験計画・資源循環に関する資料</p>
         <ul>
-          <li>
+<li>
             <a class="item" href="./aiag_vda_fmea_outdoor_unit.pdf" download>
               <span class="no" aria-hidden="true">01</span>
               <span>
@@ -264,7 +280,7 @@
               <span class="arrow" aria-hidden="true">↓</span>
             </a>
           </li>
-          <li>
+<li>
             <a class="item" href="./engineers_experimental_design.pdf" download>
               <span class="no" aria-hidden="true">02</span>
               <span>
@@ -276,9 +292,25 @@
               <span class="arrow" aria-hidden="true">↓</span>
             </a>
           </li>
-          <li>
-            <a class="item" href="./entropy_thread_part1_ch01-12.pdf" download>
+<li>
+            <a class="item" href="./エアコンリサイクルの展望.pdf" download>
               <span class="no" aria-hidden="true">03</span>
+              <span>
+                <span class="meta">空調 / 資源循環 / 銅・冷媒 / 専門書</span>
+                <span class="title">エアコンリサイクルの展望</span>
+                <span class="desc">銅資源・冷媒・製品設計・サブスクリプションを横断し、回収を前提にした空調産業の設計と事業モデルを考える専門書。序章・全24章・終章・付録を収録（216ページ）。</span>
+                <span class="file">エアコンリサイクルの展望.pdf</span>
+              </span>
+              <span class="arrow" aria-hidden="true">↓</span>
+            </a>
+          </li>
+        </ul>
+        <div class="group-heading"><h3>科学・数学</h3><span class="group-count">4件</span></div>
+        <p class="group-description">物理・情報理論・確率論の教材</p>
+        <ul>
+<li>
+            <a class="item" href="./entropy_thread_part1_ch01-12.pdf" download>
+              <span class="no" aria-hidden="true">04</span>
               <span>
                 <span class="meta">物理 / 情報理論 / エントロピー</span>
                 <span class="title">エントロピーという一本の糸｜第1〜12章</span>
@@ -288,9 +320,9 @@
               <span class="arrow" aria-hidden="true">↓</span>
             </a>
           </li>
-          <li>
+<li>
             <a class="item" href="./entropy_thread_part2_ch13-18.pdf" download>
-              <span class="no" aria-hidden="true">04</span>
+              <span class="no" aria-hidden="true">05</span>
               <span>
                 <span class="meta">物理 / 情報理論 / エントロピー</span>
                 <span class="title">エントロピーという一本の糸｜第13〜18章</span>
@@ -300,9 +332,9 @@
               <span class="arrow" aria-hidden="true">↓</span>
             </a>
           </li>
-          <li>
+<li>
             <a class="item" href="./entropy_thread_part3_ch19-30.pdf" download>
-              <span class="no" aria-hidden="true">05</span>
+              <span class="no" aria-hidden="true">06</span>
               <span>
                 <span class="meta">物理 / 情報理論 / エントロピー</span>
                 <span class="title">エントロピーという一本の糸｜第19〜30章</span>
@@ -312,26 +344,14 @@
               <span class="arrow" aria-hidden="true">↓</span>
             </a>
           </li>
-          <li>
+<li>
             <a class="item" href="./使うための確率論.pdf" download>
-              <span class="no" aria-hidden="true">06</span>
+              <span class="no" aria-hidden="true">07</span>
               <span>
                 <span class="meta">確率 / ベイズ / 確率過程 / 教科書</span>
                 <span class="title">使うための確率論</span>
                 <span class="desc">サイコロからベイズ、隠れマルコフモデル、ブラウン運動、オプション価格へ進む実用志向の確率論教材。</span>
                 <span class="file">使うための確率論.pdf</span>
-              </span>
-              <span class="arrow" aria-hidden="true">↓</span>
-            </a>
-          </li>
-          <li>
-            <a class="item" href="./エアコンリサイクルの展望.pdf" download>
-              <span class="no" aria-hidden="true">07</span>
-              <span>
-                <span class="meta">空調 / 資源循環 / 銅・冷媒 / 専門書</span>
-                <span class="title">エアコンリサイクルの展望</span>
-                <span class="desc">銅資源・冷媒・製品設計・サブスクリプションを横断し、回収を前提にした空調産業の設計と事業モデルを考える専門書。序章・全24章・終章・付録を収録（216ページ）。</span>
-                <span class="file">エアコンリサイクルの展望.pdf</span>
               </span>
               <span class="arrow" aria-hidden="true">↓</span>
             </a>
@@ -343,7 +363,7 @@
 
     <footer>
       <span>k-380 / business</span>
-      <span>更新：<time datetime="2026-10-16">2026年10月16日</time></span>
+      <span>更新：<time datetime="2026-10-17">2026年10月17日</time></span>
     </footer>
   </div>
 </body>
