@@ -1,0 +1,4 @@
+原本SHA-256: 8d2cf2fb71b15de1ceb0a041b6a5eed7514ece600c0f90cd117c5d94ce54b6b7
+ source_row  raw  analysis  candidate  modified
+         92  3.8       3.8       True     False
+        272 -0.8      -0.8       True     False

@@ -1,0 +1,11 @@
+{
+  "results": [
+    {
+      "file": "/workspace/scratch/6fc854a41d1e/business/python-timeseries-cleaning/datasets/raw/02_pressure.csv",
+      "sheet": "CSV",
+      "folder": "000_00_02_pressure",
+      "status": "REVIEW_REQUIRED"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,21 @@
+version: teaching-1
+time:
+  column: 時刻
+  format: ISO8601
+  timezone: Asia/Tokyo
+  excel_epoch: '1900'
+columns:
+  value:
+    source: 測定値
+    unit: degC
+    window: 11
+    k: 3.5
+    floor: 0.01
+    freeze_run: 8
+interpolation:
+  enabled: false
+max_rows: 200000
+expected_dt: 30
+reader:
+  sheet: 測定
+  header: 3

@@ -1,0 +1,50 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第16章 フィルタリングと波形の保全 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="current" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第IV部　センサーデータ特有の問題 / 第16章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#161">16.1 ノイズを消す前に信号を定義する</a></li><li><a href="#162">16.2 移動平均の数式とピーク</a></li><li><a href="#163-butterworth">16.3 Butterworthとカットオフ</a></li><li><a href="#164">16.4 ゼロ位相は無加工ではない</a></li><li><a href="#code16">実行するコードと結果</a></li><li><a href="#165">16.5 端点、欠損、短い区間</a></li><li><a href="#166-fft">16.6 FFTで何を確かめるか</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">フィルタリングと波形の保全</h1>
+<h2 id="_2">学習目標</h2>
+<p>移動平均とButterworthフィルタの作用を理解し、振幅・位相・端点を評価する。ゼロ位相処理の非因果性と、処理してはいけない測定目的を説明する。</p>
+<h2 id="161">16.1 ノイズを消す前に信号を定義する</h2>
+<p>40 Hzの主振動を見たいとき、370 Hzの成分は不要かもしれない。しかし別の故障診断では370 Hzが重要な徴候になる。ノイズとは単に高い周波数ではなく、目的の測定に不要な成分として定義される。130 Hzの配管共振を評価するなら、その近くを減衰させるフィルタは評価を変えてしまう。</p>
+<p>生波形を保存し、表示用、トレンド用、ピーク評価用の派生列を分ける。全用途共通の「きれいな波形」を一つ作る設計は避ける。</p>
+<h2 id="162">16.2 移動平均の数式とピーク</h2>
+<p>過去M点の因果移動平均は <code>y[n]=(1/M)Σₖ₌₀ᴹ⁻¹ x[n−k]</code> である。周波数応答の振幅は、fをHzで表すと <code>|H(f)|=|sin(πfM/fₛ)/(M sin(πf/fₛ))|</code> となる。ゼロ周波数では極限値1を取る。</p>
+<p>M=5で、ゼロの中に10という孤立ピークが一つあると、平均後のピークは2になる。測定値の標準偏差は減っても、最大負荷の評価には使えなくなる。因果的な対称FIRとしての群遅延は通過帯域で <code>(M−1)/(2fₛ)</code> 秒だ。M=5、fₛ=100 Hzなら0.02秒遅れる。</p>
+<p>中央配置の移動平均は前後の観測を使うため、時刻ラベル上の遅れを打ち消せるが、未来のデータが必要である。リアルタイムで同じ時刻に使える値ではない。単に <code>center=True</code> としただけで現場制御へ転用しない。</p>
+<h2 id="163-butterworth">16.3 Butterworthとカットオフ</h2>
+<p>Butterworthは通過帯域が最大平坦な特性を持つフィルタの一種である。次数を上げると遷移が急になるが、過渡応答や数値的な安定性にも配慮が必要だ。本章は4次、カットオフ180 Hz、サンプリング1000 Hzとし、二次セクション形式 <code>output='sos'</code> で設計する。</p>
+<p>カットオフは通す・消すの境界を完全に分ける壁ではない。通常の一方向Butterworthでは指定カットオフで振幅が1/√2、約−3.01 dBになる。130 Hzを保存したい場合も、180 Hzカットオフなら完全に無影響とはいえず、通過帯域の許容誤差を確認する。</p>
+<h2 id="164">16.4 ゼロ位相は無加工ではない</h2>
+<p><code>sosfiltfilt</code> は前向き・後向きにフィルタをかける。実係数フィルタでは合成振幅応答が原フィルタの振幅の二乗になり、位相は相殺される。合成次数は倍となる。<a href="../references/bibliography.html#r3">R3</a> 一方向で−3 dBの周波数は往復で約−6 dBになるため、同じカットオフ数値の因果処理と振幅特性まで同じではない。</p>
+<p>未来の値を使うので非因果的であり、急変の影響が急変前に現れることもある。イベント時刻の推定や異常発生の先行性を論じるときは特に注意する。ゼロ位相だから時間に関する問題がすべて解決するわけではない。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code16">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter16/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter16/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+from scipy.signal import butter,sosfilt,sosfiltfilt
+df=load(&#x27;03_vibration&#x27;);x=df[&#x27;測定値&#x27;].to_numpy();t=seconds(df)
+sos=butter(4,180,fs=1000,output=&#x27;sos&#x27;)
+causal=sosfilt(sos,x);zero=sosfiltfilt(sos,x)
+print(&#x27;原波形RMS:&#x27;,np.sqrt(np.mean(x*x)),&#x27;ゼロ位相後RMS:&#x27;,np.sqrt(np.mean(zero*zero)))
+impulse=np.r_[np.zeros(20),10.,np.zeros(20)]
+print(&#x27;孤立ピーク10の5点平均後:&#x27;,np.convolve(impulse,np.ones(5)/5,&#x27;same&#x27;).max())
+plot(16,t[100:250],{&#x27;観測値&#x27;:x[100:250],&#x27;因果フィルタ&#x27;:causal[100:250],&#x27;往復フィルタ&#x27;:zero[100:250]},&#x27;加速度 [m/s²]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">原波形RMS: 1.4921510121505743 ゼロ位相後RMS: 1.4715596785210898
+孤立ピーク10の5点平均後: 2.0
+</code></pre></details><figure id="fig16"><img src="../assets/images/chapter16.svg" alt="図16-1 フィルタリングと波形の保全の検証グラフ"><figcaption>図16-1　フィルタリングと波形の保全。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="165">16.5 端点、欠損、短い区間</h2>
+<p><a href="#fig16">図16-1</a>は端部を避けた区間で因果処理と往復処理を比べる。因果処理の初期状態をゼロとすると、入力と整合するまで過渡が出る。往復処理ではパディングの仮定が端点へ影響する。短い系列は必要なパディング長に足りず、エラーになる場合がある。エラーを避けるためだけにpadlenを0へ変更するのではなく、信頼できる内部区間があるかを判断する。</p>
+<p>NaNを含むままフィルタすると、演算の内部状態へ欠損が伝播することがある。長い欠損の両側を別区間にし、各区間の端点を未評価とする方法を検討する。欠損をすべて補間してからフィルタすれば、仮定した波形が広い範囲に影響する。</p>
+<h2 id="166-fft">16.6 FFTで何を確かめるか</h2>
+<p>処理前後のスペクトルで、残す成分と落とす成分を確認する。周波数軸は <code>rfftfreq(N,d=Δt)</code> で作り、dが秒なら単位はHzとなる。<a href="../references/bibliography.html#r8">R8</a> 有限長の観測ではスペクトル漏れがあり、窓関数を使う場合は振幅・パワーの補正も必要だ。単純な <code>2|FFT|/N</code> はDCとNyquistの扱いが別で、コヒーレントな正弦波の比較に適した簡易表示である。本書第7章の図はその条件で比較する。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>10の孤立ピークが5点平均で2になることを確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>180 Hzカットオフを80 Hzへ変えた場合、130 Hzの実成分はどうなるか。RMSが減ることを改善と呼べるか。</p>
+<h3 id="_4">実務演習</h3>
+<p>破損直前のピーク応力を求めるデータに、見やすさのためゼロ位相ローパスをかけたい。保存すべき情報と受け入れ条件を挙げる。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：窓内の総和10を5で割るため2になる。瞬間の最大値は80%減少する。</p>
+<p>応用：130 Hzも強く減衰する。評価対象がその成分なら情報損失であり、改善ではない。</p>
+<p>実務：生波形、フィルタ仕様、周波数応答、ピーク保持率、ピーク時刻差、端点除外範囲を保存する。許容誤差を設計要求から決め、条件を満たさなければピーク評価には使わない。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>フィルタは測定結果を変える。振幅、位相、非因果性、端点を確認し、目的に必要な波形の特徴が残っていることを検証する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter15.html">← 第15章</a><a href="chapter17.html">第17章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

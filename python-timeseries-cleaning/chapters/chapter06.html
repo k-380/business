@@ -1,0 +1,48 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第6章 不規則なサンプリング間隔 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="current" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第II部　時間軸を修復する / 第06章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#61-100-hz">6.1 100 Hzで設定したのに等間隔ではない</a></li><li><a href="#62">6.2 周期と周波数</a></li><li><a href="#63">6.3 ジッターが波形へ与える影響</a></li><li><a href="#64">6.4 欠落数を推定する</a></li><li><a href="#code06">実行するコードと結果</a></li><li><a href="#65">6.5 非等間隔のまま使える分析</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">不規則なサンプリング間隔</h1>
+<h2 id="_2">学習目標</h2>
+<p>サンプリング周期と周波数を計算し、ジッターと欠落を区別する。非等間隔の値に等間隔用のFFTやフィルタをそのまま適用できない理由を説明する。</p>
+<h2 id="61-100-hz">6.1 100 Hzで設定したのに等間隔ではない</h2>
+<p>ロガーを100 Hzに設定しても、保存時刻の差が毎回0.010秒とは限らない。取得時計自体の揺れ、OSによる処理遅延、時刻の丸め、受信時刻の記録などが原因になる。ADCが厳密な周期で測定し、受信側が不規則にタイムスタンプを付けた場合、信号のサンプリングと時刻の観測を分けて考える必要がある。</p>
+<p>本章のコードでは、0.01秒周期に標準偏差0.0001秒の時刻の揺れを与え、さらに3点を落とす。これは計測器の性能保証を模したものではなく、ジッターと欠落が記録間隔へどう現れるかを調べる教材である。</p>
+<h2 id="62">6.2 周期と周波数</h2>
+<p>等間隔サンプリングでは <code>fₛ = 1 / Δt</code>、ナイキスト周波数は <code>f_N = fₛ / 2</code> である。Δt=0.010 sならfₛ=100 Hz、f_N=50 Hzとなる。ナイキスト周波数は、その周波数まで何の条件もなく正確に測れるという保証ではない。信号が帯域制限され、適切な取得と再構成が行われるという前提がある。境界そのものの正弦波は位相によってサンプルがすべてゼロにもなり得る。</p>
+<p>不規則な時刻列では、一つの周期が存在しない。平均間隔や中央値の逆数は代表的なレートだが、厳密な等間隔性を保証しない。平均だけでなく、最小、中央値、上位分位、最大、負の差、ゼロ差を確認する。図6-1のヒストグラムは、代表値の近くの分布と、欠落による約2倍・3倍の間隔を区別する助けになる。</p>
+<h2 id="63">6.3 ジッターが波形へ与える影響</h2>
+<p>正弦波 <code>x(t)=A sin(2πft)</code> を時刻誤差δtで観測すると、小さい誤差では <code>δx ≈ 2πfA cos(2πft) δt</code> となる。誤差の影響は周波数に比例する。同じ0.1 msの時刻誤差でも、ゆっくりした温度と高速な振動では重要度が異なる。</p>
+<p>位相誤差の大きさは <code>δφ = 2πf δt</code> である。130 Hzで1 msずれると約0.817 rad、約46.8°となる。見た目には小さい時刻差でも、二点の振動位相からモード形状を判断する場合には大きな誤差になる。</p>
+<h2 id="64">6.4 欠落数を推定する</h2>
+<p>予定周期Δt₀が分かり、ジッターが十分小さいとき、隣接間隔dから <code>max(round(d/Δt₀)−1, 0)</code> を欠落数の候補とできる。0.03秒の間隔が0.01秒周期に現れたなら、間の2点が欠けた可能性がある。ただし記録停止や周期変更でも同じ間隔が生じる。推定欠落数は証拠ではなく、連番・イベントログとの照合対象である。</p>
+<p>予定時刻への割り当てでは、許容時刻誤差を定め、一つのスロットに複数の観測が入った場合も記録する。単純な <code>reindex()</code> は、少しずれた時刻をすべて欠損に変えることがある。観測時刻を捨てずに、予定スロット番号と時刻残差を追加する。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code06">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter06/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter06/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+rng=np.random.default_rng(6)
+nominal=.01
+t=np.arange(1000)*nominal+rng.normal(0,.0001,1000)
+t=np.delete(t,[200,201,600]);dt=np.diff(t)
+estimated=np.maximum(np.rint(dt/nominal).astype(int)-1,0)
+print(&#x27;周期中央値 [s]:&#x27;,round(float(np.median(dt)),6),&#x27;推定欠落数:&#x27;,int(estimated.sum()))
+print(&#x27;設定fs [Hz]:&#x27;,1/nominal,&#x27;Nyquist [Hz]:&#x27;,1/(2*nominal))
+hist,bins=np.histogram(dt,bins=30)
+plot(6,(bins[:-1]+bins[1:])/2,{&#x27;間隔の件数&#x27;:hist},&#x27;件数 [個]&#x27;,xlabel=&#x27;記録間隔 [s]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">周期中央値 [s]: 0.010004 推定欠落数: 3
+設定fs [Hz]: 100.0 Nyquist [Hz]: 50.0
+</code></pre></details><figure id="fig06"><img src="../assets/images/chapter06.svg" alt="図6-1 不規則なサンプリング間隔の検証グラフ"><figcaption>図6-1　不規則なサンプリング間隔。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="65">6.5 非等間隔のまま使える分析</h2>
+<p>時刻に対する散布図や、実際の時間差を使った傾き、時間を重みにした積分などは非等間隔でも定義できる。例えばエネルギー積分は台形則 <code>Σ (Pᵢ+Pᵢ₊₁)(tᵢ₊₁−tᵢ)/2</code> と書ける。ただし長い空白を台形で橋渡しすれば、欠損を暗黙に補間したことになる。積分可能な最大間隔を決め、未評価時間を報告する。</p>
+<p>通常のFFTやデジタルIIRフィルタは等間隔のサンプルを前提とする。非等間隔スペクトル分析には別の方法もあるが、記録欠落やセンサー応答の問題まで解決するわけではない。まず必要な帯域と時刻品質を確認し、規則的な区間だけを使うか、根拠を持って再サンプリングする。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>0.002秒周期のサンプリング周波数とナイキスト周波数を計算する。</p>
+<h3 id="_3">応用演習</h3>
+<p>ジッターの標準偏差を0.0001秒から0.004秒に変える。欠落数推定はなぜ不安定になるか。</p>
+<h3 id="_4">実務演習</h3>
+<p>振動のADCは1000 Hz固定だが、CSVの時刻は受信時刻で不規則である。記録時刻から補間する前に、何を調べるべきか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：fₛ=500 Hz、f_N=250 Hz。250 Hzでの振幅や位相の正確性まで保証してはいない。</p>
+<p>応用：揺れが予定周期の大きな割合を占め、丸めたd/Δt₀が欠落を示すとは限らなくなる。逆転も起こり得る。推定規則の前提から外れている。</p>
+<p>実務：機器内のサンプル番号、ブロック長、ブロック取得開始時刻、ADCクロック精度、通信再送・欠落を調べる。連続取得が確認できれば、受信時刻の揺れを信号の揺れとして補間する必要はない場合がある。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>周期設定、実際の取得周期、保存された時刻は同じものとは限らない。時間差の分布と機器の記録仕様をセットで確認する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter05.html">← 第5章</a><a href="chapter07.html">第7章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

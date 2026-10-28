@@ -1,0 +1,8 @@
+         raw  numeric  missing  invalid
+１,２３４.５ degC   1234.5    False    False
+         ---      NaN     True    False
+          故障      NaN    False     True
+           0      0.0    False    False
+   25.0 degC     25.0    False    False
+シリアル61（UTCとして解釈）: 1900-03-01 00:00:00+00:00
+20 °C = 293.15 K

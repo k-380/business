@@ -1,0 +1,56 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>検証と未完了項目 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="assets/css/book.css"></head><body data-base="" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="getting-started.html">はじめに・環境構築</a><a href="labs.html">実践補講6題</a><a href="downloads.html">教材ダウンロード</a><a href="glossary.html">用語集・索引</a><a href="references/bibliography.html">参考文献</a><a href="verification.html">検証と未完了項目</a></nav></aside><main id="main"><h1 id="_1">検証記録</h1>
+<p>検証日：2026-10-28。対象：実行検証版0.1。全24章と6補講の教材として検証した。依頼された400〜500ページ相当の長編教科書への拡充は未完了であり、本記録はその完成認定ではない。</p>
+<h2 id="python">Pythonと計算結果</h2>
+<p>Python 3.12.14 / Linuxの新規仮想環境へrequirements-lock.txtの24パッケージをインストールした。<code>pip check</code>で依存関係の不整合なし。Windows/macOSの実機では未検証。</p>
+<ul>
+<li>自動テスト：51件。空入力、全欠損、重複・逆転・不規則時刻、無候補、極端値、Excel混在型、異なる長さの結合、250,000行CSVを含む。</li>
+<li>独立した数値検証：MADの手計算値、時間重み付き補間、長欠損の不採用、モード境界、アンチエイリアシング、フィルタ振幅・位相、同期ラグの符号、チャンク境界一致を確認。</li>
+<li>全24章・6補講の30スクリプトを実行。標準出力はexamples配下のoutput.txt、終了コードはexamples/verification.jsonへ保存。</li>
+<li>10教材の生成と検査出力を作成。欠損33点、範囲外2点、飽和35点、停止教材の欠損92点、時刻逆転1箇所、フリーズ21点を独立した期待件数と照合。</li>
+<li>承認補間の例では運転中の2点だけを補間し、停止中90点の欠損を保持。変換不能文字列は補間しない。</li>
+<li>CLIを実行し、Excel出力を再読み込み。既定設定で元の数値と解析用値が一致し、品質フラグ、HTMLレポート、変更履歴、ハッシュ・環境記録が出ることを確認。</li>
+<li>CSVの完全空白レコード、セル内改行、重複ヘッダーを検査。論理レコード番号とExcelシート行番号を区別する。</li>
+</ul>
+<p>テストは選定した条件の検証であり、任意の機器データへの適用保証ではない。未知の形式はアダプターと独立した正解データを追加して確認する。</p>
+<h2 id="html">HTML・ブラウザ</h2>
+<p>全24章、表紙、補講、環境構築、教材一覧、ダウンロード、用語集・索引、参考文献、実装、検証ページ、単一ファイル版を生成した。内部参照先、図版XML、アンカー、章間移動、コード・解答の存在をtools/check_html.pyで検査する。</p>
+<p>Chromium 134.0.6998.35 / Playwright 1.51.0で、HTTP/HTTPSへのアクセスを遮断してfile://から開いた。幅1280 pxと390 pxで主要34ページを検査し、68回の表示検査で本文の横はみ出し、画像読み込み失敗、JavaScript例外がないことを確認した。全文検索、解答開閉、コードコピー、明暗切替を実操作して成功した。単一HTMLをA4へ印刷し、172ページを生成、第1章・第24章・演習解答をPDFの抽出本文で確認した。</p>
+<p>最新の機械可読結果はtests/browser-results.jsonとtests/html-results.jsonに記録する。印刷ページ数は余白・ブラウザ・フォント・コード折り返しに依存し、商業出版のページ数と同義ではない。画面の見た目を良くするために余白で目標ページ数へ合わせる調整はしていない。</p>
+<h2 id="_2">公開検証</h2>
+<p>GitHub Pagesの公開元はbusinessリポジトリの既存mainブランチとPages用Actions。既存の成功したデプロイログから公開先を確認した。公開後のURL応答、全章・CSS・JavaScript・図版、既存トップページからの導線の結果はPUBLICATION.mdへ記録する。</p>
+<h2 id="_3">未検証・適用限界</h2>
+<ul>
+<li>独立した第三者による技術査読、初学者を対象とした教育効果の実測。</li>
+<li>実在する計測器・校正証明書・工場データによる妥当性確認。</li>
+<li>Windows/macOS、Safari/Firefox、スマートフォン実機での表示・実行。</li>
+<li>CLIのメモリ外処理、ファイルをまたぐ状態保持。最大行数はメモリ使用量の厳密な上限ではない。</li>
+<li>納入機器固有の未知のExcel形式、全世界の日時表記、日時補正規則。</li>
+</ul>
+<p>本書の模擬真値は検証用の出題情報である。実際の測定異常の原因を自動確定できることを意味しない。</p><h1 id="_1--2">制作状況と再開手順</h1>
+<p>制作日: 2026-10-28 / 版: 0.1 実行検証版</p>
+<h2 id="_2--2">今回制作した範囲</h2>
+<ul>
+<li>全6部24章の実本文、学習目標、理論、実行コード・出力、SVG、三段階演習72題と解答。6本の実践補講と追加演習18題。</li>
+<li>10題材の模擬データ、生成条件、異常位置ラベル、真値、期待出力。</li>
+<li>原本非改変のCLI、設定検証、品質フラグ、履歴、Excel/HTML出力。</li>
+<li>オフラインHTML、単一ファイル版、検索、印刷、ダークモード、ダウンロード。</li>
+<li>検証の詳細はVERIFICATION.mdへ記録。</li>
+</ul>
+<h2 id="_3--2">未完了</h2>
+<p>本版は依頼の400〜500ページ相当の教科書規模に達していない。全章は概要ではなく説明・実行・演習を持つが、各章の段階的な手計算、追加事例、失敗例、独立した実務課題の厚みを増やす必要がある。ページ数を水増しせず、以下の内容を拡充する。</p>
+<ol>
+<li>各章の実習を小ステップに分け、初学者向けの変数・添字・例外・関数の説明を増補する。</li>
+<li>6本の実践補講で、入力アダプター、同期残差と未使用トリガー、5種の補間法、校正共分散とモンテカルロ、多変量候補、チャンク境界を追加した。これらを各章の段階的授業へ統合し、別の条件で失敗する事例を増やす。</li>
+<li>変化点検出、モード別基準、窓関数とFFT正規化を独立した実務課題へ発展させる。</li>
+<li>本CLIはExcel出力を前提とするメモリ内処理。補講6は境界の検証であり、無制限サイズのストリーミング製品ではない。長い欠損の保留、異常な入力、ファイル間の状態を扱う実装は別設計が必要。</li>
+<li>Windows/macOSでの実行、第三者の技術査読、実機データでの適用検証は未実施。</li>
+</ol>
+<h2 id="_4">再開</h2>
+<ol>
+<li>businessリポジトリの最新状態を取得し、このディレクトリのPROGRESS.mdとVERIFICATION.mdを読む。</li>
+<li>manuscript/chapterXX.mdを編集し、対応するexamples/chapterXX/run.pyと生成元tools/make_examples.pyを更新する。</li>
+<li><code>python tools/verify_examples.py</code> と <code>python -m pytest tests -q</code> を実行する。</li>
+<li><code>python tools/build_book.py</code> → <code>python tools/check_html.py</code> → <code>python tools/package.py</code> で再生成する。</li>
+<li>公開前に既存index.htmlの他書籍リンクを保持しているか確認し、検証状況と未完了項目を更新する。</li>
+</ol>
+<p>未完了項目が解消するまでは「400〜500ページの完成教科書」と表記しない。</p><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="assets/js/search-index.js"></script><script src="assets/js/book.js"></script></body></html>

@@ -1,0 +1,92 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第2章 Excel・CSVデータの構造を調べる | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="current" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第I部　生データを理解する / 第02章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_1">学習目標</a></li><li><a href="#21">2.1 表の見た目とデータ構造は違う</a></li><li><a href="#22">2.2 最初は見出しを決めずに読む</a></li><li><a href="#23-csv">2.3 CSVには型とシートがない</a></li><li><a href="#24">2.4 空白行をどう扱うか</a></li><li><a href="#code02">実行するコードと結果</a></li><li><a href="#25">2.5 読み込めたことを確認する</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="excelcsv">Excel・CSVデータの構造を調べる</h1>
+<h2 id="_1">学習目標</h2>
+<p>見出し、単位行、データ領域、条件履歴を区別し、ExcelとCSVを誤解なく読み込む。列の意味が確認できない場合に処理を止め、元のExcel行へ戻れる情報を残す。</p>
+<h2 id="21">2.1 表の見た目とデータ構造は違う</h2>
+<p>試験帳票では、上部に試験名、担当者、室温、機種名があり、その下に見出しと数値が続く。最上段を自動的に列名にすると、試験名が列名になり、肝心の時刻列を見失う。結合セルは、人が見ると同じ意味を共有していても、ファイル内部では左上のセルだけが値を持ち、残りは空欄である。</p>
+<p>教材のExcelは1行目が結合タイトル、2行目が機器情報、3行目が単位説明、4行目が列名である。18行目には完全空白行を入れ、別シートに条件変更の記録を置いた。CSV版にはその空白行がないので、同じサンプルでもファイルの行番号は一致しない。この違いを無視して「18行目を修正」と指示すると、別の値を変えてしまう。</p>
+<h2 id="22">2.2 最初は見出しを決めずに読む</h2>
+<p><code>pd.read_excel(path, header=None, nrows=6)</code> は、最初の6行を見出しなしで読む。<code>header=3</code> はゼロから数えた3番目、つまりExcelの4行目を列名として使う指定だ。<code>sheet_name=None</code> なら全シートが辞書として返るが、条件表を測定表と混ぜてはいけない。シート名の一覧を先に調べ、測定領域の役割を確定する。<a href="../references/bibliography.html#r1">R1</a></p>
+<p>複数行の見出しを持つ別帳票なら <code>header=[2,3]</code> で階層的な列名にできる。平坦な名前に変えるときは、例えば「入口_温度_degC」のように測定位置と量と単位を保存する。「温度」という名前が二つになるなら変換を停止する。pandasが読み込み時に重複列名を加工する場合もあるため、原本の見出しセルも確認する。</p>
+<h2 id="23-csv">2.3 CSVには型とシートがない</h2>
+<p>CSVは区切り文字を持つテキストであり、セルの表示形式、結合、数式、シートを保持しない。「00123」は識別子か整数か、ファイルだけでは決まらない。読込時にすべてを <code>dtype=str</code> として保持し、意味が決まった列を変換する方法が安全な出発点になる。</p>
+<p>文字コードを <code>utf-8-sig</code>、区切りをカンマと決めた読込が失敗したら、エラー文字を消すのではなくファイル仕様を調べる。教材 <code>locale_cp932.csv</code> はCP932、セミコロン区切り、小数点カンマである。読込例は <code>pd.read_csv(path, encoding='cp932', sep=';', dtype=str)</code> となる。<code>errors='ignore'</code> による文字の脱落は、単位や列名の誤認につながる。</p>
+<table>
+<thead>
+<tr>
+<th>設定</th>
+<th>確認する内容</th>
+<th>誤りによる症状</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>encoding</td>
+<td>UTF-8、CP932など</td>
+<td>文字化け、読込エラー</td>
+</tr>
+<tr>
+<td>sep</td>
+<td>カンマ、タブ、セミコロン</td>
+<td>全行が一列になる</td>
+</tr>
+<tr>
+<td>header</td>
+<td>列名の開始行</td>
+<td>必要列が見つからない</td>
+</tr>
+<tr>
+<td>decimal / thousands</td>
+<td>小数点と桁区切り</td>
+<td>1234.5と1.2345の混同</td>
+</tr>
+<tr>
+<td>na_values</td>
+<td>機器の欠損コード</td>
+<td>有効な文字列を欠損に変換</td>
+</tr>
+</tbody>
+</table>
+<h2 id="24">2.4 空白行をどう扱うか</h2>
+<p>表の外にある空白行は解析領域に含めなくてよい。しかし、測定途中の空白行は記録欠落の証拠かもしれない。本書の汎用アプリは内部の空白行を残し、日時不正と欠損を付ける。削除するなら「帳票の改ページ行である」という根拠を別途記録する。</p>
+<p><code>dropna()</code> を表全体にかけると、一つでも欠損がある行を丸ごと失う設定になり得る。温度が欠けただけで正常な圧力まで捨てるのは、測定量の意味を保全する処理ではない。列ごとの有効性を持たせる方がよい。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code02">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter02/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter02/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+from openpyxl import load_workbook
+p=ROOT/&#x27;datasets/raw/10_irregular_excel.xlsx&#x27;
+wb=load_workbook(p,data_only=False)
+print(&#x27;シート:&#x27;,wb.sheetnames,&#x27;結合:&#x27;,list(wb[&#x27;測定&#x27;].merged_cells.ranges),&#x27;基準日:&#x27;,wb.epoch)
+preview=pd.read_excel(p,sheet_name=&#x27;測定&#x27;,header=None,nrows=6)
+print(preview.to_string(index=False,header=False))
+df=pd.read_excel(p,sheet_name=&#x27;測定&#x27;,header=3,keep_default_na=False)
+x,missing,bad=numeric(df[&#x27;測定値&#x27;],unit=&#x27;degC&#x27;)
+print(&#x27;読み込み行数:&#x27;,len(df),&#x27;完全空白行:&#x27;,int(df.eq(&#x27;&#x27;).all(axis=1).sum()),&#x27;変換不能:&#x27;,int(bad.sum()))
+plot(2,np.arange(len(df))+5,{&#x27;数値化可能な値&#x27;:x},&#x27;温度 [°C]&#x27;,xlabel=&#x27;Excelの行番号&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">シート: [&#x27;測定&#x27;, &#x27;条件履歴&#x27;] 結合: [&lt;MergedCellRange A1:C1&gt;] 基準日: 1899-12-30 00:00:00
+模擬データ：温度試験（実測ではない）          NaN  NaN
+               ロガー SYNTHETIC-01  NaN
+                単位         degC 運転条件
+                時刻          測定値   条件
+         46023.375           25   加熱
+      46023.375347         25.3   加熱
+読み込み行数: 41 完全空白行: 1 変換不能: 1
+</code></pre></details><figure id="fig02"><img src="../assets/images/chapter02.svg" alt="図2-1 Excel・CSVデータの構造を調べるの検証グラフ"><figcaption>図2-1　Excel・CSVデータの構造を調べる。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="25">2.5 読み込めたことを確認する</h2>
+<p><a href="#fig02">図2-1</a>の横軸は取得時刻ではなくExcel行番号である。これは帳票のどの位置に問題があるかを探すための図だ。時系列解析のグラフと役割を分ける。コードは結合範囲、シート名、基準日、先頭行を表示するので、Excel上の見た目と照合する。</p>
+<p>数式セルはさらに注意が必要だ。openpyxlはExcelの計算エンジンではなく、数式の再計算はしない。数式を読むか、最後に保存された計算済み値を読むかで結果が変わる。教材の最終アプリは一般の数式帳票を再計算する機能を持たない。測定値として確定した出力を入力とするか、Excelで再計算・保存した状態を別途確認する。</p>
+<p>同じ列名が複数ある場合、pandasが名前へ接尾辞を付けて読み込むことがある。本CLIはその前提を見落とさないよう元ヘッダーの重複を検査して拒否する。センサー名と位置を確認して入力アダプターで一意な列名へ対応付ける。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2">基礎演習</h3>
+<p><code>10_irregular_excel.xlsx</code> の測定シートを読み、完全空白行と「故障」の位置を原本で確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>同じCSV版とExcel版を比較し、サンプル番号からExcel行への対応を示す。18行目の挿入後は対応がどう変わるか。</p>
+<h3 id="_4">実務演習</h3>
+<p>毎月帳票のタイトル行が一行ずつ増える。見出しを自動検出する仕組みを設計する。似た列名を持つ条件表も同じシートにある場合、どのように誤検出を防ぐか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：41行を読み込み、その中の1行が完全空白行である。「故障」はCSVのサンプル番号8に対応する。数値化に失敗した文字列を空欄と区別する。</p>
+<p>応用：CSVのサンプル番号を0始まりのiとすると、i&lt;13ではExcel行=i+5、以後はi+6になる。正解は <code>datasets/manifest.json</code> にも記録した。</p>
+<p>実務：「時刻」「測定値」など必要列の組合せ、後続数行の型、単位、周辺タイトルで候補を絞る。候補が二つなら人の確認を要求する。一つ見つかっただけで確定せず、採用した見出し行番号をログへ残す。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>読み込みは単なるファイル操作ではない。帳票の構造と列の意味を確定する工程である。まず小さく読み、元の位置と照合し、解析対象を決めてから全量を処理する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter01.html">← 第1章</a><a href="chapter03.html">第3章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

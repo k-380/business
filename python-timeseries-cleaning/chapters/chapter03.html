@@ -1,0 +1,54 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第3章 データ型・日時・単位を統一する | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="current" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第I部　生データを理解する / 第03章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#31">3.1 「数字に見える文字」の問題</a></li><li><a href="#32">3.2 桁区切りと小数点を明示する</a></li><li><a href="#33">3.3 整数、浮動小数点、欠損</a></li><li><a href="#34-excel">3.4 Excel日付と混在日時</a></li><li><a href="#35">3.5 タイムゾーンと単位</a></li><li><a href="#code03">実行するコードと結果</a></li><li><a href="#36">3.6 結果の受け入れ</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">データ型・日時・単位を統一する</h1>
+<h2 id="_2">学習目標</h2>
+<p>数値、欠損、変換不能を区別し、単位変換と日時変換の前提を明示する。Excel日付の基準とタイムゾーンを確認し、計算精度と測定精度を混同しない。</p>
+<h2 id="31">3.1 「数字に見える文字」の問題</h2>
+<p><code>12.5 MPa</code> は文字列であり、そのまま平均を求めることはできない。単位を除いて数値化する場合も、すべての非数値文字を削除する方法は危険だ。<code>1e3</code> のeは指数表記の一部であり、<code>-2.5</code> の負号は値の意味を持つ。<code>12 Pa</code> をMPa列から勝手に数値だけ抜き出すと、100万倍の誤差を見逃す。</p>
+<p>本書の <code>numeric()</code> は宣言した末尾単位だけを除去する。空欄と登録済み欠損コードをmissing、数値化できない非欠損文字列をinvalid_tokenに分ける。<code>errors='coerce'</code> は変換不能をNaNにする便利な方法だが、これだけでは両者を区別できないため、変換前のマスクを保存する。</p>
+<h2 id="32">3.2 桁区切りと小数点を明示する</h2>
+<p>「1,234」は、日本語の帳票では1234を意味することが多いが、小数点カンマの帳票では1.234かもしれない。ファイルの地域設定を推測して混ぜず、機器仕様に基づいて設定する。<code>1.234,5</code> は桁区切りがピリオド、小数点がカンマなら1234.5だ。</p>
+<p>全角の数字を半角へそろえるUnicode正規化は役立つが、記号が変わり得る。正規化後の値だけを原本扱いしない。桁区切りは3桁単位であることを確認し、「1,23」を黙って123に変えない。識別子や製造番号は整数にしない。先頭ゼロに意味があるためである。</p>
+<h2 id="33">3.3 整数、浮動小数点、欠損</h2>
+<p>測定回数は整数、温度は通常浮動小数点で扱う。浮動小数点は有限の桁で数を表現するため、0.1のような十進小数を正確に格納できない場合がある。加算結果を <code>==</code> で比べるより、工学的に意味のある許容差で比較する。ただし <code>np.isclose</code> の既定許容差がどんな測定にも適切というわけではない。</p>
+<p>NaNは欠損の代表的表現で、<code>NaN == NaN</code> はFalseになる。欠損判定は <code>isna()</code> を用いる。整数列でも欠損を扱うにはpandasのnullable整数型 <code>Int64</code> を選べる。表示桁数を減らすことと、計算用の数値を丸めることは別である。小さな圧力差を求める前に大きな圧力値を粗く丸めれば、差は消えてしまう。</p>
+<h2 id="34-excel">3.4 Excel日付と混在日時</h2>
+<p>Excelの日付数値は基準日からの日数で、小数部が一日の割合を表す。0.5日は12時間だ。1900日付システムと1904日付システムがあり、単純に一つのoriginを全帳票に使ってはいけない。openpyxlの <code>wb.epoch</code> を確認する。1900システムの架空の1900年2月29日は、本書では不正な値として扱う。<a href="../references/bibliography.html#r6">R6</a></p>
+<p>2026年のISO表記でも、「09:00:00」と「09:00:00.100000」が混在すると、一つ目から推定した厳密な書式が他の行に合わないことがある。ISO 8601であることが分かっているなら <code>format='ISO8601'</code> と明示する。<code>format='mixed'</code> は便利だが、03/04/2026の月日順の曖昧さを解決してくれない。曖昧な帳票には個別の形式を与える。</p>
+<h2 id="35">3.5 タイムゾーンと単位</h2>
+<p>タイムゾーンを持たない09:00にUTCというラベルを付けることと、日本時間09:00をUTC00:00へ変換することは異なる。本書では既定をAsia/Tokyoとし、内部の基準時刻をUTCへ統一する。海外の夏時間切替では存在しない時刻や二度現れる時刻がある。自動的な推測で埋めず、機器のUTC記録やオフセットと照合する。</p>
+<p>線形の単位変換は <code>y = a x + b</code> と書ける。MPaからPaならa=10⁶、b=0、摂氏からケルビンならa=1、b=273.15である。温度差1 °Cと1 Kは同じ大きさだが、絶対温度20 °Cは293.15 Kである。ゲージ圧から絶対圧への変換には基準圧の情報が要る。単に列名のMPaをPaへ変えるだけでは単位変換にならない。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code03">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter03/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter03/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+values=[&#x27;１,２３４.５ degC&#x27;,&#x27;---&#x27;,&#x27;故障&#x27;,&#x27;0&#x27;,&#x27;25.0 degC&#x27;]
+v,missing,invalid=numeric(values,unit=&#x27;degC&#x27;,thousands=&#x27;,&#x27;)
+print(pd.DataFrame({&#x27;raw&#x27;:values,&#x27;numeric&#x27;:v,&#x27;missing&#x27;:missing,&#x27;invalid&#x27;:invalid}).to_string(index=False))
+print(&#x27;シリアル61（UTCとして解釈）:&#x27;,timestamps([61],excel_epoch=&#x27;1900&#x27;,timezone=&#x27;UTC&#x27;).iloc[0])
+print(&#x27;20 °C =&#x27;,20+273.15,&#x27;K&#x27;)
+plot(3,np.arange(len(v)),{&#x27;数値化した温度&#x27;:v},&#x27;温度 [°C]&#x27;,xlabel=&#x27;記録番号&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">         raw  numeric  missing  invalid
+１,２３４.５ degC   1234.5    False    False
+         ---      NaN     True    False
+          故障      NaN    False     True
+           0      0.0    False    False
+   25.0 degC     25.0    False    False
+シリアル61（UTCとして解釈）: 1900-03-01 00:00:00+00:00
+20 °C = 293.15 K
+</code></pre></details><figure id="fig03"><img src="../assets/images/chapter03.svg" alt="図3-1 データ型・日時・単位を統一するの検証グラフ"><figcaption>図3-1　データ型・日時・単位を統一する。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><p>掲載例のシリアル61は、日付システムだけを確認するためUTCとして解釈し、1900年3月1日00:00 UTCとなる。実際のロガーが日本時間を記録したときはAsia/Tokyoを指定する。基準日の確認とローカル時刻の解釈を別の手順で確かめよう。</p>
+<h2 id="36">3.6 結果の受け入れ</h2>
+<p><a href="#fig03">図3-1</a>では文字列から取り出せた数値だけを描く。大きな値が表示されても、正規化が正しいことと物理的に妥当なことは別である。1234.5という数値の変換に成功しても、温度として妥当かは測定レンジと試験条件で判断する。NaNをゼロへ変えて描けば、未知の値を0 °Cという測定値へ捏造してしまう。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>掲載コードの5要素について、数値化成功、登録欠損、変換不能を分類する。</p>
+<h3 id="_3">応用演習</h3>
+<p><code>1.234,5</code> と <code>1.23,4</code> を小数点カンマ、桁区切りピリオドで変換する。後者を受け入れない理由を説明する。</p>
+<h3 id="_4">実務演習</h3>
+<p>日本のロガーと欧州のロガーが同じ09:00を記録した。日付だけ分かっている。両者を結合する前に何を確認するか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：1234.5、0、25.0が数値化できる。<code>---</code> は登録欠損、<code>故障</code> は変換不能になる。「故障」は原因を示す重要な元文字列として保存する。</p>
+<p>応用：1234.5と変換不能になる。3桁区切り規則に合わない値は、誤記か違う規則かが分からないため、勝手に修復しない。</p>
+<p>実務：タイムゾーン、夏時間、UTCオフセット、時計の同期方法、日時表記、日付変更の有無、時計ずれを確認する。地域名だけから個別機器の設定を確定しない。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>変換前の文字列、変換後の数値、単位、変換不能の理由を残す。型の統一は意味の統一と組み合わせて初めて役に立つ。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter02.html">← 第2章</a><a href="chapter04.html">第4章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

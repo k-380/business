@@ -1,0 +1,45 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第15章 通信異常・値の固定・データ飛び | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="current" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第IV部　センサーデータ特有の問題 / 第15章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#151">15.1 安定した値か、止まった値か</a></li><li><a href="#152">15.2 連続同一値を検出する</a></li><li><a href="#153">15.3 シーケンス番号の価値</a></li><li><a href="#code15">実行するコードと結果</a></li><li><a href="#154">15.4 ファイル結合の境界</a></li><li><a href="#155">15.5 隔離は原本を動かさずに行う</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">通信異常・値の固定・データ飛び</h1>
+<h2 id="_2">学習目標</h2>
+<p>固定値区間、レコード欠落、再送、ファイル重複を検出する。分割ファイルを結合するときに取得元と行位置を保持し、境界の異常を見落とさない。</p>
+<h2 id="151">15.1 安定した値か、止まった値か</h2>
+<p>温度が20秒間まったく変わらない。断熱された対象が安定しているのか、ロガーが前回値を繰り返しているのか。分解能が0.1 °Cなら、十分安定した温度が同じ数字になるのは自然である。一方、通常は細かく揺れる値が突然完全一致を続け、他のチャンネルも止まったなら、通信異常の疑いが強まる。</p>
+<p>教材 <code>09_prototypes.csv</code> では199番の値を200〜219番へコピーした。コピーされた範囲は20点だが、固定値の連続区間には元の199番も含まれるので、候補は21点になる。先頭を除外すると、異常区間の開始を一つずらして報告することになる。</p>
+<h2 id="152">15.2 連続同一値を検出する</h2>
+<p>現在値が直前値と違う場所でグループを切り、各グループの長さを数える。NaNの連続を固定値と誤判定しないよう、欠損は別の扱いにする。本書では8点以上の完全一致を候補にするが、8は演習上の設定である。実務ではサンプル周期とセンサー分解能から、時間幅と許容変動を決める。</p>
+<p>完全一致だけでなく、一定時間の最大−最小が小さい状態を候補にする方法もある。しかしゆっくりした真の変化を固定と見なすことがある。測定の最小変化幅、運転モード、他チャンネルの変化量、機器のheartbeat情報と組み合わせる。</p>
+<h2 id="153">15.3 シーケンス番号の価値</h2>
+<p>レコードの連番があれば、時刻が丸められていても欠落や再送を検査できる。連番が98、99、102なら100と101の欠落を疑う。ただし番号の上限での折り返しや再起動リセットを仕様として扱う必要がある。単純な差分だけで、正規の折り返しを大量欠落と誤判定しない。</p>
+<p>通信エラーのステータスと測定値が別の時刻に更新される機器では、どの値にどの状態が対応するかも重要だ。受信した最後の状態をすべてのサンプルへ貼り付ければ、因果関係を誤ることがある。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code15">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter15/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter15/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+df=load(&#x27;09_prototypes&#x27;);x=df[&#x27;測定値&#x27;];f=freeze_candidates(x,8)
+print(&#x27;フリーズ候補範囲:&#x27;,np.flatnonzero(f)[[0,-1]].tolist(),&#x27;候補数:&#x27;,int(f.sum()))
+a=pd.read_csv(ROOT/&#x27;datasets/raw/prototype_part1.csv&#x27;);b=pd.read_csv(ROOT/&#x27;datasets/raw/prototype_part2.csv&#x27;)
+joined=pd.concat([a.assign(source=&#x27;part1&#x27;),b.assign(source=&#x27;part2&#x27;)],ignore_index=True)
+print(&#x27;結合行数:&#x27;,len(joined),&#x27;重複時刻に属する行:&#x27;,int(joined[&#x27;時刻&#x27;].duplicated(keep=False).sum()))
+plot(15,seconds(df),{&#x27;観測値&#x27;:x,&#x27;固定値候補&#x27;:x.where(f)},&#x27;温度 [°C]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">フリーズ候補範囲: [199, 219] 候補数: 21
+結合行数: 410 重複時刻に属する行: 20
+</code></pre></details><figure id="fig15"><img src="../assets/images/chapter15.svg" alt="図15-1 通信異常・値の固定・データ飛びの検証グラフ"><figcaption>図15-1　通信異常・値の固定・データ飛び。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="154">15.4 ファイル結合の境界</h2>
+<p>教材の分割ファイルは、part1の末尾とpart2の先頭に10行の重複を持ち、part2には追加電流列がある。<code>pd.concat</code> で結ぶと410行になり、追加列はpart1側で欠損になる。これは列が増えたことによる未測定であり、通信欠損と区別したい。</p>
+<p>ファイル名順が時間順とは限らない。「測定_10.csv」が「測定_2.csv」より前に並ぶこともある。開始時刻、連番、試験IDなどから順序を決める。まず全ファイルの境界情報を一覧にし、重複・空白・列構成の変更を検査する。</p>
+<p>ファイル境界で2点ずつ欠けた場合、各ファイル内だけで見れば短い欠損でも、結合後は長い欠損になる。局所フィルタの窓も境界をまたぐ。独立に処理する設計なら境界を未評価と明示し、連続処理する設計なら前後の状態を受け渡す必要がある。</p>
+<h2 id="155">15.5 隔離は原本を動かさずに行う</h2>
+<p>列が足りない、文字コードが違う、空ファイルなどの問題があれば、処理対象から隔離して理由を記録する。本書のCLIは元ファイルを移動せず、バッチのerrorsへ記録する。読み込めたものだけで「全件正常」と表示しない。失敗件数と未処理ファイルの一覧も品質情報である。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>固定値候補が199〜219番で21点になることを確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>二つの分割ファイルを結合し、重複時刻に属する行数と余分な行数を区別して数える。</p>
+<h3 id="_4">実務演習</h3>
+<p>試験中に新しい電流列が追加された。過去の空欄を前方補完または後方補完してよいか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：コピー先だけでなく、元の固定値区間先頭も含める。候補は原因確定ではない。</p>
+<p>応用：重複時刻に属する行は20行、重複を一つずつ代表化すると余分な行は10行。ただし同じ観測の重複と確認してから採否を決める。</p>
+<p>実務：過去には測っていなかったので補完しない。<code>not_measured</code> のような理由を付ける。後から測った電流を過去へ延長すると、未知の履歴を作ってしまう。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>値の固定、連番、通信状態、ファイル境界を組み合わせて調べる。原本を保ったまま、異常区間と未処理対象を記録する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter14.html">← 第14章</a><a href="chapter16.html">第16章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

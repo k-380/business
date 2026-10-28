@@ -1,0 +1,46 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第10章 欠損値の補完と補完してはいけない場面 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="current" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第III部　欠損値と異常値を扱う / 第10章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#101">10.1 補完の条件を先に書く</a></li><li><a href="#102-limit">10.2 limitだけでは長い欠損を守れない</a></li><li><a href="#103">10.3 線形補間の誤差</a></li><li><a href="#104">10.4 補間を検証する方法</a></li><li><a href="#code10">実行するコードと結果</a></li><li><a href="#105">10.5 補間値の使い方</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">欠損値の補完と補完してはいけない場面</h1>
+<h2 id="_2">学習目標</h2>
+<p>実時間、モード、周辺の品質に基づいて補間対象を選ぶ。長い区間の部分補完や外挿を防ぎ、補間誤差を検証して補間値を実測値と区別する。</p>
+<h2 id="101">10.1 補完の条件を先に書く</h2>
+<p>停止中の温度記録が欠けた。前後の温度を直線でつなぐときれいな曲線になるが、実際には停止中に冷え、再起動後に温まったかもしれない。両端が同じ温度でも、途中の現象は同じとは限らない。補間の可否は、見た目の滑らかさでは決められない。</p>
+<p>本章では、前後に有効値があり、時刻が有効・一意・単調増加で、同じ連続運転区間に属し、前後の観測時刻の差が30秒以内、という条件を設定する。30秒は停止教材の演習値であり、温度一般の許容値ではない。実務では対象の時定数、必要な精度、イベントの時間幅から定める。</p>
+<h2 id="102-limit">10.2 limitだけでは長い欠損を守れない</h2>
+<p>pandasの <code>interpolate(limit=2)</code> は、連続欠損が2点以下の区間だけを丸ごと埋める指定ではない。長い欠損の先頭側2点を埋めることがある。<code>limit_direction='both'</code> なら両側から埋まり、意図せず補間量が増える。<a href="../references/bibliography.html#r2">R2</a> 本書では連続欠損区間を先に取り出し、条件を満たした区間だけを全体として補間する。</p>
+<p>さらに、欠損点数ではなく前後の有効観測間の時間を使う。1秒周期の2点欠損と、1時間周期の2点欠損では未知の時間幅が大きく違う。運転モードA→B→Aの両側がAでも、途中にBを挟むなら補間しない。連続するセグメントIDで区切る理由がここにある。</p>
+<h2 id="103">10.3 線形補間の誤差</h2>
+<p>滑らかな関数fを区間[a,b]で直線補間したとき、二階微分の絶対値がM以下なら、最大誤差の上限は <code>M(b−a)²/8</code> となる。区間を2倍にすると、曲率による誤差上限は4倍になる。この評価は二階微分が存在し、その上限が分かる場合の話で、ステップ変化や未知のピークには使えない。</p>
+<p>例えば曲率の上限を0.002 °C/s²と仮定すると、10秒区間の上限は0.025 °C、30秒では0.225 °Cになる。このMは演習用の仮定だ。実際にはセンサーのノイズや校正不確かさもあり、この式だけを全不確かさとしない。両端の誤差が相関している場合は、その共分散も関係する。</p>
+<h2 id="104">10.4 補間を検証する方法</h2>
+<p>欠損のない区間を意図的に隠し、補間値と観測値を比較する「隠し試験」ができる。隠す長さを1、2、5、10点と変え、定常・過渡・停止前後で別に誤差を集計する。ランダムに1点ずつ隠した試験だけでは、連続欠損に対する性能を評価できない。</p>
+<p>模擬データなら真値との差も確認できるが、実データで隠した観測値にも測定誤差がある。RMSEが小さいという結果は、隠した条件に対する再現性を示すにとどまる。高温時にだけ発生する実欠損へ、低温定常区間の検証をそのまま適用しない。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code10">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter10/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter10/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+df=load(&#x27;07_modes&#x27;);t=pd.to_datetime(df[&#x27;時刻&#x27;],utc=True,format=&#x27;ISO8601&#x27;);x=df[&#x27;測定値&#x27;]
+segments=df[&#x27;mode&#x27;].ne(df[&#x27;mode&#x27;].shift()).cumsum()
+y,filled=interpolate_short(t,x,max_gap_seconds=30,groups=segments,eligible=df[&#x27;mode&#x27;].eq(&#x27;run&#x27;))
+target=truth(&#x27;07_modes&#x27;).latent_signal
+print(&#x27;補間数:&#x27;,int(filled.sum()),&#x27;残欠損:&#x27;,int(y.isna().sum()))
+print(&#x27;模擬真値に対する補間点RMSE:&#x27;,float(np.sqrt(np.mean((y[filled]-target[filled])**2))))
+plot(10,seconds(df),{&#x27;観測値&#x27;:x,&#x27;条件付き補間&#x27;:y,&#x27;補間点&#x27;:y.where(filled)},&#x27;温度 [°C]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">補間数: 2 残欠損: 90
+模擬真値に対する補間点RMSE: 0.020161750561444123
+</code></pre></details><figure id="fig10"><img src="../assets/images/chapter10.svg" alt="図10-1 欠損値の補完と補完してはいけない場面の検証グラフ"><figcaption>図10-1　欠損値の補完と補完してはいけない場面。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="105">10.5 補間値の使い方</h2>
+<p><a href="#fig10">図10-1</a>では、停止中の長い欠損が残り、運転中の短い2点だけが埋まる。補間値には <code>interpolated</code> の由来フラグを付ける。観測点と補間点を合わせて標本数を数え、精度が上がったと結論してはいけない。補間点は周辺の観測から作った値であり、独立な測定ではない。</p>
+<p>最大値、しきい値超過時間、疲労損傷の評価は、未知区間に敏感である。短い欠損でも重要なピークを含む可能性があれば補間しない選択がある。平均トレンドの表示用には補間しても、合否判定用には観測値だけを使う、と用途別に列を分けることもできる。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>停止教材で補間された点数と、補間されずに残った欠損数を調べる。</p>
+<h3 id="_3">応用演習</h3>
+<p>最大区間を20秒にすると短い欠損は埋まるか。2点欠損の両端の時刻差を計算する。</p>
+<h3 id="_4">実務演習</h3>
+<p>圧力ピークの発生が予想される弁切替直後に0.2秒の欠損がある。前後は正常範囲だった。平均トレンドと最大圧力評価では、どう取り扱いを変えるか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：2点を補間し、停止中の90点は残す。原観測の列には92点の欠損がそのまま残る。</p>
+<p>応用：周期10秒で2点欠損なら、両端間隔は30秒。20秒以内という規則では埋めない。</p>
+<p>実務：表示用の参考線として補間するなら補間区間を明示する。最大圧力の確定には使用せず、その区間は評価不能とし、別系統の記録や再試験で補う。前後が正常という事実だけでは内部のピークを制約できない。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>補間は区間全体の条件で判断する。時間幅、モード、両端の品質、解析目的を揃え、実測と推定を分けて保存する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter09.html">← 第9章</a><a href="chapter11.html">第11章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

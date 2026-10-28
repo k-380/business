@@ -1,0 +1,80 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第4章 データ品質を数値化する | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="current" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第I部　生データを理解する / 第04章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#41">4.1 平均温度は正常でもデータは不十分</a></li><li><a href="#42">4.2 分母を決める</a></li><li><a href="#43">4.3 重複率の二つの定義</a></li><li><a href="#44">4.4 未評価を数える</a></li><li><a href="#code04">実行するコードと結果</a></li><li><a href="#45">4.5 時間帯ごとの品質を見る</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">データ品質を数値化する</h1>
+<h2 id="_2">学習目標</h2>
+<p>欠損率や重複率の分母を定義し、計測目的に応じた品質表を作る。全欠損や未評価を0件の異常と取り違えず、品質指標の限界を説明する。</p>
+<h2 id="41">4.1 平均温度は正常でもデータは不十分</h2>
+<p>24時間の温度試験で30分の記録が欠けた。欠けた時間が安定運転なら、平均温度への影響は小さいかもしれない。しかし温度上限を超えた時間だけ記録が落ちたなら、観測値の平均は低く偏る。同じ欠損率でも意味は違う。</p>
+<p>データ品質は一つの点数にまとめる前に、複数の観点で確認する。完全性は必要な情報が存在するか、一意性は同じ観測を重複して扱っていないか、一貫性は列間・条件間で矛盾がないか、妥当性は形式や物理範囲に合うか、時間的整合性は時刻と取得順序に矛盾がないかを指す。ここでの名称は本書の作業用分類で、規格適合を宣言するものではない。</p>
+<h2 id="42">4.2 分母を決める</h2>
+<p>値の欠損率は <code>r_missing = 欠損セル数 / 期待する測定セル数</code> と定義する。単一列で記録が全行残っていれば、期待する測定セル数を行数と置ける。しかしレコードごと欠落した場合、受領行数を分母にしても完全性は測れない。予定周期と試験期間から予定スロット数を計算し、スロットとの対応を検査する必要がある。</p>
+<p>例えば1分周期で24時間、開始を含み終了を含まない区間なら予定数は1440だ。受領数1400、受領値の空欄20なら、有効値は1380で、予定数基準の欠損は60/1440となる。一方、受領行内の空欄率は20/1400である。両者は異なる問いに答えている。試験の開始・終了時刻を含める規則も記録する。</p>
+<h2 id="43">4.3 重複率の二つの定義</h2>
+<p>時刻が <code>[0,1,1,2]</code> のとき、余分な記録を数えれば1/4、重複に属する全行を数えれば2/4になる。本書のtime_duplicateフラグは後者である。最初の1を正常と決めてしまうと、どちらが再送でどちらが本来の記録かという未解決の問題が隠れるためだ。</p>
+<p>同じ時刻でも測定器IDが異なれば、重複とは限らない。一意性のキーは試験ID、機器ID、チャンネル、シーケンス番号などを含めて設計する。時刻だけを唯一の識別子にすることは避ける。</p>
+<table>
+<thead>
+<tr>
+<th>指標</th>
+<th>分母の例</th>
+<th>数値だけでは分からないこと</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>欠損率</td>
+<td>予定スロット数</td>
+<td>欠損の原因と発生時の現象</td>
+</tr>
+<tr>
+<td>重複所属率</td>
+<td>受領行数</td>
+<td>再送か独立測定か</td>
+</tr>
+<tr>
+<td>異常候補率</td>
+<td>評価した有効値数</td>
+<td>測定不具合か実現象か</td>
+</tr>
+<tr>
+<td>変換不能率</td>
+<td>受領行数</td>
+<td>誤記か単位違いか</td>
+</tr>
+<tr>
+<td>Hampel評価率</td>
+<td>受領行数</td>
+<td>窓不足区間の正常性</td>
+</tr>
+</tbody>
+</table>
+<h2 id="44">4.4 未評価を数える</h2>
+<p>局所的な外れ値検出には前後の点が必要である。11点の完全窓を使うなら、端の5点ずつや欠損に接する窓は評価できない。候補数0、評価数0を「良好」と表示してはいけない。欠損率が100%の列に平均値や標準偏差を出しても意味がなく、レポートでは未評価と表示する。</p>
+<p>品質レポートは、件数、率、分母、未評価数、規則の版、対象期間を一緒に示す。異常候補は重複し得るので、各フラグ件数の合計を異常行数としない。飽和した同じ点に範囲外と外れ値のフラグが付いているかもしれない。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code04">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter04/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter04/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+df=load(&#x27;01_temperature&#x27;);x=pd.to_numeric(df[&#x27;測定値&#x27;],errors=&#x27;coerce&#x27;)
+n=len(x);missing=x.isna().sum()
+print(f&#x27;行数={n}, 欠損={missing}, 欠損率={missing/n:.6f}, 完全性={1-missing/n:.6f}&#x27;)
+hours=(seconds(df)//3600).astype(int)
+rate=x.isna().groupby(hours).mean()
+plot(4,rate.index,{&#x27;時間帯別欠損率&#x27;:rate},&#x27;欠損率 [1]&#x27;,xlabel=&#x27;開始後 [h]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">行数=1440, 欠損=33, 欠損率=0.022917, 完全性=0.977083
+</code></pre></details><figure id="fig04"><img src="../assets/images/chapter04.svg" alt="図4-1 データ品質を数値化するの検証グラフ"><figcaption>図4-1　データ品質を数値化する。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="45">4.5 時間帯ごとの品質を見る</h2>
+<p>温度教材は1440行中33行が欠損している。受領行を分母にした欠損率は約2.29%である。<a href="#fig04">図4-1</a>では、この欠損が特定の時間帯に集中していることが分かる。全期間の率だけなら見落とす構造だ。運転モード別、機器別、試作品別にも同じ集計を行うと、測定条件に依存した問題を探しやすい。</p>
+<p>本書のアプリの <code>NO_RULE_VIOLATION_DETECTED</code> は、指定規則による違反候補がないという限定された状態である。校正の適切さや測定系の帯域までは判定しない。製品合否とデータ品質判定を同じラベルにしない。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>温度教材の欠損数と欠損率を手計算し、標準出力と比較する。</p>
+<h3 id="_3">応用演習</h3>
+<p>上記の予定1440、受領1400、空欄20の例で、受領率、有効値率、受領行内空欄率を計算する。</p>
+<h3 id="_4">実務演習</h3>
+<p>二つの試作品の平均温度差が0.3 °Cだった。一方の欠損率は0.1%、他方は8%で、高温時に集中していた。平均温度だけで優劣を決めてよいか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：33/1440=0.0229167、約2.29%。完全性は同じ分母を使えば約97.71%となる。</p>
+<p>応用：受領率は1400/1440≈97.22%、有効値率は1380/1440≈95.83%、受領行内空欄率は20/1400≈1.43%。定義を省くと比較不能になる。</p>
+<p>実務：決められない。欠損が値に依存する可能性があり、平均差が選択バイアスで生じた疑いがある。同じ運転条件・共通観測時間で比較し、欠損原因を調べ、必要なら再測定する。単に8%を補間して揃えることは根拠にならない。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>品質指標は、定義と分母を添えて使う。全体の率と時間・条件別の分布を組み合わせ、未評価を明示することが、数値を過信しないための基本である。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter03.html">← 第3章</a><a href="chapter05.html">第5章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

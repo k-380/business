@@ -1,0 +1,25 @@
+# Tested with Python 3.12.14 on Linux; resolved dependencies
+contourpy==1.3.3
+cycler==0.12.1
+et_xmlfile==2.0.0
+fonttools==4.61.1
+iniconfig==2.3.1
+japanize-matplotlib==1.1.3
+kiwisolver==1.4.9
+Markdown==3.11.2
+matplotlib==3.10.8
+numpy==2.3.5
+openpyxl==3.1.5
+packaging==26.3
+pandas==2.2.3
+pillow==12.3.0
+pluggy==1.7.0
+Pygments==2.21.0
+pyparsing==3.3.2
+pytest==9.2.0
+python-dateutil==2.9.0.post0
+pytz==2026.5
+PyYAML==6.0.3
+scipy==1.17.0
+six==1.17.0
+tzdata==2026.5

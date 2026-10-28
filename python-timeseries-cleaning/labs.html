@@ -1,0 +1,292 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>実践補講 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="assets/css/book.css"></head><body data-base="" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="getting-started.html">はじめに・環境構築</a><a href="labs.html">実践補講6題</a><a href="downloads.html">教材ダウンロード</a><a href="glossary.html">用語集・索引</a><a href="references/bibliography.html">参考文献</a><a href="verification.html">検証と未完了項目</a></nav></aside><main id="main"><h1 id="_1">実践補講：判断を数値で確かめる六つの実験</h1>
+<p>本編の考え方を、別の小さな実験で検証する。各補講は完全なスクリプトを持ち、教材フォルダから単独実行できる。ここで示す乱数種や条件はコードに固定している。新しい処理を最終CLIへ自動的に追加したわけではなく、適用前の検証方法を学ぶための補講である。</p>
+<h2 id="1">補講1　読み込み条件を試験する</h2>
+<h3 id="_2">目的と問題</h3>
+<p>第2・3章の読込処理を、文字コード、小数点、複数行見出しの組合せで確認する。目標は、読み込めた数字を眺めるだけでなく、既知の値と一致することをassertで確かめることだ。</p>
+<p>CP932のファイルをUTF-8として読めば、文字化けまたは例外が起こる。正しくCP932で読めても、セミコロン区切りを指定しなければ列が分かれない。さらに「1.234,5」を地域設定に合う規則で数値化しなければ、1234.5という値にはならない。三つの条件を個別に確定する必要がある。</p>
+<h3 id="_3">手順を分解する</h3>
+<p>最初に文字列として読み、列名が「時刻」「測定値」であることを確認する。次に桁区切りと小数点を設定して数値へ変換する。最後に既知の1234.5と一致することを検査する。数値化後の図が滑らかかどうかだけでは、1000倍の桁違いを見抜けないことがある。</p>
+<p>後半では、一時フォルダに二段見出しのExcelを作る。見出しの候補行を探し、一つだけなら採用する。候補が0でも2以上でもエラーにする。「最初に見つかった行を採用する」より、曖昧さが見える設計である。これは汎用の帳票認識AIではなく、必要な列名が既知である場合の限定したアダプターだ。</p>
+<p>複数行見出しを組み合わせて「入口_degC」「出口_degC」とし、測定位置と単位を残す。名称結合後に列名が重複したら停止する。列の順序だけで入口と出口を決めると、帳票改訂で位置が入れ替わった際に誤処理する。</p>
+<p><a href="examples/lab01/run.py" download>補講1の完全な実行スクリプト</a>：教材フォルダで <code>python examples/lab01/run.py</code></p><pre><code class="language-python">from pathlib import Path
+import sys,json
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,hampel,interpolate_short
+
+from tempfile import TemporaryDirectory
+from openpyxl import Workbook
+df=pd.read_csv(ROOT/&#x27;datasets/raw/locale_cp932.csv&#x27;,encoding=&#x27;cp932&#x27;,sep=&#x27;;&#x27;,dtype=str,keep_default_na=False)
+v,missing,invalid=numeric(df[&#x27;測定値&#x27;],decimal=&#x27;,&#x27;,thousands=&#x27;.&#x27;)
+assert v.iloc[0]==1234.5
+print(&#x27;CP932 / セミコロン / 小数点カンマ:&#x27;,v.iloc[0])
+with TemporaryDirectory() as folder:
+    p=Path(folder)/&#x27;two_headers.xlsx&#x27;;wb=Workbook();ws=wb.active
+    ws.append([&#x27;模擬：複数行見出し&#x27;]);ws.append([&#x27;時刻&#x27;,&#x27;入口&#x27;,&#x27;出口&#x27;]);ws.append([&#x27;s&#x27;,&#x27;degC&#x27;,&#x27;degC&#x27;])
+    for i in range(10):ws.append([i,20+i*.1,22+i*.1])
+    wb.save(p)
+    preview=pd.read_excel(p,header=None,keep_default_na=False)
+    candidates=[]
+    for i,row in preview.iterrows():
+        if {&#x27;時刻&#x27;,&#x27;入口&#x27;,&#x27;出口&#x27;}.issubset(set(row.astype(str))):candidates.append(i)
+    if len(candidates)!=1:raise ValueError(&#x27;ambiguous/missing header&#x27;)
+    data=pd.read_excel(p,header=[candidates[0],candidates[0]+1])
+    data.columns=[&#x27;_&#x27;.join(map(str,c)) for c in data.columns]
+    assert data.columns.is_unique and len(data)==10
+    print(&#x27;採用したExcel見出し行:&#x27;,candidates[0]+1,&#x27;列:&#x27;,data.columns.tolist())
+    plot(25,data[&#x27;時刻_s&#x27;],{&#x27;入口&#x27;:data[&#x27;入口_degC&#x27;],&#x27;出口&#x27;:data[&#x27;出口_degC&#x27;]},&#x27;温度 [°C]&#x27;,title=&#x27;補講1図1　複数行見出しを保持した読込&#x27;)
+</code></pre><details><summary>実行結果</summary><pre><code class="language-text">CP932 / セミコロン / 小数点カンマ: 1234.5
+採用したExcel見出し行: 2 列: [&#x27;時刻_s&#x27;, &#x27;入口_degC&#x27;, &#x27;出口_degC&#x27;]
+</code></pre></details><figure id="labfig1"><img src="assets/images/chapter25.svg" alt="補講1の検証グラフ"><figcaption>補講1 図1　掲載コードから生成した模擬データの検証結果。</figcaption></figure>
+
+<h3 id="_4">結果と限界</h3>
+<p>出力は1234.5となり、Excelは10行の測定値を返す。図の入口と出口の差は2 °Cで一定だ。この差が0.002や2000になった場合、単位または数値変換を疑う。プログラムが探す列名は固定なので、名前の変更は設定またはアダプターの更新を必要とする。</p>
+<h3 id="_5">三段階演習</h3>
+<ol>
+<li>基礎：上記の値、行数、列名を確認する。</li>
+<li>応用：同じ見出しを別の位置にも追加し、エラーになることを確認する。</li>
+<li>実務：入口と出口の列名が同じ「温度」だけだった場合、推測せず確認すべき資料を挙げる。</li>
+</ol>
+<details class="answers"><summary>解答・評価観点</summary><p>基礎は数値1234.5、10行、測定位置を含む列名との一致が条件。応用は候補が二つになるため停止が正しい。実務では機器チャンネル表、配線図、試験手順、原帳票の上位見出しを確認する。波形の高低だけで入口と出口を決めない。</p></details>
+
+<h2 id="2">補講2　同期に使わなかったトリガーで評価する</h2>
+<h3 id="_6">目的と問題</h3>
+<p>第8章では正解の時計モデルを使い、補正式の向きと単位を確認した。ここではノイズを含む共通トリガーからa、bを推定し、推定に使わなかった点の残差を調べる。既知の正解をそのまま式へ入れる検証と、観測から推定する検証を区別する。</p>
+<p>6個のトリガーのうち4個で直線を当てはめ、残り2個を検証へ回す。設計行列Xの各行を[t,1]とし、係数β=[a,b]を求める。<code>np.linalg.lstsq</code> は残差二乗和が最小となる係数を計算する。<a href="references/bibliography.html#r13">R13</a> ここでの基準側時刻は誤差を無視できると仮定している。両方の時刻が同程度に不確かな場合は、この通常の最小二乗だけで十分とは限らない。</p>
+<h3 id="_7">誤差の読み方</h3>
+<p>独立・等分散の残差という仮定では、残差分散の推定値はSSE/(n−2)、係数の共分散はその値と(XᵀX)⁻¹の積になる。n−2は傾きと切片の二つを推定した自由度を差し引いている。残差が4個しかない教材では推定が不安定になり得る。多くの検証点と、試験期間全体を覆うトリガーを用意する方がよい。</p>
+<p>係数の標準誤差が小さくても、時計が途中で補正されたり、温度依存で非線形に変化したりすれば直線モデルは不適切になる。残差を時間軸に描き、弓形や段差がないか確認する。外挿する時間が長いほど予測不確かさも増える。</p>
+<p><a href="examples/lab02/run.py" download>補講2の完全な実行スクリプト</a>：教材フォルダで <code>python examples/lab02/run.py</code></p><pre><code class="language-python">from pathlib import Path
+import sys,json
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,hampel,interpolate_short
+
+rng=np.random.default_rng(802)
+a=np.array([0.,30,60,90,120,150]);b=1.0002*a+.7+rng.normal(0,.001,len(a))
+train=np.array([0,1,3,5]);hold=np.array([2,4])
+X=np.column_stack([a[train],np.ones(len(train))]);beta=np.linalg.lstsq(X,b[train],rcond=None)[0]
+res=b[train]-X@beta;s2=res@res/(len(train)-2);cov=s2*np.linalg.inv(X.T@X)
+corrected=(b-beta[1])/beta[0];err=corrected-a
+print(&#x27;a,bの推定:&#x27;,beta.tolist(),&#x27;傾き標準誤差:&#x27;,float(np.sqrt(cov[0,0])))
+print(&#x27;未使用トリガー最大残差 [s]:&#x27;,float(np.max(np.abs(err[hold]))))
+assert np.max(np.abs(err[hold]))&lt;.005
+# Grid-only reindex drops actual off-grid anchors. Union preserves them.
+t0=pd.Timestamp(&#x27;2026-01-01&#x27;,tz=&#x27;UTC&#x27;)
+observed=pd.Series([0.,2.,5.],index=t0+pd.to_timedelta([0.,1.3,3.2],unit=&#x27;s&#x27;))
+grid=pd.date_range(t0,periods=4,freq=&#x27;s&#x27;)
+union=observed.index.union(grid).sort_values()
+aligned=observed.reindex(union).interpolate(method=&#x27;time&#x27;,limit_area=&#x27;inside&#x27;).reindex(grid)
+print(&#x27;元観測を残すunion補間:&#x27;,aligned.tolist())
+assert np.isclose(aligned.iloc[1],2/1.3)
+plot(26,a,{&#x27;校正後時刻残差&#x27;:err},&#x27;時刻残差 [s]&#x27;,xlabel=&#x27;基準時刻 [s]&#x27;,title=&#x27;補講2図1　未使用トリガーも残して検証&#x27;)
+</code></pre><details><summary>実行結果</summary><pre><code class="language-text">a,bの推定: [1.0002064203872216, 0.6991862941812177] 傾き標準誤差: 4.940153092494276e-06
+未使用トリガー最大残差 [s]: 0.0014760955550201516
+元観測を残すunion補間: [0.0, 1.5384615384615385, 3.105263157894737, 4.684210526315789]
+</code></pre></details><figure id="labfig2"><img src="assets/images/chapter26.svg" alt="補講2の検証グラフ"><figcaption>補講2 図1　掲載コードから生成した模擬データの検証結果。</figcaption></figure>
+
+<h3 id="_8">ずれた時刻を等間隔へそろえるとき</h3>
+<p>後半のコードでは、観測点0秒、1.3秒、3.2秒を、0、1、2、3秒の格子へ変換する。観測点を格子へ直接reindexすると1.3秒と3.2秒の実測点が失われるため、元の時刻と格子の和集合を作ってから補間し、最後に格子だけを取り出す。1秒の値は2/1.3となる。実務ではこの操作の前に、長い空白やモード境界を分ける必要がある。</p>
+<h3 id="_9">三段階演習</h3>
+<ol>
+<li>基礎：係数推定値と未使用トリガーの最大残差を確認する。</li>
+<li>応用：検証点だけに10 msの時刻ずれを加えたとき、学習内残差と検証残差のどちらへ現れるか。</li>
+<li>実務：試験開始付近の10秒間だけで時計ドリフトを求め、24時間先を補正してよいか。</li>
+</ol>
+<details class="answers"><summary>解答・評価観点</summary><p>基礎ではaが1.0002、bが0.7の近傍に推定され、未使用点も数ms以内となる。応用は学習に使わない点なので、学習内の適合度だけでは異常を見落とす。実務では長い外挿になるため、終了時を含むトリガーや独立時計を用い、全期間の残差を確認する。</p></details>
+
+<h2 id="3">補講3　補間の方法を競わせる前に評価条件をそろえる</h2>
+<h3 id="_10">目的と問題</h3>
+<p>第10章の停止教材から、測定済みのrun区間を二つ選び、それぞれ10点を隠す。前方補完、線形、PCHIP、三次スプライン、局所三次多項式を同じ隠した点で比較する。模擬真値があるためRMSEと最大絶対誤差を計算できる。</p>
+<p>PCHIPは観測データの単調性を保つ形状保存補間で、一階微分が連続になる。<a href="references/bibliography.html#r11">R11</a> CubicSplineは区分的な三次式をつなぎ、二階微分まで連続にする。<a href="references/bibliography.html#r12">R12</a> 滑らかさの条件が違うので、過渡区間やノイズに対する形も変わる。</p>
+<h3 id="_11">学習と評価を分離する</h3>
+<p>隠した点を補間の入力へ残したまま誤差を計算すれば、ほぼゼロになるが検証にはならない。コードでは <code>train = valid &amp; ~mask</code> とし、隠した位置を明示的に除外する。評価もそのmaskの位置だけで行う。もともとの停止中の欠損を真値で埋めて正解にするのではない。</p>
+<p>局所三次多項式は欠損の前後5点ずつを使う。時刻から原点を引き100秒で割って、数値の大きさを抑える。大きな絶対日時の値をそのまま高次多項式へ入れると数値条件が悪くなる。次数を上げれば誤差が必ず減るわけではなく、観測ノイズを追って補間区間が振動する場合がある。</p>
+<p><a href="examples/lab03/run.py" download>補講3の完全な実行スクリプト</a>：教材フォルダで <code>python examples/lab03/run.py</code></p><pre><code class="language-python">from pathlib import Path
+import sys,json
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,hampel,interpolate_short
+
+from scipy.interpolate import PchipInterpolator,CubicSpline
+df=load(&#x27;07_modes&#x27;);t=seconds(df);x=df[&#x27;測定値&#x27;].to_numpy();target=truth(&#x27;07_modes&#x27;).latent_signal.to_numpy()
+valid=np.isfinite(x);mask=np.zeros(len(x),bool);mask[60:70]=True;mask[350:360]=True
+train=valid &amp; ~mask;known_t=t[train];known_x=x[train]
+linear=np.interp(t,known_t,known_x)
+ffill=pd.Series(x).mask(mask).ffill().to_numpy()
+pchip=PchipInterpolator(known_t,known_x,extrapolate=False)(t)
+cubic=CubicSpline(known_t,known_x,extrapolate=False)(t)
+poly=np.full(len(x),np.nan)
+for lo,hi in [(60,70),(350,360)]:
+    idx=np.r_[np.arange(lo-5,lo),np.arange(hi,hi+5)]
+    origin=t[lo];coef=np.polyfit((t[idx]-origin)/100,x[idx],3)
+    poly[lo:hi]=np.polyval(coef,(t[lo:hi]-origin)/100)
+for name,y in [(&#x27;ffill&#x27;,ffill),(&#x27;linear&#x27;,linear),(&#x27;pchip&#x27;,pchip),(&#x27;cubic_spline&#x27;,cubic),(&#x27;local_cubic_polynomial&#x27;,poly)]:
+    err=y[mask]-target[mask]
+    print(name,&#x27;RMSE [degC]=&#x27;,round(float(np.sqrt(np.mean(err**2))),6),&#x27;max abs=&#x27;,round(float(np.max(np.abs(err))),6))
+print(&#x27;この比較はrun区間の人工欠損のみ。停止中を橋渡しする推定は採用しない。&#x27;)
+plot(27,t[50:80],{&#x27;模擬真値&#x27;:target[50:80],&#x27;線形&#x27;:linear[50:80],&#x27;PCHIP&#x27;:pchip[50:80],&#x27;前方補完&#x27;:ffill[50:80]},&#x27;温度 [°C]&#x27;,title=&#x27;補講3図1　連続欠損を隠して補間を評価&#x27;)
+</code></pre><details><summary>実行結果</summary><pre><code class="language-text">ffill RMSE [degC]= 0.751345 max abs= 1.3009
+linear RMSE [degC]= 0.051386 max abs= 0.080559
+pchip RMSE [degC]= 0.067146 max abs= 0.10724
+cubic_spline RMSE [degC]= 0.100842 max abs= 0.176305
+local_cubic_polynomial RMSE [degC]= 0.050882 max abs= 0.061182
+この比較はrun区間の人工欠損のみ。停止中を橋渡しする推定は採用しない。
+</code></pre></details><figure id="labfig3"><img src="assets/images/chapter27.svg" alt="補講3の検証グラフ"><figcaption>補講3 図1　掲載コードから生成した模擬データの検証結果。</figcaption></figure>
+
+<h3 id="_12">結果を一般化しない</h3>
+<p>この二つのrun区間で良かった方法が、停止境界や圧力ピークでも良いとは限らない。コードは比較用の候補曲線を全時刻で計算するが、採用対象は隠したrun区間に限定する。停止中の空白に候補曲線が計算されても、実測や承認補間として出力しない。業務化する際は、先に区間を分割して処理そのものを限定する。</p>
+<p>RMSEは平均的な誤差、最大絶対誤差は局所的に最も悪い点を見る。一つの大きな誤差が合否を変えるなら、RMSEだけで方式を選ばない。隠す長さと運転条件を複数変え、方式の選択に使っていない区間でも再評価する。</p>
+<h3 id="_13">三段階演習</h3>
+<ol>
+<li>基礎：5方式のRMSEと最大絶対誤差を並べる。</li>
+<li>応用：隠す長さを20点へ増やし、方法の順位が変わるか確認する。</li>
+<li>実務：実際の欠損が高温時だけに発生する。低温run区間の隠し試験で最良の方法を採用してよいか。</li>
+</ol>
+<details class="answers"><summary>解答・評価観点</summary><p>基礎・応用の数値は生成条件に依存するため、掲載出力と変更後出力を比較する。最も滑らかな方法が最も正確とは限らない。実務では欠損条件と評価条件が一致していない。高温域の独立測定、欠損原因、上限超過の可能性を確認し、適用できない場合は欠損として残す。</p></details>
+
+<h2 id="4">補講4　校正係数の相関とフィルタ利得</h2>
+<h3 id="_14">目的と問題</h3>
+<p>校正で傾きaと切片bを推定すると、両者は一般に独立ではない。切片を少し大きくした分を傾きの減少で補うような関係が生じる。第13章の不確かさ伝播を、共分散を含む式で計算し、モンテカルロ計算と比較する。</p>
+<p>校正の既知入力を0〜3 MPa、観測を1.02x+0.02に小さな正規ノイズを加えたものとする。既知入力の不確かさはこの実験では無視し、観測側の誤差は独立・等分散と仮定する。これは校正一般の完全なモデルではない。</p>
+<h3 id="_15">共分散を使う</h3>
+<p>補正結果g(a,b,z)=(z−b)/aに対する感度係数は、aについて−(z−b)/a²、bについて−1/a、zについて1/aである。a、bの共分散行列をC、前二つの感度を並べたベクトルをdとすると、係数由来の分散はdᵀCdとなる。さらに独立とした新しい測定値zの分散をa²で割って加える。</p>
+<p>モンテカルロでは推定したa、bの相関を保って組を生成し、同時に測定値zもばらつかせ、毎回補正式へ入れる。結果の標準偏差が一次近似と近いことを確認する。これは採用した確率モデル同士の比較であり、実測の不確かさを新しく実証する試験ではない。</p>
+<p><a href="examples/lab04/run.py" download>補講4の完全な実行スクリプト</a>：教材フォルダで <code>python examples/lab04/run.py</code></p><pre><code class="language-python">from pathlib import Path
+import sys,json
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,hampel,interpolate_short
+
+from scipy.signal import butter,sosfreqz
+rng=np.random.default_rng(1304)
+reference=np.linspace(0,3,9);z=1.02*reference+.02+rng.normal(0,.004,len(reference))
+X=np.column_stack([reference,np.ones(len(reference))]);ab=np.linalg.lstsq(X,z,rcond=None)[0]
+res=z-X@ab;cov=(res@res/(len(z)-2))*np.linalg.inv(X.T@X)
+measurement=1.55;estimate=(measurement-ab[1])/ab[0]
+grad=np.array([-(measurement-ab[1])/ab[0]**2,-1/ab[0]])
+u_measure=.005;variance=grad@cov@grad+(u_measure/ab[0])**2
+draw=rng.multivariate_normal(ab,cov,size=50000);meas=rng.normal(measurement,u_measure,len(draw));mc=(meas-draw[:,1])/draw[:,0]
+print(&#x27;推定圧力 [MPa]:&#x27;,estimate,&#x27;一次伝播の標準不確かさ:&#x27;,np.sqrt(variance),&#x27;MC標準偏差:&#x27;,mc.std(ddof=1))
+print(&#x27;MC 2.5/97.5分位:&#x27;,np.quantile(mc,[.025,.975]).tolist())
+assert abs(mc.std(ddof=1)/np.sqrt(variance)-1)&lt;.03
+sos=butter(4,180,fs=1000,output=&#x27;sos&#x27;);f,h=sosfreqz(sos,worN=2048,fs=1000)
+at=np.argmin(np.abs(f-180));print(&#x27;180Hz付近 一方向/往復 [dB]:&#x27;,20*np.log10(abs(h[at])),40*np.log10(abs(h[at])))
+plot(28,f,{&#x27;一方向&#x27;:20*np.log10(np.maximum(abs(h),1e-8)),&#x27;往復&#x27;:40*np.log10(np.maximum(abs(h),1e-8))},&#x27;振幅利得 [dB]&#x27;,xlabel=&#x27;周波数 [Hz]&#x27;,title=&#x27;補講4図1　ゼロ位相化で振幅応答も変わる&#x27;)
+</code></pre><details><summary>実行結果</summary><pre><code class="language-text">推定圧力 [MPa]: 1.4992964877731711 一次伝播の標準不確かさ: 0.005164351489390662 MC標準偏差: 0.005162463154786354
+MC 2.5/97.5分位: [1.489169439505234, 1.5093434532237178]
+180Hz付近 一方向/往復 [dB]: -3.002060699948948 -6.004121399897896
+</code></pre></details><figure id="labfig4"><img src="assets/images/chapter28.svg" alt="補講4の検証グラフ"><figcaption>補講4 図1　掲載コードから生成した模擬データの検証結果。</figcaption></figure>
+
+<h3 id="_16">図で見る一方向と往復</h3>
+<p>後半は180 HzカットオフのButterworthの応答を計算する。図では一方向の振幅利得に対し、往復はdB値が約2倍の減衰になる。位相遅れを消す代わりに、振幅への作用も変わっている。180 Hz付近の−3 dBと−6 dBの差を確認する。</p>
+<h3 id="_17">三段階演習</h3>
+<ol>
+<li>基礎：一次伝播とモンテカルロの標準偏差の相対差を確認する。</li>
+<li>応用：共分散の非対角成分を0にすると推定不確かさがどう変わるか調べる。</li>
+<li>実務：基準器の不確かさが観測側と同程度ある場合、このコードの前提をどう変えるか。</li>
+</ol>
+<details class="answers"><summary>解答・評価観点</summary><p>基礎は演習設定で3%以内の一致をassertしている。応用の増減は感度係数と共分散の符号に依存し、常に大きくなるとは限らない。実務では入力側誤差と基準器の共通偏りをモデルへ加え、誤差変数モデルや適切なモンテカルロ入力を検討する。既知入力を誤差なしとする通常最小二乗のまま結論しない。</p></details>
+
+<h2 id="5">補講5　二系列の関係が崩れた点を探す</h2>
+<h3 id="_18">目的と問題</h3>
+<p>単独では許容範囲に入る二つの値でも、関係が崩れていることがある。例えば同じ入力を測る二つの測定系なら、既知の感度比から大きく外れる組は確認対象になる。本補講は連続した物理波形ではなく、平衡状態での独立な対測定800回を想定した無次元の模擬データである。記録番号を時間と解釈して周波数解析しない。</p>
+<p>前半400組を基準として平均ベクトルμと共分散Sを求める。距離二乗を <code>D²=(x−μ)ᵀ S⁻¹ (x−μ)</code> とする。共分散によって、通常の関係に沿う変動は小さく、関係を横切る変動は大きく評価される。コードのeinsumはこの二次形式を各行に適用する行列表現である。</p>
+<h3 id="_19">閾値と前提</h3>
+<p>基準データ内の距離の99%分位を演習の閾値にする。この設定は未知のデータの誤警報率が厳密に1%になることを保証しない。学習分布が変化すれば候補は増え、学習データに異常が混ざれば基準自体がゆがむ。正規分布の理論的距離と、有限標本から共分散を推定した距離の分布も区別する。</p>
+<p>二列が完全に比例していれば共分散は特異になり、通常の逆行列が求まらない。条件数が大きい場合も、測定ノイズのわずかな違いに敏感になる。単純に疑似逆行列へ置き換えれば問題が消えるわけではない。物理的な関係から残差 <code>b−(2a)</code> を直接評価する方が説明しやすい場合がある。</p>
+<p><a href="examples/lab05/run.py" download>補講5の完全な実行スクリプト</a>：教材フォルダで <code>python examples/lab05/run.py</code></p><pre><code class="language-python">from pathlib import Path
+import sys,json
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,hampel,interpolate_short
+
+rng=np.random.default_rng(1705)
+n=800;t=np.arange(n,dtype=float);common=rng.normal(size=n)
+a=10+common+rng.normal(0,.03,n);b=20+2*common+rng.normal(0,.04,n)
+b[600:610]+=1.0
+data=np.column_stack([a,b]);train=data[:400];mu=train.mean(axis=0);cov=np.cov(train,rowvar=False)
+inverse=np.linalg.inv(cov);delta=data-mu
+d2=np.einsum(&#x27;ij,jk,ik-&gt;i&#x27;,delta,inverse,delta)
+train_d2=d2[:400];threshold=np.quantile(train_d2,.99)
+flag=d2&gt;threshold
+print(&#x27;学習内99%分位（普遍閾値ではない）:&#x27;,threshold)
+print(&#x27;注入区間検出:&#x27;,int(flag[600:610].sum()),&#x27;/10&#x27;,&#x27;それ以外の検証区間候補:&#x27;,int(flag[400:600].sum()+flag[610:].sum()))
+print(&#x27;2列の相関:&#x27;,np.corrcoef(train,rowvar=False)[0,1],&#x27;共分散の条件数:&#x27;,np.linalg.cond(cov))
+assert flag[600:610].all()
+folder=ROOT/&#x27;datasets/supplementary&#x27;;folder.mkdir(exist_ok=True)
+pd.DataFrame({&#x27;t_s&#x27;:t,&#x27;a&#x27;:a,&#x27;b&#x27;:b,&#x27;injected_relation_error&#x27;:(t&gt;=600)&amp;(t&lt;610),&#x27;seed&#x27;:1705}).to_csv(folder/&#x27;multivariate.csv&#x27;,index=False)
+plot(29,t,{&#x27;距離二乗&#x27;:d2,&#x27;学習内99%分位&#x27;:np.full(n,threshold)},&#x27;Mahalanobis距離二乗 [1]&#x27;,xlabel=&#x27;測定記録番号&#x27;,title=&#x27;補講5図1　二系列の関係を検査&#x27;)
+</code></pre><details><summary>実行結果</summary><pre><code class="language-text">学習内99%分位（普遍閾値ではない）: 7.854975886436315
+注入区間検出: 10 /10 それ以外の検証区間候補: 11
+2列の相関: 0.9992701351900295 共分散の条件数: 4268.7947963443075
+</code></pre></details><figure id="labfig5"><img src="assets/images/chapter29.svg" alt="補講5の検証グラフ"><figcaption>補講5 図1　掲載コードから生成した模擬データの検証結果。</figcaption></figure>
+
+<h3 id="_20">検出した後</h3>
+<p>600〜609番には関係を崩す変化を注入している。全10組が候補になっても、データを削除せず保持する。基準に用いなかったその他の点が何個候補になったかも報告する。多変量検出は「片方のセンサーが誤り」と診断する機能ではなく、両者の関係を調べるきっかけである。</p>
+<h3 id="_21">三段階演習</h3>
+<ol>
+<li>基礎：注入10点の検出数と、それ以外の検証区間の候補数を確認する。</li>
+<li>応用：二列の単位スケールを変え、共分散も同じデータで計算した場合の距離を比較する。</li>
+<li>実務：運転モードが二つあり、モードごとに正常な感度比が異なる。全データで一つの共分散を作ってよいか。</li>
+</ol>
+<details class="answers"><summary>解答・評価観点</summary><p>基礎は注入全10点を検出するが、その他の候補もゼロとは限らない。応用は理想的な可逆線形スケール変換では距離が保たれるが、数値条件に注意する。実務はモード別の関係をモデル化するか、条件を説明変数に含める。二つの正常集団を一つの楕円へ押し込めて判断しない。</p></details>
+
+<h2 id="6">補講6　チャンク境界で検出結果を変えない</h2>
+<h3 id="_22">目的と問題</h3>
+<p>第21章で説明した境界の問題を、Hampelと補間で実験する。5000点の系列の1023、1024、2048番にスパイクを置く。チャンクサイズ1024はこの境界を意図的にまたぐ。各チャンクだけに11点窓をかけると、境界近くは完全な窓を持てず見逃す。</p>
+<h3 id="_23">窓の重なりを持つ</h3>
+<p>窓半幅5点を左右に付けて計算し、出力はそのチャンクが担当する部分だけへ切り戻す。重複領域を二度出力しない。全量処理と、候補フラグだけでなく中央値と尺度まで一致することを比較する。この例は配列を分割して境界の正しさを確認しており、CSVをメモリ外で読む完成済みストリーミング基盤ではない。</p>
+<h3 id="_24">欠損区間の終わりを待つ</h3>
+<p>補間は次の有効観測が来るまで、欠損の時間幅が確定しない。入力を一行ずつ受ける関数では、最後の有効値と未解決の欠損を保留する。次の有効値が届いたら、同一セグメントと時間幅を検査し、全区間を補間するか残すか決める。末尾まで有効値が来なければ、その欠損はそのまま出す。</p>
+<p><a href="examples/lab06/run.py" download>補講6の完全な実行スクリプト</a>：教材フォルダで <code>python examples/lab06/run.py</code></p><pre><code class="language-python">from pathlib import Path
+import sys,json
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,hampel,interpolate_short
+
+from tsclean.streaming import chunked_hampel,stream_interpolate
+rng=np.random.default_rng(2106);x=1+.001*rng.normal(size=5000);x[[1023,1024,2048]]=4
+whole=hampel(x,11,k=3.5,floor=.01);chunks=chunked_hampel(x,1024,11,3.5,.01)
+pd.testing.assert_frame_equal(whole,chunks)
+print(&#x27;全量と重なりチャンクのフラグ・中央値・尺度：全点一致&#x27;)
+t=pd.Series(pd.date_range(&#x27;2026-01-01&#x27;,periods=12,freq=&#x27;s&#x27;,tz=&#x27;UTC&#x27;))
+v=np.arange(12,dtype=float);v[3:7]=np.nan;v[9]=np.nan
+records=((tm,value,0) for tm,value in zip(t,v))
+rows=list(stream_interpolate(records,3));ys=np.array([row[1] for row in rows]);filled=np.array([row[3] for row in rows])
+batch,mask=interpolate_short(t,v,max_gap_seconds=3)
+np.testing.assert_allclose(ys,batch,equal_nan=True);assert filled.sum()==1
+print(&#x27;境界をまたぐ4点欠損は全体として残し、1点欠損だけ補間。&#x27;)
+plot(30,np.arange(len(v)),{&#x27;観測&#x27;:v,&#x27;ストリーム補間&#x27;:ys},&#x27;値 [1]&#x27;,xlabel=&#x27;記録番号&#x27;,title=&#x27;補講6図1　未完了の欠損区間を保留する&#x27;)
+</code></pre><details><summary>実行結果</summary><pre><code class="language-text">全量と重なりチャンクのフラグ・中央値・尺度：全点一致
+境界をまたぐ4点欠損は全体として残し、1点欠損だけ補間。
+</code></pre></details><figure id="labfig6"><img src="assets/images/chapter30.svg" alt="補講6の検証グラフ"><figcaption>補講6 図1　掲載コードから生成した模擬データの検証結果。</figcaption></figure>
+
+<h3 id="_25">制約を隠さない</h3>
+<p>この簡易関数の保留メモリは、未解決の欠損長に比例する。任意に長い欠損に対して定数メモリで動くとは主張しない。実用化では許容時間を超えた時点で補間不採用を確定して順次出力し、長い欠損の状態だけを保持する設計が考えられる。</p>
+<p>また、この拡張関数はすべてのNaNを補間候補として受ける。最終CLIのようにinvalid_token、停止、疑わしい両端を除くには、呼出側で区間・適格性を定義する必要がある。検出候補をNaNに変えて自動で修復する機能ではない。</p>
+<h3 id="_26">三段階演習</h3>
+<ol>
+<li>基礎：全量とチャンクのHampel結果が全点一致することを確認する。</li>
+<li>応用：チャンクサイズを7にし、窓11より短くても重なりで一致するか確認する。</li>
+<li>実務：補間待ちの区間が一週間続く装置を、メモリを増やさず運用するにはどんな状態管理が必要か。</li>
+</ol>
+<details class="answers"><summary>解答・評価観点</summary><p>基礎・応用はチャンク担当部分だけを採用すれば一致する。補間例では4点連続欠損を残し、1点欠損だけを埋める。実務では許容時間を超えた欠損は不採用と確定して順次出力し、次の有効値まで「長い欠損中」の状態を保持する。再起動時にその状態を復元する仕組みも検討する。</p></details><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="assets/js/search-index.js"></script><script src="assets/js/book.js"></script></body></html>

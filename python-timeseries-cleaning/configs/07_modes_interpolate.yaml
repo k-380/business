@@ -1,0 +1,23 @@
+version: teaching-1
+time:
+  column: 時刻
+  format: ISO8601
+  timezone: Asia/Tokyo
+columns:
+  value:
+    source: 測定値
+    unit: degC
+    window: 11
+    k: 3.5
+    floor: 0.01
+    freeze_run: 8
+interpolation:
+  enabled: true
+  max_gap_seconds: 30
+  reason: 演習用の承認規則：同一run区間の短い空欄
+  approved_by: 教材検証
+max_rows: 200000
+expected_dt: 10
+mode_column: mode
+allowed_modes:
+- run

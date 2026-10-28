@@ -1,0 +1,163 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>教材データ | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="assets/css/book.css"></head><body data-base="" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="getting-started.html">はじめに・環境構築</a><a href="labs.html">実践補講6題</a><a href="downloads.html">教材ダウンロード</a><a href="glossary.html">用語集・索引</a><a href="references/bibliography.html">参考文献</a><a href="verification.html">検証と未完了項目</a></nav></aside><main id="main"><h1>教材データと正解情報</h1><p>10題材すべて模擬データ。seed=20261028。異常位置は0始まり、start以上stop未満。正解のlatent_signalは測定ノイズを除く模擬真値で、クリーニング後に一致すべき値とは限らない。</p><p><a href="datasets/manifest.json">生成条件と異常位置の全記録</a> · <a href="datasets/generators/generate.py">生成器</a></p><p>expectedのinspection/flagsは既定設定の期待出力スナップショット。独立の小さな正解テストも併用する。単に同じ実装の出力を正解とした検証ではない。</p><section id="data01"><h2>01　温度の長時間測定</h2><p>短い欠損と長い欠損、後半のドリフトを分ける。</p><p>モデル：25+35(1-exp(-t/1200))+0.8sin(2πt/86400); τ=1200 s; noise σ=.06 degC。1440行、単位：degC。</p><p><a href="datasets/raw/01_temperature.csv" download>生CSV</a> · <a href="datasets/expected/01_temperature_truth.csv" download>模擬真値</a> · <a href="datasets/expected/01_temperature_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/01_temperature_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/01_temperature.py" download>専用実行入口</a> · <a href="configs/01_temperature.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 120,
+    &quot;stop&quot;: 123,
+    &quot;kind&quot;: &quot;missing_short&quot;
+  },
+  {
+    &quot;start&quot;: 600,
+    &quot;stop&quot;: 630,
+    &quot;kind&quot;: &quot;missing_long&quot;
+  },
+  {
+    &quot;start&quot;: 721,
+    &quot;stop&quot;: 1440,
+    &quot;kind&quot;: &quot;sensor_drift&quot;,
+    &quot;slope_per_second&quot;: 3e-05
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>短い欠損と長い欠損、後半のドリフトを分ける。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>33点の欠損を検出する。ドリフトは既定ルールでは自動診断できない。基準なしにトレンドを引かない。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter03.html">3章</a>, <a href="chapters/chapter04.html">4章</a>, <a href="chapters/chapter09.html">9章</a>, <a href="chapters/chapter10.html">10章</a>, <a href="chapters/chapter13.html">13章</a></p></section><section id="data02"><h2>02　圧力の時系列</h2><p>二つの測定スパイクと35秒付近の実パルスを区別する。</p><p>モデル：1.4+.04sin(2π .3t)+.55exp(-((t-35)/.45)^2); true pressure pulse。600行、単位：MPa。</p><p><a href="datasets/raw/02_pressure.csv" download>生CSV</a> · <a href="datasets/expected/02_pressure_truth.csv" download>模擬真値</a> · <a href="datasets/expected/02_pressure_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/02_pressure_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/02_pressure.py" download>専用実行入口</a> · <a href="configs/02_pressure.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 90,
+    &quot;stop&quot;: 91,
+    &quot;kind&quot;: &quot;measurement_spike&quot;
+  },
+  {
+    &quot;start&quot;: 270,
+    &quot;stop&quot;: 271,
+    &quot;kind&quot;: &quot;measurement_spike&quot;
+  },
+  {
+    &quot;start&quot;: 338,
+    &quot;stop&quot;: 363,
+    &quot;kind&quot;: &quot;real_pressure_pulse&quot;,
+    &quot;action&quot;: &quot;preserve&quot;
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>二つの測定スパイクと35秒付近の実パルスを区別する。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>範囲外候補2点。実パルスを保存する。修正する場合は第12章の承認済み2点だけ。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter01.html">1章</a>, <a href="chapters/chapter11.html">11章</a>, <a href="chapters/chapter12.html">12章</a></p></section><section id="data03"><h2>03　振動加速度</h2><p>40/130 Hzの実成分と370 Hzの干渉を分ける。</p><p>モデル：40 Hz structural motion +130 Hz component; 370 Hz interference; fs=1000 Hz。4000行、単位：m/s2。</p><p><a href="datasets/raw/03_vibration.csv" download>生CSV</a> · <a href="datasets/expected/03_vibration_truth.csv" download>模擬真値</a> · <a href="datasets/expected/03_vibration_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/03_vibration_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/03_vibration.py" download>専用実行入口</a> · <a href="configs/03_vibration.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 0,
+    &quot;stop&quot;: 4000,
+    &quot;kind&quot;: &quot;high_frequency_interference&quot;,
+    &quot;frequency_hz&quot;: 370
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>40/130 Hzの実成分と370 Hzの干渉を分ける。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>既定検査は値を変更しない。250 Hzへ間引く場合130 Hzは保存できない。第7・16章の目的別出力を比較する。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter06.html">6章</a>, <a href="chapters/chapter07.html">7章</a>, <a href="chapters/chapter16.html">16章</a></p></section><section id="data04"><h2>04　電流波形</h2><p>起動ピークの飽和と周期性を確認する。</p><p>モデル：(5+13exp(-t/.08))sin(2π50t); ADC limit ±12 A。4000行、単位：A。</p><p><a href="datasets/raw/04_current.csv" download>生CSV</a> · <a href="datasets/expected/04_current_truth.csv" download>模擬真値</a> · <a href="datasets/expected/04_current_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/04_current_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/04_current.py" download>専用実行入口</a> · <a href="configs/04_current.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;indices&quot;: [
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      89,
+      90,
+      91
+    ],
+    &quot;kind&quot;: &quot;saturation&quot;,
+    &quot;rails&quot;: [
+      -12,
+      12
+    ]
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>起動ピークの飽和と周期性を確認する。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>飽和候補35点、記録の最大絶対値12 A。真値ピーク約17.21 Aは原観測だけから復元できない。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter14.html">14章</a>, <a href="chapters/chapter16.html">16章</a>, <a href="chapters/chapter19.html">19章</a></p></section><section id="data05"><h2>05　複数センサー同時計測</h2><p>時計のオフセットと200 ppmのドリフトを検証する。</p><p>モデル：Two common injected trigger pulses at 10 s and 30 s; logger B clock tB=1.0002t+.7。500行、単位：V。</p><p><a href="datasets/raw/05_sync.csv" download>生CSV</a> · <a href="datasets/expected/05_sync_truth.csv" download>模擬真値</a> · <a href="datasets/expected/05_sync_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/05_sync_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/05_sync.py" download>専用実行入口</a> · <a href="configs/05_sync.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 0,
+    &quot;stop&quot;: 500,
+    &quot;kind&quot;: &quot;clock_error&quot;,
+    &quot;offset_s&quot;: 0.7,
+    &quot;scale&quot;: 1.0002
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>時計のオフセットと200 ppmのドリフトを検証する。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>時計モデルtB=1.0002tA+0.7。第8章で符号と補正を検証する。基準チャンネルは出題の補助情報。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter08.html">8章</a>, <a href="chapters/chapter17.html">17章</a></p></section><section id="data06"><h2>06　製品耐久試験</h2><p>製品劣化とセンサー長期ドリフトを区別する。</p><p>モデル：RMS vibration grows .0006 mm/s per hour; sensor drift after 500 h; independent reference available。1000行、単位：mm/s。</p><p><a href="datasets/raw/06_durability.csv" download>生CSV</a> · <a href="datasets/expected/06_durability_truth.csv" download>模擬真値</a> · <a href="datasets/expected/06_durability_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/06_durability_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/06_durability.py" download>専用実行入口</a> · <a href="configs/06_durability.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 0,
+    &quot;stop&quot;: 1000,
+    &quot;kind&quot;: &quot;real_degradation&quot;,
+    &quot;slope_per_hour&quot;: 0.0006
+  },
+  {
+    &quot;start&quot;: 501,
+    &quot;stop&quot;: 1000,
+    &quot;kind&quot;: &quot;sensor_drift&quot;,
+    &quot;slope_per_hour&quot;: 0.0008
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>製品劣化とセンサー長期ドリフトを区別する。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>真の劣化傾き0.0006 mm/s/hを保存する。基準との差を校正に使い、終端の外挿を確認する。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter13.html">13章</a>, <a href="chapters/chapter19.html">19章</a></p></section><section id="data07"><h2>07　運転停止を含む試験</h2><p>停止中の無測定と運転中の短い欠損を区別する。</p><p>モデル：First-order heating/cooling with stop at 2000 s and restart at 3000 s。600行、単位：degC。</p><p><a href="datasets/raw/07_modes.csv" download>生CSV</a> · <a href="datasets/expected/07_modes_truth.csv" download>模擬真値</a> · <a href="datasets/expected/07_modes_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/07_modes_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/07_modes.py" download>専用実行入口</a> · <a href="configs/07_modes.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 200,
+    &quot;stop&quot;: 300,
+    &quot;kind&quot;: &quot;stopped_operation&quot;
+  },
+  {
+    &quot;start&quot;: 205,
+    &quot;stop&quot;: 295,
+    &quot;kind&quot;: &quot;planned_no_measurement&quot;
+  },
+  {
+    &quot;start&quot;: 400,
+    &quot;stop&quot;: 402,
+    &quot;kind&quot;: &quot;missing_short&quot;
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>停止中の無測定と運転中の短い欠損を区別する。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>欠損92点。承認設定では運転中2点のみ補間、停止中90点を保持する。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter09.html">9章</a>, <a href="chapters/chapter10.html">10章</a>, <a href="chapters/chapter18.html">18章</a>, <a href="chapters/chapter24.html">24章</a></p></section><section id="data08"><h2>08　データロガー再起動</h2><p>取得順序を残して時刻の重複とリセットを見つける。</p><p>モデル：Physical temperature slope .02 degC/s; acquisition sequence monotonic, recorded clock reset。200行、単位：degC。</p><p><a href="datasets/raw/08_restart.csv" download>生CSV</a> · <a href="datasets/expected/08_restart_truth.csv" download>模擬真値</a> · <a href="datasets/expected/08_restart_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/08_restart_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/08_restart.py" download>専用実行入口</a> · <a href="configs/08_restart.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 50,
+    &quot;stop&quot;: 51,
+    &quot;kind&quot;: &quot;duplicate_timestamp&quot;
+  },
+  {
+    &quot;start&quot;: 100,
+    &quot;stop&quot;: 101,
+    &quot;kind&quot;: &quot;clock_reset&quot;,
+    &quot;offset_s&quot;: -80
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>取得順序を残して時刻の重複とリセットを見つける。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>逆転1箇所。重複はリセットにより広範囲にも発生する。自動ソート・補間はしない。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter05.html">5章</a>, <a href="chapters/chapter06.html">6章</a>, <a href="chapters/chapter15.html">15章</a></p></section><section id="data09"><h2>09　複数試作品比較</h2><p>固定値、異周期、分割ファイルの重複と追加列を調べる。</p><p>モデル：Prototype A temperature approaches 45 degC; prototype B +.8 degC, alternate sampling。400行、単位：degC。</p><p><a href="datasets/raw/09_prototypes.csv" download>生CSV</a> · <a href="datasets/expected/09_prototypes_truth.csv" download>模擬真値</a> · <a href="datasets/expected/09_prototypes_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/09_prototypes_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/09_prototypes.py" download>専用実行入口</a> · <a href="configs/09_prototypes.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 199,
+    &quot;stop&quot;: 220,
+    &quot;kind&quot;: &quot;sensor_freeze&quot;
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>固定値、異周期、分割ファイルの重複と追加列を調べる。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>固定値候補21点。許容差0.4秒の対応付けではB未対応200点。分割ファイルを黙って重複削除しない。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter15.html">15章</a>, <a href="chapters/chapter17.html">17章</a>, <a href="chapters/chapter21.html">21章</a></p></section><section id="data10"><h2>10　不規則なExcel帳票</h2><p>結合セル、単位行、混合型、空白行、Excelシリアル値を調べる。</p><p>モデル：Linear ramp .01 degC/s; irregular workbook has title merge, header metadata, blank row, serial dates。40行、単位：degC。</p><p><a href="datasets/raw/10_irregular_excel.csv" download>生CSV</a> · <a href="datasets/expected/10_irregular_excel_truth.csv" download>模擬真値</a> · <a href="datasets/expected/10_irregular_excel_inspection.csv" download>期待する検査後データ</a> · <a href="datasets/expected/10_irregular_excel_flags.csv" download>期待フラグ</a> · <a href="datasets/cleaners/10_irregular_excel.py" download>専用実行入口</a> · <a href="configs/10_irregular_excel.yaml" download>設定</a></p><h3>問題がある位置</h3><pre><code class="language-json">[
+  {
+    &quot;start&quot;: 4,
+    &quot;stop&quot;: 5,
+    &quot;kind&quot;: &quot;missing_code&quot;
+  },
+  {
+    &quot;start&quot;: 8,
+    &quot;stop&quot;: 9,
+    &quot;kind&quot;: &quot;invalid_token&quot;
+  },
+  {
+    &quot;start&quot;: 10,
+    &quot;stop&quot;: 11,
+    &quot;kind&quot;: &quot;unit_suffix&quot;
+  },
+  {
+    &quot;start&quot;: 15,
+    &quot;stop&quot;: 16,
+    &quot;kind&quot;: &quot;blank_cell&quot;
+  }
+]</code></pre><h3>基礎・応用・実務課題</h3><ol><li>専用実行入口で検出し、期待フラグと比較する。</li>対応章の窓・時間幅・閾値を変更し、候補数と実現象の保持を調べる。</li>結合セル、単位行、混合型、空白行、Excelシリアル値を調べる。 実務で真値がなければ、追加でどの証拠が必要かを記述する。</li></ol><details class="answers"><summary>期待結果と解説</summary><p>CSV版40行、Excel測定表41行。故障は変換不能、空白・---は欠損として分類。原Excel行番号を保存する。</p><p>「真値へ無条件で置換する」は不適切。処理対象外の観測値と原本が保持されることを確かめる。</p></details><p>対応章：<a href="chapters/chapter02.html">2章</a>, <a href="chapters/chapter03.html">3章</a>, <a href="chapters/chapter24.html">24章</a></p></section><h2>追加の入力形式</h2><p><a href="datasets/raw/10_irregular_excel.xlsx" download>不規則Excel</a> · <a href="configs/10_workbook.yaml">Excel用設定</a> · <a href="datasets/raw/locale_cp932.csv">CP932・セミコロンCSV</a> · <a href="datasets/raw/prototype_part1.csv">分割1</a> · <a href="datasets/raw/prototype_part2.csv">分割2</a> · <a href="configs/07_modes_interpolate.yaml">承認補間設定</a></p><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="assets/js/search-index.js"></script><script src="assets/js/book.js"></script></body></html>

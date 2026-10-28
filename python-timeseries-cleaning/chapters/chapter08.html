@@ -1,0 +1,47 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第8章 複数計測器の時刻同期 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="current" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第II部　時間軸を修復する / 第08章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#81">8.1 二つの山がずれている</a></li><li><a href="#82">8.2 オフセットとドリフトの補正</a></li><li><a href="#83">8.3 相互相関による推定</a></li><li><a href="#code08">実行するコードと結果</a></li><li><a href="#84">8.4 同期誤差を評価する</a></li><li><a href="#85">8.5 同期してはいけない場合</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">複数計測器の時刻同期</h1>
+<h2 id="_2">学習目標</h2>
+<p>時刻オフセットと時計ドリフトを区別し、共通トリガーから補正量を求める。相互相関のラグの符号を確認し、物理的な応答遅れを時計ずれとして消さない。</p>
+<h2 id="81">8.1 二つの山がずれている</h2>
+<p>電流と温度の波形の山がずれていても、それは時計ずれとは限らない。電流が増えてから温度が上がるまでには熱容量による遅れがある。温度のピークを電流のピークへ移動すると、物理的な応答時間を消してしまう。同期のためには、同一のイベントを両機器が観測している必要がある。</p>
+<p>本章の教材は、二台に同じトリガーパルスを入れた設定である。基準時刻10秒と30秒にパルスがあり、Bの時計は <code>t_B = 1.0002 t_A + 0.7</code> とずれる。0.7秒の固定ずれに加え、200 ppmの進みがある。これは模擬設定であり、実機の代表値ではない。</p>
+<h2 id="82">8.2 オフセットとドリフトの補正</h2>
+<p>一つの共通トリガーだけでは、その時点のずれしか分からない。二つ以上の離れたトリガーがあれば、<code>t_B = a t_A + b</code> という直線モデルを当てはめられる。aは時計の速さの比、bは時刻の原点差である。BからAへ戻すには <code>t_A = (t_B−b)/a</code> とする。</p>
+<p>例えばAの10秒、30秒に対応するBの記録が10.702秒、30.706秒なら、a=(30.706−10.702)/(30−10)=1.0002、b=0.7となる。複数トリガーを使えば残差を求められ、直線モデルで足りるかを検討できる。時計の補正イベントが途中にあれば、区間別モデルが必要になる。</p>
+<h2 id="83">8.3 相互相関による推定</h2>
+<p>相互相関は、一方の波形をずらしながら、もう一方と形がどの程度重なるかを調べる。平均を引いておけば、共通の直流成分の影響を減らせる。ただし長いトレンドや周期性が強いと、誤ったラグが大きな相関を持つ。物理的にあり得る探索範囲に制限し、複数の窓で安定性を確認する。</p>
+<p>本章のコードは <code>correlate(b, a)</code> を使い、Bを7点遅らせた既知の信号で符号を確認する。正の7が出れば、この呼び出し順ではBがAより遅い。関数や引数を入れ替えたら符号も変わるため、記憶に頼らず既知ラグのテストを置く。</p>
+<p>相関のピーク位置は標本間隔の整数倍に量子化される。ピーク周辺の補間によるサブサンプル推定は可能だが、情報が増えたわけではない。ノイズ、波形の非対称性、信号帯域、センサー応答、時計のドリフトから推定誤差が生じる。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code08">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter08/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter08/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+from scipy.signal import correlate,correlation_lags
+df=load(&#x27;05_sync&#x27;);a=df.reference_trigger.to_numpy();b=np.r_[np.zeros(7),a[:-7]]
+c=correlate(b-b.mean(),a-a.mean(),mode=&#x27;full&#x27;);lags=correlation_lags(len(b),len(a))
+lag=int(lags[np.argmax(c)]);print(&#x27;Bの遅れ [sample]:&#x27;,lag,&#x27;遅れ [s]:&#x27;,lag*.1)
+recorded=seconds(df)+.7;corrected=(recorded-.7)/1.0002
+print(&#x27;トリガー校正式の最大残差 [s]:&#x27;,np.max(np.abs(corrected-df.reference_time_s)))
+plot(8,df.reference_time_s,{&#x27;補正前時刻誤差&#x27;:recorded-df.reference_time_s,&#x27;補正後時刻誤差&#x27;:corrected-df.reference_time_s},&#x27;同期誤差 [s]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">Bの遅れ [sample]: 7 遅れ [s]: 0.7000000000000001
+トリガー校正式の最大残差 [s]: 9.998011307743582e-10
+</code></pre></details><figure id="fig08"><img src="../assets/images/chapter08.svg" alt="図8-1 複数計測器の時刻同期の検証グラフ"><figcaption>図8-1　複数計測器の時刻同期。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="84">8.4 同期誤差を評価する</h2>
+<p><a href="#fig08">図8-1</a>では補正前の誤差が時間とともに増え、アフィン補正後はほぼゼロになる。今回は正解の時計モデルが既知なので、これは実装検証である。実際の試験で残差がゼロになるとは限らない。校正に使わなかったトリガーで残差を評価し、最大絶対誤差、標準偏差、時刻依存性を報告する。</p>
+<p>時刻誤差δtが値の比較へ与える影響は、局所的には <code>δx ≈ (dx/dt) δt</code> と見積もれる。急激な圧力上昇では、小さい同期誤差でも大きな差になる。例えば傾き2 MPa/sの区間で20 msずれれば、約0.04 MPaの見かけの差が生じる。</p>
+<h2 id="85">8.5 同期してはいけない場合</h2>
+<p>異なる位置の温度、流体の輸送遅れを伴う圧力、制御入力と製品応答などは、時刻が合っていても波形が遅れる。相関最大化で時間を動かすことは、時計校正ではなくモデルの当てはめになる。実施するなら「応答遅れ推定」として別の結果にする。</p>
+<p>長い欠損を補間してから相関を取ると、同じ補間形状が相関を作ることもある。共通の観測区間、同じ帯域、同じイベントを選び、補間比率を確認する。相関係数が高いだけで因果関係を結論しない。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>7点遅れの例を実行し、相関ラグと秒単位の遅れを求める。</p>
+<h3 id="_3">応用演習</h3>
+<p>200 ppmの時計差が1時間後に生むずれを求める。開始時だけ同期した場合を考える。</p>
+<h3 id="_4">実務演習</h3>
+<p>温度センサー二つの応答が3秒ずれている。片方は太い保護管に入っている。時刻補正をする前に、どの実験を行うか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：ラグ7、周期0.1秒なのでBは0.7秒遅れる。Bの値のインデックスを移すのか、時刻列を補正するのかも明示する。</p>
+<p>応用：3600×200×10⁻⁶=0.72秒。開始時のオフセットだけを補正しても、終了時にはずれが残る。</p>
+<p>実務：共通の電気トリガーで時計ずれを独立に確認する。センサーを同じ媒体のステップ変化にさらし、保護管による時定数の差を調べる。物理応答の遅れを時計補正で消さない。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>同期は、同じ現象を同じ時刻で比較できるようにする工程である。時計の誤差と対象の応答遅れを分け、補正量と残差を記録する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter07.html">← 第7章</a><a href="chapter09.html">第9章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

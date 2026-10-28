@@ -1,0 +1,47 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第11章 外れ値の検出と判定 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="current" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第III部　欠損値と異常値を扱う / 第11章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#111">11.1 「珍しい」と「誤っている」は違う</a></li><li><a href="#112-z">11.2 Zスコア</a></li><li><a href="#113-iqrmad">11.3 IQRとMAD</a></li><li><a href="#114-hampel">11.4 Hampelの窓を正しく計算する</a></li><li><a href="#code11">実行するコードと結果</a></li><li><a href="#115">11.5 多変量へ進む前に</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">外れ値の検出と判定</h1>
+<h2 id="_2">学習目標</h2>
+<p>Zスコア、IQR、MAD、Hampelの定義と前提を理解し、候補検出と原因判定を分ける。ゼロMADと未評価窓を正しく扱う。</p>
+<h2 id="111">11.1 「珍しい」と「誤っている」は違う</h2>
+<p>外れ値は、選んだ基準やモデルに対して他と離れた観測である。急な異常圧力は珍しくても、正しく測定されているかもしれない。逆に一定の校正ずれは、全点が同じだけ偏るため外れ値として見つからない。外れ値検出器だけで測定の正確さを保証できない。</p>
+<p>圧力教材には二つの人工的な測定スパイクと、実現象を模した圧力パルスがある。全体の分布で検出する方法と、近傍の形から検出する方法を比較する。どの方法が優れているかではなく、何を候補としているかを説明できるようにする。</p>
+<h2 id="112-z">11.2 Zスコア</h2>
+<p>標本平均x̄、標本標準偏差sに対して <code>zᵢ=(xᵢ−x̄)/s</code> とする。標準偏差はこの本では特に断らない限り <code>ddof=1</code>、分母n−1の標本標準偏差を使う。s=0では割り算できないので、全値同一などの別の状態として扱う。</p>
+<p>Zスコアを計算すること自体に正規分布は必要ない。しかし「3を超える確率は小さい」という解釈には分布仮定が必要だ。母平均・母標準偏差が既知の正規分布における±3σの外側は約0.27%だが、同じ小標本から平均と標準偏差を推定した検出に、その確率をそのまま適用しない。時系列の自己相関や繰り返し検査も考慮する。</p>
+<p>極端な値は平均と標準偏差の両方を押し上げ、自分自身を目立たなくする場合がある。これがマスキングの一例である。運転モードが混在した二峰性分布にも、単一のZスコアは適さないことがある。</p>
+<h2 id="113-iqrmad">11.3 IQRとMAD</h2>
+<p>IQRは第3四分位数Q3と第1四分位数Q1の差、<code>IQR=Q3−Q1</code> である。<code>Q1−1.5IQR</code> 未満または <code>Q3+1.5IQR</code> 超を候補とする規則は探索的に用いられるが、物理的な異常確定基準ではない。四分位数の計算法もライブラリや設定で違い得るため、再現性のために環境を固定する。</p>
+<p>MADは <code>median(|xᵢ−median(x)|)</code> と定義する。正規分布の標準偏差と同程度の尺度へ合わせる係数は約1.4826であり、<code>σ̂=1.4826 MAD</code> とする。この係数は任意の分布で標準偏差に一致する保証ではない。SciPyでは <code>scale='normal'</code> がこの尺度調整に対応する。<a href="../references/bibliography.html#r5">R5</a></p>
+<p>例えば <code>[0,1,2,40,4,5,6]</code> の中央値は4、絶対偏差は <code>[4,3,2,36,0,1,2]</code>、MADは2である。外れた40を含んでも、尺度が極端には大きくならないことが分かる。</p>
+<h2 id="114-hampel">11.4 Hampelの窓を正しく計算する</h2>
+<p>Hampelの考え方では、各点の近傍窓に対し中央値mᵢとMADᵢを求め、<code>|xᵢ−mᵢ| &gt; k max(1.4826 MADᵢ, floor)</code> を候補とする。本書のk=3.5とfloor=0.01は演習値であり、単位やノイズレベルに合わせて変える必要がある。floorは量子化などでMADが0になる場合の下限尺度である。</p>
+<p>実装で注意するのは、MADの中心が同じ窓の中央値であることだ。先に全点の局所中央値を求め、それぞれ異なる中央値からの偏差をさらに移動中央値にかける簡便法は、厳密な窓MADと一致しない。本書は窓ごとに中央値とその絶対偏差を計算する。窓が不足する端部や欠損付近は未評価として残す。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code11">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter11/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter11/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+df=load(&#x27;02_pressure&#x27;);x=df[&#x27;測定値&#x27;];h=hampel(x,11,k=3.5,floor=.01)
+z=(x-x.mean())/x.std(ddof=1)
+q1,q3=x.quantile([.25,.75]);iqr=q3-q1
+print(&#x27;Z&gt;3:&#x27;,int(z.abs().gt(3).sum()),&#x27;IQR候補:&#x27;,int(((x&lt;q1-1.5*iqr)|(x&gt;q3+1.5*iqr)).sum()),&#x27;Hampel候補:&#x27;,int(h.candidate.sum()))
+print(&#x27;MAD未評価:&#x27;,int((~h.assessed).sum()))
+plot(11,seconds(df),{&#x27;観測値&#x27;:x,&#x27;局所候補&#x27;:x.where(h.candidate)},&#x27;圧力 [MPa]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">Z&gt;3: 6 IQR候補: 14 Hampel候補: 2
+MAD未評価: 10
+</code></pre></details><figure id="fig11"><img src="../assets/images/chapter11.svg" alt="図11-1 外れ値の検出と判定の検証グラフ"><figcaption>図11-1　外れ値の検出と判定。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="115">11.5 多変量へ進む前に</h2>
+<p><a href="#fig11">図11-1</a>で候補となった点を、運転イベント、圧力の物理範囲、別センサーと照合する。圧力、電流、温度を組み合わせれば単変量では見えない矛盾を検出できるが、単位の違い、同期誤差、モード混在で距離が変わる。</p>
+<p>Mahalanobis距離は共分散を考慮するが、共分散の推定が外れ値に弱い場合や、列がほぼ従属して行列が不安定になる場合がある。Isolation Forestのような方法も、学習データの構成や設定に依存する。高度なモデルを加える前に、列間の物理関係と学習区間の妥当性を確認する。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>三つの検出法の候補数を比較し、9秒と27秒の点がHampelで検出されることを確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>窓を5、11、31に変える。幅のある圧力パルスの扱いと端部の未評価数はどう変わるか。</p>
+<h3 id="_4">実務演習</h3>
+<p>温度が一定の区間で同じ値が100点続き、次の1点だけ0.01 °C変わった。MAD=0の場合、変化点を必ず異常とするべきか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：候補数は掲載された実行結果と照合する。閾値ごとに定義が違うため、候補数の大小だけで優劣を決めない。</p>
+<p>応用：大きい窓は広いパルスを周囲の定常値からの逸脱として捉えやすくなる。完全窓なら端部の未評価は窓半幅ずつ増える。局所定常という前提も弱くなる。</p>
+<p>実務：量子化の1ステップかもしれない。分解能や既知の短期ノイズに基づくfloorを設定し、固定値が通信停止か安定運転かも別に調べる。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>検出器の出力は確認対象である。尺度、窓、分布、モード、未評価範囲を明示し、物理的な証拠で判定する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter10.html">← 第10章</a><a href="chapter12.html">第12章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

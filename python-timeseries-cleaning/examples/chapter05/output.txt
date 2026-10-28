@@ -1,0 +1,4 @@
+time_duplicate    159
+time_reverse        1
+time_invalid        0
+逆転位置: [100]

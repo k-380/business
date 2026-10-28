@@ -1,0 +1,475 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>共通処理の全ソース | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="assets/css/book.css"></head><body data-base="" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="getting-started.html">はじめに・環境構築</a><a href="labs.html">実践補講6題</a><a href="downloads.html">教材ダウンロード</a><a href="glossary.html">用語集・索引</a><a href="references/bibliography.html">参考文献</a><a href="verification.html">検証と未完了項目</a></nav></aside><main id="main"><h1>API・実装の読み方</h1><p>共通関数の全ソース。各章の実行例はこれらを読み込む。原本を上書きするAPIは設けていない。</p><h2>tsclean/core.py</h2><p><a href="tsclean/core.py" download>ファイルを取得</a></p><pre><code class="language-python">&quot;&quot;&quot;Small, inspectable algorithms used by the book and CLI.
+
+All thresholds are teaching settings. A flag is not a diagnosis.
+Time checks always precede sorting; no function deletes observations.
+&quot;&quot;&quot;
+from __future__ import annotations
+import re
+import unicodedata
+import numpy as np
+import pandas as pd
+
+
+def numeric(values, *, unit=&#x27;&#x27;, decimal=&#x27;.&#x27;, thousands=&#x27;&#x27;, missing=(&#x27;&#x27;, &#x27;NA&#x27;, &#x27;---&#x27;, &#x27;欠測&#x27;)):
+    &quot;&quot;&quot;Parse an explicitly declared format; unknown units stay invalid.&quot;&quot;&quot;
+    s = pd.Series(values, copy=True).reset_index(drop=True)
+    text = s.map(lambda v: &#x27;&#x27; if pd.isna(v) else unicodedata.normalize(&#x27;NFKC&#x27;, str(v)).strip())
+    absent = text.isin([unicodedata.normalize(&#x27;NFKC&#x27;, str(x)) for x in missing]) | s.isna()
+    if unit:
+        u = unicodedata.normalize(&#x27;NFKC&#x27;, unit)
+        text = text.str.replace(r&#x27;\s*&#x27; + re.escape(u) + r&#x27;\s*$&#x27;, &#x27;&#x27;, regex=True)
+    if thousands:
+        # Reject malformed grouping rather than turning 1,23 into 123.
+        sep, dec = re.escape(thousands), re.escape(decimal)
+        grouped = text.str.contains(thousands, regex=False)
+        good = text.str.fullmatch(r&#x27;[+-]?\d{1,3}(?:&#x27; + sep + r&#x27;\d{3})+(?:&#x27; + dec + r&#x27;\d+)?&#x27;)
+        text = text.mask(grouped &amp; ~good)
+        text = text.str.replace(thousands, &#x27;&#x27;, regex=False)
+    if decimal != &#x27;.&#x27;:
+        text = text.str.replace(decimal, &#x27;.&#x27;, regex=False)
+    v = pd.to_numeric(text.mask(absent), errors=&#x27;coerce&#x27;).astype(float)
+    v = v.where(np.isfinite(v))
+    return v, absent, (~absent &amp; v.isna())
+
+
+def timestamps(values, *, timezone=&#x27;Asia/Tokyo&#x27;, format=&#x27;ISO8601&#x27;, excel_epoch=None):
+    &quot;&quot;&quot;Localize naive times explicitly. Numeric serials require an epoch.&quot;&quot;&quot;
+    from openpyxl.utils.datetime import from_excel
+    from datetime import datetime
+    from pytz.exceptions import InvalidTimeError
+    result = []
+    for v in values:
+        try:
+            if pd.isna(v) or str(v).strip() == &#x27;&#x27;:
+                result.append(pd.NaT); continue
+            if isinstance(v, (int, float, np.number)):
+                if excel_epoch not in (&#x27;1900&#x27;, &#x27;1904&#x27;):
+                    raise ValueError(&#x27;numeric time without epoch&#x27;)
+                if excel_epoch == &#x27;1900&#x27; and 60 &lt;= float(v) &lt; 61:
+                    raise ValueError(&#x27;fictitious 1900-02-29&#x27;)
+                v = from_excel(float(v), epoch=datetime(1899, 12, 30) if excel_epoch == &#x27;1900&#x27; else datetime(1904, 1, 1))
+            t = pd.Timestamp(v) if not isinstance(v, str) else pd.Timestamp(pd.to_datetime(v, format=format, errors=&#x27;raise&#x27;))
+            t = t.tz_localize(timezone, ambiguous=&#x27;raise&#x27;, nonexistent=&#x27;raise&#x27;) if t.tzinfo is None else t
+            result.append(t.tz_convert(&#x27;UTC&#x27;))
+        except (ValueError, TypeError, OverflowError, InvalidTimeError):
+            result.append(pd.NaT)
+    return pd.Series(pd.to_datetime(result, utc=True))
+
+
+def time_flags(t, expected_dt=None, jitter_fraction=0.1):
+    t = pd.Series(t).reset_index(drop=True)
+    dt = t.diff().dt.total_seconds()
+    return pd.DataFrame({
+        &#x27;time_invalid&#x27;: t.isna(),
+        &#x27;time_duplicate&#x27;: t.notna() &amp; t.duplicated(keep=False),
+        &#x27;time_reverse&#x27;: dt.lt(0),
+        &#x27;interval_irregular&#x27;: (dt.sub(expected_dt).abs().gt(expected_dt*jitter_fraction) &amp; dt.gt(0)) if expected_dt else False,
+        &#x27;dt_seconds&#x27;: dt,
+    })
+
+
+def hampel(values, window=11, k=3.5, floor=0.01):
+    &quot;&quot;&quot;Exact per-window MAD about that window&#x27;s median. Full windows only.&quot;&quot;&quot;
+    x = pd.Series(values, dtype=float).reset_index(drop=True)
+    if window &lt; 3 or window % 2 != 1 or k &lt;= 0 or floor &lt;= 0:
+        raise ValueError(&#x27;odd window &gt;=3, positive k and floor required&#x27;)
+    roll = x.rolling(window, center=True, min_periods=window)
+    med = roll.median()
+    mad = roll.apply(lambda a: np.median(np.abs(a - np.median(a))), raw=True)
+    scale = (1.482602218505602 * mad).clip(lower=floor)
+    assessed = med.notna() &amp; scale.notna()
+    candidate = assessed &amp; (x-med).abs().gt(k*scale)
+    return pd.DataFrame({&#x27;candidate&#x27;: candidate, &#x27;assessed&#x27;: assessed, &#x27;median&#x27;: med, &#x27;scale&#x27;: scale})
+
+
+def freeze_candidates(values, run_length=8):
+    &quot;&quot;&quot;Mark the complete exact-equality run, including its first observation.&quot;&quot;&quot;
+    x = pd.Series(values, dtype=float).reset_index(drop=True)
+    if run_length &lt; 2:
+        raise ValueError(&#x27;run_length &gt;=2 required&#x27;)
+    groups = (x.ne(x.shift()) | x.isna()).cumsum()
+    length = x.groupby(groups).transform(&#x27;size&#x27;)
+    return x.notna() &amp; length.ge(run_length)
+
+
+def interpolate_short(t, values, *, max_gap_seconds, eligible=None, groups=None, anchors_ok=None):
+    &quot;&quot;&quot;Fill entire interior runs only, measured between bounding observations.
+
+    Reject duplicate/reversed/invalid times. Require every missing point and
+    both bounding observations in one consecutive mode segment. Never partially
+    fill a long gap. Invalid tokens and stopped operation are ineligible by CLI.
+    &quot;&quot;&quot;
+    t = pd.Series(t).reset_index(drop=True)
+    x = pd.Series(values, dtype=float).reset_index(drop=True)
+    if len(t) != len(x):
+        raise ValueError(&#x27;length mismatch&#x27;)
+    if max_gap_seconds &lt;= 0 or t.isna().any() or t.duplicated().any() or not t.is_monotonic_increasing:
+        raise ValueError(&#x27;interpolation requires valid, unique, increasing times and positive gap&#x27;)
+    ok = np.ones(len(x), bool) if eligible is None else np.asarray(eligible, dtype=bool)
+    anchor = np.ones(len(x), bool) if anchors_ok is None else np.asarray(anchors_ok, dtype=bool)
+    g = np.zeros(len(x), int) if groups is None else np.asarray(groups)
+    if any(len(a) != len(x) for a in (ok, anchor, g)):
+        raise ValueError(&#x27;mask length mismatch&#x27;)
+    y = x.copy(); filled = pd.Series(False, index=x.index)
+    i = 0
+    while i &lt; len(x):
+        if pd.notna(x.iloc[i]):
+            i += 1; continue
+        a = i
+        while i &lt; len(x) and pd.isna(x.iloc[i]): i += 1
+        b = i
+        if a == 0 or b == len(x): continue
+        span = (t.iloc[b]-t.iloc[a-1]).total_seconds()
+        if not (span &lt;= max_gap_seconds and ok[a:b].all() and anchor[a-1] and anchor[b] and np.all(g[a-1:b+1] == g[a-1])):
+            continue
+        w = (t.iloc[a:b]-t.iloc[a-1]).dt.total_seconds()/span
+        y.iloc[a:b] = x.iloc[a-1] + w*(x.iloc[b]-x.iloc[a-1])
+        filled.iloc[a:b] = True
+    return y, filled
+
+
+def compare(before, after):
+    a, b = pd.Series(before, dtype=float).reset_index(drop=True), pd.Series(after, dtype=float).reset_index(drop=True)
+    if len(a) != len(b): raise ValueError(&#x27;comparison requires matched rows&#x27;)
+    paired = a.notna() &amp; b.notna()
+    def stats(x):
+        return {&#x27;n&#x27;: int(x.count()), &#x27;mean&#x27;: x.mean(), &#x27;std_ddof1&#x27;: x.std(ddof=1), &#x27;min&#x27;: x.min(), &#x27;max&#x27;: x.max()}
+    return {&#x27;before&#x27;: stats(a), &#x27;after&#x27;: stats(b), &#x27;paired_n&#x27;: int(paired.sum()),
+            &#x27;paired_max_abs_change&#x27;: (b[paired]-a[paired]).abs().max(),
+            &#x27;filled_n&#x27;: int((a.isna() &amp; b.notna()).sum())}
+</code></pre><h2>tsclean/app.py</h2><p><a href="tsclean/app.py" download>ファイルを取得</a></p><pre><code class="language-python">from __future__ import annotations
+import argparse
+import hashlib
+import html
+import io
+import json
+import platform
+from zipfile import BadZipFile
+from urllib.parse import quote
+from pathlib import Path
+from datetime import datetime, timezone
+import importlib.metadata
+import numpy as np
+import pandas as pd
+import yaml
+from .core import numeric, timestamps, time_flags, hampel, freeze_candidates, interpolate_short, compare
+
+
+def sha256(path):
+    h = hashlib.sha256()
+    with Path(path).open(&#x27;rb&#x27;) as f:
+        for chunk in iter(lambda: f.read(1024*1024), b&#x27;&#x27;): h.update(chunk)
+    return h.hexdigest()
+
+
+def json_text(value):
+    &quot;&quot;&quot;Strict JSON: unavailable statistics are null rather than NaN.&quot;&quot;&quot;
+    def scrub(v):
+        if isinstance(v,dict):return {str(k):scrub(x) for k,x in v.items()}
+        if isinstance(v,(list,tuple)):return [scrub(x) for x in v]
+        if isinstance(v,(float,np.floating)):return float(v) if np.isfinite(v) else None
+        if isinstance(v,np.integer):return int(v)
+        return v
+    return json.dumps(scrub(value),ensure_ascii=False,indent=2,allow_nan=False,default=str)
+
+
+def validate_config(c):
+    allowed = {&#x27;version&#x27;,&#x27;reader&#x27;,&#x27;time&#x27;,&#x27;columns&#x27;,&#x27;expected_dt&#x27;,&#x27;jitter_fraction&#x27;,&#x27;interpolation&#x27;,&#x27;mode_column&#x27;,&#x27;allowed_modes&#x27;,&#x27;max_rows&#x27;}
+    if not isinstance(c, dict) or set(c)-allowed: raise ValueError(&#x27;unknown configuration key&#x27;)
+    if not isinstance(c.get(&#x27;version&#x27;), str) or not c[&#x27;version&#x27;]: raise ValueError(&#x27;version is required&#x27;)
+    if not isinstance(c.get(&#x27;columns&#x27;), dict) or not c[&#x27;columns&#x27;]: raise ValueError(&#x27;columns is required&#x27;)
+    def keys(obj, allowed, name):
+        if not isinstance(obj,dict) or set(obj)-set(allowed): raise ValueError(&#x27;unknown key in &#x27;+name)
+    keys(c.get(&#x27;reader&#x27;,{}), [&#x27;sheet&#x27;,&#x27;header&#x27;,&#x27;encoding&#x27;,&#x27;sep&#x27;,&#x27;decimal&#x27;,&#x27;thousands&#x27;], &#x27;reader&#x27;)
+    keys(c.get(&#x27;time&#x27;,{}), [&#x27;column&#x27;,&#x27;format&#x27;,&#x27;timezone&#x27;,&#x27;excel_epoch&#x27;], &#x27;time&#x27;)
+    if not c.get(&#x27;time&#x27;,{}).get(&#x27;column&#x27;): raise ValueError(&#x27;time.column required&#x27;)
+    from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+    try: ZoneInfo(c[&#x27;time&#x27;].get(&#x27;timezone&#x27;,&#x27;Asia/Tokyo&#x27;))
+    except (ZoneInfoNotFoundError,TypeError) as exc: raise ValueError(&#x27;unknown timezone&#x27;) from exc
+    if c[&#x27;time&#x27;].get(&#x27;excel_epoch&#x27;) not in (None,&#x27;1900&#x27;,&#x27;1904&#x27;): raise ValueError(&#x27;excel_epoch must be 1900 or 1904 as a string&#x27;)
+    for name, spec in c[&#x27;columns&#x27;].items():
+        keys(spec,[&#x27;source&#x27;,&#x27;unit&#x27;,&#x27;target_unit&#x27;,&#x27;scale&#x27;,&#x27;offset&#x27;,&#x27;missing&#x27;,&#x27;lower&#x27;,&#x27;upper&#x27;,&#x27;window&#x27;,&#x27;k&#x27;,&#x27;floor&#x27;,&#x27;freeze_run&#x27;,&#x27;saturation&#x27;],name)
+        if not isinstance(name,str) or not name or not spec.get(&#x27;source&#x27;): raise ValueError(&#x27;column source required&#x27;)
+        for key in (&#x27;scale&#x27;,&#x27;offset&#x27;,&#x27;lower&#x27;,&#x27;upper&#x27;,&#x27;k&#x27;,&#x27;floor&#x27;):
+            if key in spec and (isinstance(spec[key],bool) or not isinstance(spec[key],(int,float)) or not np.isfinite(spec[key])): raise ValueError(&#x27;finite number required: &#x27;+key)
+        if spec.get(&#x27;scale&#x27;,1)==0: raise ValueError(&#x27;scale cannot be zero&#x27;)
+        if spec.get(&#x27;lower&#x27;,-np.inf)&gt;=spec.get(&#x27;upper&#x27;,np.inf): raise ValueError(&#x27;lower must be smaller than upper&#x27;)
+        if spec.get(&#x27;k&#x27;,3.5)&lt;=0 or spec.get(&#x27;floor&#x27;,0.01)&lt;=0: raise ValueError(&#x27;k and floor must be positive&#x27;)
+        w = spec.get(&#x27;window&#x27;,11)
+        if type(w) is not int or w&lt;3 or w%2!=1: raise ValueError(&#x27;window must be an odd integer &gt;=3&#x27;)
+        if type(spec.get(&#x27;freeze_run&#x27;,8)) is not int or spec.get(&#x27;freeze_run&#x27;,8)&lt;2: raise ValueError(&#x27;freeze_run &gt;=2&#x27;)
+        if &#x27;saturation&#x27; in spec and (not isinstance(spec[&#x27;saturation&#x27;],list) or not all(isinstance(v,(int,float)) and np.isfinite(v) for v in spec[&#x27;saturation&#x27;])): raise ValueError(&#x27;saturation must be finite rails&#x27;)
+    if &#x27;expected_dt&#x27; in c and (not isinstance(c[&#x27;expected_dt&#x27;],(float,int)) or c[&#x27;expected_dt&#x27;]&lt;=0 or not np.isfinite(c[&#x27;expected_dt&#x27;])): raise ValueError(&#x27;positive expected_dt required&#x27;)
+    if not 0 &lt;= c.get(&#x27;jitter_fraction&#x27;,0.1) &lt; 1: raise ValueError(&#x27;jitter_fraction must be in [0,1)&#x27;)
+    if type(c.get(&#x27;max_rows&#x27;,200000)) is not int or not 1&lt;=c.get(&#x27;max_rows&#x27;,200000)&lt;=1000000: raise ValueError(&#x27;max_rows must be 1..1000000&#x27;)
+    p = c.get(&#x27;interpolation&#x27;,{})
+    keys(p,[&#x27;enabled&#x27;,&#x27;max_gap_seconds&#x27;,&#x27;reason&#x27;,&#x27;approved_by&#x27;], &#x27;interpolation&#x27;)
+    if type(p.get(&#x27;enabled&#x27;,False)) is not bool: raise ValueError(&#x27;enabled must be Boolean&#x27;)
+    if p.get(&#x27;enabled&#x27;,False):
+        if not p.get(&#x27;reason&#x27;) or not p.get(&#x27;approved_by&#x27;) or not isinstance(p.get(&#x27;max_gap_seconds&#x27;),(float,int)) or not np.isfinite(p[&#x27;max_gap_seconds&#x27;]) or p[&#x27;max_gap_seconds&#x27;]&lt;=0:
+            raise ValueError(&#x27;interpolation requires reason, approved_by and positive max_gap_seconds&#x27;)
+    if &#x27;allowed_modes&#x27; in c and (not c.get(&#x27;mode_column&#x27;) or not isinstance(c[&#x27;allowed_modes&#x27;],list)): raise ValueError(&#x27;allowed_modes requires mode_column&#x27;)
+    return c
+
+
+def read_input(path,c):
+    r = c.get(&#x27;reader&#x27;,{}); header = r.get(&#x27;header&#x27;,0)
+    if type(header) is not int or header&lt;0: raise ValueError(&#x27;reader.header must be a nonnegative integer&#x27;)
+    limit = c.get(&#x27;max_rows&#x27;,200000)
+    def unique_headers(values):
+        nonempty=[str(x) for x in values if x is not None and str(x).strip()!=&#x27;&#x27;]
+        if len(nonempty)!=len(set(nonempty)):raise ValueError(&#x27;duplicate column headers; choose an explicit input adapter&#x27;)
+    if path.suffix.lower()==&#x27;.csv&#x27;:
+        import csv
+        sep=r.get(&#x27;sep&#x27;,&#x27;,&#x27;)
+        if not isinstance(sep,str) or len(sep)!=1:raise ValueError(&#x27;CSV separator must be one character&#x27;)
+        with path.open(encoding=r.get(&#x27;encoding&#x27;,&#x27;utf-8-sig&#x27;),newline=&#x27;&#x27;) as f:
+            rows=csv.reader(f,delimiter=sep)
+            for _ in range(header+1):
+                names=next(rows,None)
+                if names is None:raise ValueError(&#x27;missing CSV header&#x27;)
+            unique_headers(names)
+        # Strings and empty strings survive ingestion; parsing happens separately.
+        frames={&#x27;CSV&#x27;:pd.read_csv(path,header=header,dtype=str,keep_default_na=False,skip_blank_lines=False,encoding=r.get(&#x27;encoding&#x27;,&#x27;utf-8-sig&#x27;),sep=sep,nrows=limit+1)}
+    elif path.suffix.lower()==&#x27;.xlsx&#x27;:
+        frames = pd.read_excel(path,sheet_name=r.get(&#x27;sheet&#x27;,0),header=header,dtype=object,keep_default_na=False,nrows=limit+1,engine=&#x27;openpyxl&#x27;)
+        if not isinstance(frames,dict): frames={str(r.get(&#x27;sheet&#x27;,0)):frames}
+        from openpyxl import load_workbook
+        wb=load_workbook(path,read_only=True,data_only=True)
+        try:
+            selected=r.get(&#x27;sheet&#x27;,0)
+            for sheet in frames:
+                ws=wb.worksheets[selected] if type(selected) is int else wb.worksheets[sheet] if type(sheet) is int else wb[sheet]
+                unique_headers(next(ws.iter_rows(min_row=header+1,max_row=header+1,values_only=True),()))
+        finally:wb.close()
+    else: raise ValueError(&#x27;only .csv and .xlsx are supported&#x27;)
+    for sheet,df in frames.items():
+        if len(df)&gt;limit: raise ValueError(&#x27;max_rows exceeded; split input using documented streaming workflow&#x27;)
+        if df.empty: raise ValueError(&#x27;empty input&#x27;)
+    return frames
+
+
+def process_frame(df,c,source=&#x27;&#x27;,sheet=&#x27;&#x27;):
+    c=validate_config(c); df=df.reset_index(drop=True)
+    if df.empty: raise ValueError(&#x27;empty input&#x27;)
+    required=[c[&#x27;time&#x27;][&#x27;column&#x27;]]+[s[&#x27;source&#x27;] for s in c[&#x27;columns&#x27;].values()]
+    if c.get(&#x27;mode_column&#x27;): required.append(c[&#x27;mode_column&#x27;])
+    if any(x not in df.columns for x in required): raise ValueError(&#x27;missing required columns: &#x27;+str(set(required)-set(df.columns)))
+    header=c.get(&#x27;reader&#x27;,{}).get(&#x27;header&#x27;,0)
+    provenance=pd.DataFrame({&#x27;source_file&#x27;:source,&#x27;sheet&#x27;:sheet,&#x27;source_row&#x27;:np.arange(len(df))+header+2,&#x27;source_row_kind&#x27;:&#x27;logical_csv_record&#x27; if sheet==&#x27;CSV&#x27; else &#x27;worksheet_row&#x27; if sheet else &#x27;input_table_row&#x27;,&#x27;record_index&#x27;:np.arange(len(df))})
+    time_spec={k:v for k,v in c[&#x27;time&#x27;].items() if k!=&#x27;column&#x27;}
+    t=timestamps(df[c[&#x27;time&#x27;][&#x27;column&#x27;]],**time_spec)
+    tf=time_flags(t,c.get(&#x27;expected_dt&#x27;),c.get(&#x27;jitter_fraction&#x27;,0.1))
+    out=provenance.copy(); out[&#x27;time_raw&#x27;]=df[c[&#x27;time&#x27;][&#x27;column&#x27;]]; out[&#x27;time_utc&#x27;]=t.map(lambda x: x.isoformat() if pd.notna(x) else &#x27;&#x27;)
+    flags=pd.concat([provenance,tf],axis=1)
+    warnings=[]; logs=[]; summaries={}
+    if tf[[&#x27;time_invalid&#x27;,&#x27;time_duplicate&#x27;,&#x27;time_reverse&#x27;]].any().any(): warnings.append(&#x27;TIME_AXIS_REVIEW: interpolation disabled; original acquisition order preserved&#x27;)
+    modes=df[c[&#x27;mode_column&#x27;]].astype(str) if c.get(&#x27;mode_column&#x27;) else pd.Series(&#x27;all&#x27;,index=df.index)
+    # Segment identity changes at every mode transition, including A -&gt; B -&gt; A.
+    breaks=modes.ne(modes.shift()) | tf[&#x27;time_invalid&#x27;] | tf[&#x27;time_reverse&#x27;] | tf[&#x27;time_duplicate&#x27;] | tf[&#x27;interval_irregular&#x27;]
+    segments=breaks.cumsum()
+    r=c.get(&#x27;reader&#x27;,{})
+    for name,s in c[&#x27;columns&#x27;].items():
+        raw=df[s[&#x27;source&#x27;]]
+        v,missing,invalid=numeric(raw,unit=s.get(&#x27;unit&#x27;,&#x27;&#x27;),decimal=r.get(&#x27;decimal&#x27;,&#x27;.&#x27;),thousands=r.get(&#x27;thousands&#x27;,&#x27;&#x27;),missing=s.get(&#x27;missing&#x27;,[&#x27;&#x27;,&#x27;NA&#x27;,&#x27;---&#x27;,&#x27;欠測&#x27;]))
+        with np.errstate(over=&#x27;ignore&#x27;,invalid=&#x27;ignore&#x27;):
+            v=v*s.get(&#x27;scale&#x27;,1)+s.get(&#x27;offset&#x27;,0)
+        overflow=v.notna() &amp; ~np.isfinite(v)
+        invalid=invalid|overflow;v=v.where(np.isfinite(v))
+        h=pd.DataFrame({&#x27;candidate&#x27;:False,&#x27;assessed&#x27;:False},index=v.index)
+        freeze=pd.Series(False,index=v.index)
+        for _,idx in segments.groupby(segments).groups.items():
+            hr=hampel(v.loc[idx].to_numpy(),window=s.get(&#x27;window&#x27;,11),k=s.get(&#x27;k&#x27;,3.5),floor=s.get(&#x27;floor&#x27;,0.01))
+            h.loc[idx,[&#x27;candidate&#x27;,&#x27;assessed&#x27;]]=hr[[&#x27;candidate&#x27;,&#x27;assessed&#x27;]].to_numpy()
+            freeze.loc[idx]=freeze_candidates(v.loc[idx].to_numpy(),s.get(&#x27;freeze_run&#x27;,8)).to_numpy()
+        bounds=v.lt(s.get(&#x27;lower&#x27;,-np.inf)) | v.gt(s.get(&#x27;upper&#x27;,np.inf))
+        saturation=v.isin(s.get(&#x27;saturation&#x27;,[]))
+        # Parenthesize the numeric sign test separately (Boolean precedence).
+        spike=h[&#x27;candidate&#x27;] &amp; v.shift().notna() &amp; v.shift(-1).notna() &amp; (((v-v.shift())*(v.shift(-1)-v))&lt;0)
+        if v.notna().sum()==0: warnings.append(name+&#x27;: NO_VALID_VALUES&#x27;)
+        elif not h[&#x27;assessed&#x27;].any(): warnings.append(name+&#x27;: HAMPEL_NOT_ASSESSED&#x27;)
+        y=v.copy(); filled=pd.Series(False,index=v.index)
+        interp=c.get(&#x27;interpolation&#x27;,{})
+        if interp.get(&#x27;enabled&#x27;,False) and not tf[[&#x27;time_invalid&#x27;,&#x27;time_duplicate&#x27;,&#x27;time_reverse&#x27;]].any().any():
+            eligible=missing &amp; modes.isin(c.get(&#x27;allowed_modes&#x27;,modes.unique().tolist()))
+            anchors=~(h[&#x27;candidate&#x27;]|bounds|saturation|freeze)
+            y,filled=interpolate_short(t,v,max_gap_seconds=interp[&#x27;max_gap_seconds&#x27;],eligible=eligible,groups=segments,anchors_ok=anchors)
+            for i in np.flatnonzero(filled):
+                logs.append({&#x27;source_file&#x27;:source,&#x27;sheet&#x27;:sheet,&#x27;source_row&#x27;:int(provenance.loc[i,&#x27;source_row&#x27;]),&#x27;column&#x27;:name,&#x27;rule&#x27;:&#x27;short_gap_linear&#x27;,&#x27;before&#x27;:str(raw.iloc[i]),&#x27;after&#x27;:float(y.iloc[i]),&#x27;reason&#x27;:interp[&#x27;reason&#x27;],&#x27;approved_by&#x27;:interp[&#x27;approved_by&#x27;]})
+        out[name+&#x27;__raw&#x27;]=raw; out[name+&#x27;__numeric&#x27;]=v; out[name+&#x27;__analysis&#x27;]=y
+        out[name+&#x27;__origin&#x27;]=np.select([filled,invalid,missing],[&#x27;interpolated&#x27;,&#x27;invalid_token&#x27;,&#x27;missing&#x27;],default=&#x27;observed&#x27;)
+        out[name+&#x27;__unit&#x27;]=s.get(&#x27;target_unit&#x27;,s.get(&#x27;unit&#x27;,&#x27;&#x27;))
+        for label,mask in {&#x27;missing&#x27;:missing,&#x27;invalid_token&#x27;:invalid,&#x27;bounds_candidate&#x27;:bounds,&#x27;outlier_candidate&#x27;:h[&#x27;candidate&#x27;],&#x27;hampel_assessed&#x27;:h[&#x27;assessed&#x27;],&#x27;spike_candidate&#x27;:spike,&#x27;freeze_candidate&#x27;:freeze,&#x27;saturation_candidate&#x27;:saturation,&#x27;interpolated&#x27;:filled}.items():
+            flags[name+&#x27;__&#x27;+label]=mask
+        summaries[name]=compare(v,y)
+    candidate_cols=[x for x in flags if x.endswith(&#x27;_candidate&#x27;)]
+    problem_cols=candidate_cols+[x for x in flags if x.endswith(&#x27;__missing&#x27;) or x.endswith(&#x27;__invalid_token&#x27;)]+[&#x27;time_invalid&#x27;,&#x27;time_duplicate&#x27;,&#x27;time_reverse&#x27;,&#x27;interval_irregular&#x27;]
+    status=&#x27;REVIEW_REQUIRED&#x27; if flags[problem_cols].any().any() or warnings else &#x27;NO_RULE_VIOLATION_DETECTED&#x27;
+    metrics={}
+    for name in c[&#x27;columns&#x27;]:
+        assessed=int(flags[name+&#x27;__hampel_assessed&#x27;].sum())
+        candidates=int(flags[name+&#x27;__outlier_candidate&#x27;].sum())
+        metrics[name]={&#x27;denominator_received_rows&#x27;:len(df),&#x27;missing_fraction_received_rows&#x27;:float(flags[name+&#x27;__missing&#x27;].mean()),&#x27;invalid_fraction_received_rows&#x27;:float(flags[name+&#x27;__invalid_token&#x27;].mean()),&#x27;hampel_assessed_n&#x27;:assessed,&#x27;hampel_unassessed_n&#x27;:len(df)-assessed,&#x27;candidate_fraction_assessed&#x27;:candidates/assessed if assessed else None}
+    return out,flags,logs,{&#x27;status&#x27;:status,&#x27;rows&#x27;:len(df),&#x27;warnings&#x27;:warnings,&#x27;statistics&#x27;:summaries,&#x27;quality_metrics&#x27;:metrics,&#x27;flag_counts&#x27;:{x:int(flags[x].sum()) for x in flags if flags[x].dtype==bool}}
+
+
+def excel_safe(df,path,sheet_name=&#x27;data&#x27;):
+    with pd.ExcelWriter(path,engine=&#x27;openpyxl&#x27;) as w:
+        df.to_excel(w,index=False,sheet_name=sheet_name)
+        ws=w.sheets[sheet_name];ws.freeze_panes=&#x27;A2&#x27;;ws.auto_filter.ref=ws.dimensions
+        from openpyxl.styles import Font, PatternFill
+        for cell in ws[1]: cell.font=Font(bold=True,color=&#x27;FFFFFF&#x27;);cell.fill=PatternFill(&#x27;solid&#x27;,fgColor=&#x27;24576B&#x27;)
+        from openpyxl.utils import get_column_letter
+        for i in range(1,len(df.columns)+1):ws.column_dimensions[get_column_letter(i)].width=24
+        # Prevent a raw string beginning &#x27;=&#x27; from becoming a workbook formula.
+        for row in ws:
+            for cell in row:
+                if cell.data_type==&#x27;f&#x27;:cell.data_type=&#x27;s&#x27;
+
+
+def svg_comparison(out,columns):
+    import matplotlib
+    matplotlib.use(&#x27;Agg&#x27;)
+    from matplotlib import pyplot as plt,font_manager
+    import importlib.util
+    spec=importlib.util.find_spec(&#x27;japanize_matplotlib&#x27;)
+    if spec:
+        font_manager.fontManager.addfont(str(Path(spec.origin).parent/&#x27;fonts/ipaexg.ttf&#x27;))
+        plt.rcParams[&#x27;font.family&#x27;]=&#x27;IPAexGothic&#x27;
+    plt.rcParams.update({&#x27;svg.fonttype&#x27;:&#x27;path&#x27;,&#x27;axes.unicode_minus&#x27;:False})
+    fig,axs=plt.subplots(len(columns),1,figsize=(10,3*len(columns)),squeeze=False)
+    for ax,name in zip(axs[:,0],columns):
+        # Draw all values: decimating a quality plot can hide a narrow peak.
+        ax.plot(out[name+&#x27;__numeric&#x27;],color=&#x27;#596a7a&#x27;,lw=1,label=&#x27;元の数値&#x27;)
+        ax.plot(out[name+&#x27;__analysis&#x27;],&#x27;--&#x27;,color=&#x27;#b04924&#x27;,lw=1,label=&#x27;解析用&#x27;)
+        mask=out[name+&#x27;__origin&#x27;].eq(&#x27;interpolated&#x27;)
+        ax.scatter(out.index[mask],out.loc[mask,name+&#x27;__analysis&#x27;],marker=&#x27;x&#x27;,color=&#x27;#b04924&#x27;,label=&#x27;補間値&#x27;)
+        ax.set(xlabel=&#x27;記録番号（取得順）&#x27;,ylabel=f&quot;{name} [{out[name+&#x27;__unit&#x27;].iloc[0]}]&quot;);ax.legend();ax.grid(alpha=.2)
+    fig.tight_layout();f=io.StringIO();fig.savefig(f,format=&#x27;svg&#x27;);plt.close(fig)
+    return f.getvalue()[f.getvalue().index(&#x27;&lt;svg&#x27;):]
+
+
+def write_result(folder,out,flags,logs,summary,c,meta):
+    folder=Path(folder); folder.mkdir(parents=True,exist_ok=False)
+    excel_safe(out,folder/&#x27;clean_data.xlsx&#x27;);excel_safe(flags,folder/&#x27;quality_flags.xlsx&#x27;,&#x27;flags&#x27;)
+    logcols=[&#x27;run_utc&#x27;,&#x27;source_sha256&#x27;,&#x27;config_sha256&#x27;,&#x27;config_version&#x27;,&#x27;source_file&#x27;,&#x27;sheet&#x27;,&#x27;source_row&#x27;,&#x27;column&#x27;,&#x27;rule&#x27;,&#x27;before&#x27;,&#x27;after&#x27;,&#x27;reason&#x27;,&#x27;approved_by&#x27;]
+    for row in logs: row.update({k:meta[k] for k in logcols[:4]})
+    if not logs:logs=[{**{k:meta[k] for k in logcols[:4]},&#x27;source_file&#x27;:out.source_file.iloc[0],&#x27;sheet&#x27;:out.sheet.iloc[0],&#x27;rule&#x27;:&#x27;inspection_only&#x27;,&#x27;reason&#x27;:&#x27;No measurement values changed&#x27;}]
+    pd.DataFrame(logs).reindex(columns=logcols).to_csv(folder/&#x27;processing_log.csv&#x27;,index=False,encoding=&#x27;utf-8-sig&#x27;)
+    (folder/&#x27;run_manifest.json&#x27;).write_text(json_text({&#x27;summary&#x27;:summary,&#x27;environment&#x27;:meta,&#x27;effective_rules&#x27;:c}),encoding=&#x27;utf-8&#x27;)
+    boolcols=[x for x in flags if flags[x].dtype==bool and not x.endswith(&#x27;__hampel_assessed&#x27;)]
+    candidates=flags.loc[flags[boolcols].any(axis=1)].head(200)
+    body=f&quot;&quot;&quot;&lt;!doctype html&gt;&lt;html lang=&quot;ja&quot;&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;測定データ品質レポート&lt;/title&gt;&lt;style&gt;body{{max-width:1100px;margin:auto;padding:2rem;font:16px/1.8 sans-serif}}svg{{max-width:100%;height:auto}}pre{{white-space:pre-wrap;overflow-wrap:anywhere}}.table{{overflow:auto}}table{{border-collapse:collapse;font-size:12px}}td,th{{border:1px solid #ccc;padding:5px}}@media print{{.table{{overflow:visible}}}}&lt;/style&gt;&lt;h1&gt;測定データ品質レポート&lt;/h1&gt;&lt;p&gt;判定：{html.escape(summary[&#x27;status&#x27;])}。フラグは原因を確定しません。未検査項目を含み、合格保証ではありません。&lt;/p&gt;&lt;h2&gt;品質指標・警告&lt;/h2&gt;&lt;pre&gt;{html.escape(json.dumps(summary,ensure_ascii=False,indent=2,default=str))}&lt;/pre&gt;&lt;h2&gt;処理前後&lt;/h2&gt;{svg_comparison(out,c[&#x27;columns&#x27;])}&lt;h2&gt;要確認行（先頭200行。全件はquality_flags.xlsx）&lt;/h2&gt;&lt;div class=&quot;table&quot;&gt;{candidates.to_html(index=False,escape=True)}&lt;/div&gt;&lt;h2&gt;適用ルール&lt;/h2&gt;&lt;pre&gt;{html.escape(yaml.safe_dump(c,allow_unicode=True,sort_keys=False))}&lt;/pre&gt;&lt;h2&gt;追跡情報&lt;/h2&gt;&lt;pre&gt;{html.escape(json.dumps(meta,ensure_ascii=False,indent=2))}&lt;/pre&gt;&lt;/html&gt;&quot;&quot;&quot;
+    (folder/&#x27;quality_report.html&#x27;).write_text(body,encoding=&#x27;utf-8&#x27;)
+
+
+def main(argv=None):
+    p=argparse.ArgumentParser(description=&#x27;Preserve data and detect quality candidates; all thresholds are project-specific.&#x27;)
+    p.add_argument(&#x27;--input&#x27;,nargs=&#x27;+&#x27;,required=True);p.add_argument(&#x27;--config&#x27;,required=True);p.add_argument(&#x27;--output&#x27;,required=True)
+    args=p.parse_args(argv)
+    cfgpath=Path(args.config); c=validate_config(yaml.safe_load(cfgpath.read_text(encoding=&#x27;utf-8&#x27;)))
+    paths=[]
+    for item in args.input:
+        path=Path(item)
+        paths.extend(sorted(x for x in path.iterdir() if x.suffix.lower() in (&#x27;.csv&#x27;,&#x27;.xlsx&#x27;)) if path.is_dir() else [path])
+    paths=list(dict.fromkeys(x.resolve() for x in paths))
+    if not paths:raise ValueError(&#x27;no input files&#x27;)
+    root=Path(args.output).resolve()
+    if root.exists() and any(root.iterdir()):raise ValueError(&#x27;output must be a new or empty directory; previous results are never overwritten&#x27;)
+    if any(root==x or root in x.parents for x in paths+[cfgpath.resolve()]):raise ValueError(&#x27;input/config cannot be inside output&#x27;)
+    root.mkdir(parents=True,exist_ok=True)
+    errors=[];results=[];run=datetime.now(timezone.utc).isoformat()
+    for index,path in enumerate(paths):
+        try:
+            frames=read_input(path,c)
+            for sheet_index,(sheet,frame) in enumerate(frames.items()):
+                out,flags,logs,summary=process_frame(frame,c,str(path),sheet)
+                meta={&#x27;run_utc&#x27;:run,&#x27;source_sha256&#x27;:sha256(path),&#x27;config_sha256&#x27;:sha256(cfgpath),&#x27;config_version&#x27;:c[&#x27;version&#x27;],&#x27;python&#x27;:platform.python_version(),&#x27;packages&#x27;:{name:importlib.metadata.version(name) for name in [&#x27;numpy&#x27;,&#x27;pandas&#x27;,&#x27;scipy&#x27;,&#x27;matplotlib&#x27;,&#x27;openpyxl&#x27;,&#x27;PyYAML&#x27;]}}
+                dest=root/f&#x27;{index:03d}_{sheet_index:02d}_{path.stem}&#x27;
+                write_result(dest,out,flags,logs,summary,c,meta)
+                results.append({&#x27;file&#x27;:str(path),&#x27;sheet&#x27;:sheet,&#x27;folder&#x27;:dest.name,&#x27;status&#x27;:summary[&#x27;status&#x27;]})
+        except (ValueError,OSError,KeyError,TypeError,BadZipFile) as exc:
+            errors.append({&#x27;file&#x27;:str(path),&#x27;error&#x27;:str(exc)})
+    (root/&#x27;batch_summary.json&#x27;).write_text(json.dumps({&#x27;results&#x27;:results,&#x27;errors&#x27;:errors},ensure_ascii=False,indent=2),encoding=&#x27;utf-8&#x27;)
+    links=&#x27;&#x27;.join(f&#x27;&lt;li&gt;&lt;a href=&quot;{quote(x[&quot;folder&quot;],safe=&quot;&quot;)}/quality_report.html&quot;&gt;{html.escape(x[&quot;file&quot;])} / {html.escape(x[&quot;sheet&quot;])}&lt;/a&gt; {x[&quot;status&quot;]}&lt;/li&gt;&#x27; for x in results)
+    (root/&#x27;index.html&#x27;).write_text(&#x27;&lt;!doctype html&gt;&lt;html lang=&quot;ja&quot;&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;title&gt;処理一覧&lt;/title&gt;&lt;h1&gt;処理一覧&lt;/h1&gt;&lt;ul&gt;&#x27;+links+&#x27;&lt;/ul&gt;&lt;h2&gt;エラー（原本は移動しません）&lt;/h2&gt;&lt;pre&gt;&#x27;+html.escape(json.dumps(errors,ensure_ascii=False,indent=2))+&#x27;&lt;/pre&gt;&lt;/html&gt;&#x27;,encoding=&#x27;utf-8&#x27;)
+    print(json.dumps({&#x27;processed&#x27;:len(results),&#x27;errors&#x27;:len(errors)},ensure_ascii=False))
+    return 2 if errors else 0
+</code></pre><h2>tsclean/streaming.py</h2><p><a href="tsclean/streaming.py" download>ファイルを取得</a></p><pre><code class="language-python">&quot;&quot;&quot;Teaching extensions, separate from the workbook-oriented CLI.&quot;&quot;&quot;
+import numpy as np
+import pandas as pd
+from .core import hampel
+
+def chunked_hampel(values,chunk_size=1024,window=11,k=3.5,floor=.01):
+    &quot;&quot;&quot;Overlap half a window; emit only rows owned by the current chunk.
+    This array example verifies boundaries, not out-of-core file reading.
+    &quot;&quot;&quot;
+    x=np.asarray(values,dtype=float)
+    if type(chunk_size) is not int or chunk_size&lt;1:raise ValueError(&#x27;positive chunk_size&#x27;)
+    half=window//2;pieces=[]
+    for start in range(0,len(x),chunk_size):
+        end=min(len(x),start+chunk_size);lo=max(0,start-half);hi=min(len(x),end+half)
+        h=hampel(x[lo:hi],window,k,floor)
+        pieces.append(h.iloc[start-lo:end-lo])
+    return pd.concat(pieces,ignore_index=True) if pieces else hampel([],window,k,floor)
+
+def stream_interpolate(records,max_gap_seconds):
+    &quot;&quot;&quot;Input (time,value,segment); output adds was_filled; preserve order.
+    Missing values here are all eligible. Caller excludes invalid tokens,
+    stopped states and suspect anchors. Unresolved gaps require buffering.
+    This is not a constant-memory promise for arbitrarily long missing runs.
+    &quot;&quot;&quot;
+    if not np.isfinite(max_gap_seconds) or max_gap_seconds&lt;=0:raise ValueError(&#x27;positive finite max_gap_seconds&#x27;)
+    previous_time=None;anchor=None;pending=[]
+    for t,x,g in records:
+        t=pd.Timestamp(t);x=float(x)
+        if pd.isna(t) or (previous_time is not None and t&lt;=previous_time):raise ValueError(&#x27;valid strictly increasing times required&#x27;)
+        previous_time=t
+        if np.isinf(x):raise ValueError(&#x27;infinite observation&#x27;)
+        if np.isnan(x):pending.append((t,x,g));continue
+        if pending:
+            fill=anchor is not None and (t-anchor[0]).total_seconds()&lt;=max_gap_seconds and all(row[2]==g==anchor[2] for row in pending)
+            for tm,missing,gm in pending:
+                value=anchor[1]+(x-anchor[1])*(tm-anchor[0]).total_seconds()/(t-anchor[0]).total_seconds() if fill else missing
+                yield tm,value,gm,fill
+            pending=[]
+        yield t,x,g,False
+        anchor=(t,x,g)
+    for t,x,g in pending:yield t,x,g,False
+</code></pre><h2>examples/common.py</h2><p><a href="examples/common.py" download>ファイルを取得</a></p><pre><code class="language-python">&quot;&quot;&quot;Shared plotting and fixture access; read alongside each chapter&#x27;s run.py.&quot;&quot;&quot;
+from pathlib import Path
+import importlib.util
+import numpy as np
+import pandas as pd
+import matplotlib
+matplotlib.use(&#x27;Agg&#x27;)
+from matplotlib import pyplot as plt, font_manager
+ROOT=Path(__file__).resolve().parents[1]
+spec=importlib.util.find_spec(&#x27;japanize_matplotlib&#x27;)
+if spec:
+    font=Path(spec.origin).parent/&#x27;fonts/ipaexg.ttf&#x27;
+    font_manager.fontManager.addfont(str(font))
+    plt.rcParams[&#x27;font.family&#x27;]=&#x27;IPAexGothic&#x27;
+plt.rcParams.update({&#x27;svg.fonttype&#x27;:&#x27;path&#x27;,&#x27;axes.unicode_minus&#x27;:False,&#x27;font.size&#x27;:11})
+
+def load(name):return pd.read_csv(ROOT/&#x27;datasets/raw&#x27;/f&#x27;{name}.csv&#x27;)
+def truth(name):return pd.read_csv(ROOT/&#x27;datasets/expected&#x27;/f&#x27;{name}_truth.csv&#x27;)
+def seconds(df):
+    t=pd.to_datetime(df[&#x27;時刻&#x27;],utc=True,format=&#x27;ISO8601&#x27;)
+    return (t-t.iloc[0]).dt.total_seconds().to_numpy()
+def plot(ch,x,series,ylabel,xlabel=&#x27;経過時間 [s]&#x27;,title=None):
+    fig,ax=plt.subplots(figsize=(9,4))
+    styles=[&#x27;-&#x27;,&#x27;--&#x27;,&#x27;:&#x27;,&#x27;-.&#x27;];markers=[None,None,&#x27;x&#x27;,&#x27;o&#x27;]
+    for i,(label,y) in enumerate(series.items()):
+        ax.plot(x,y,linestyle=styles[i%4],marker=markers[i%4],markevery=max(1,len(x)//30),label=label,lw=1.35)
+    ax.set(xlabel=xlabel,ylabel=ylabel,title=title or f&#x27;図{ch}-1　処理結果の比較&#x27;);ax.grid(alpha=.2);ax.legend();fig.tight_layout()
+    dest=ROOT/&#x27;assets/images&#x27;/f&#x27;chapter{ch:02d}.svg&#x27;
+    temporary=dest.with_suffix(&#x27;.svg.tmp&#x27;)
+    fig.savefig(temporary,format=&#x27;svg&#x27;,metadata={&#x27;Date&#x27;:None});plt.close(fig)
+    temporary.replace(dest)
+    return dest
+</code></pre><h2>clean_timeseries.py</h2><p><a href="clean_timeseries.py" download>ファイルを取得</a></p><pre><code class="language-python">&quot;&quot;&quot;Run from any directory; paths supplied by the reader are relative to cwd.&quot;&quot;&quot;
+from tsclean.app import main
+if __name__ == &#x27;__main__&#x27;:
+    raise SystemExit(main())
+</code></pre><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="assets/js/search-index.js"></script><script src="assets/js/book.js"></script></body></html>

@@ -1,0 +1,47 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第7章 リサンプリングと補間 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="current" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第II部　時間軸を修復する / 第07章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#71">7.1 点数を揃える前に目的を決める</a></li><li><a href="#72">7.2 線形補間の式</a></li><li><a href="#73">7.3 エイリアシングを数値で理解する</a></li><li><a href="#74">7.4 実装と境界</a></li><li><a href="#code07">実行するコードと結果</a></li><li><a href="#75-130-hz">7.5 130 Hzを残したい場合</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">リサンプリングと補間</h1>
+<h2 id="_2">学習目標</h2>
+<p>アップサンプリング、ダウンサンプリング、集約を区別する。折り返しを数値例で説明し、帯域を落とすことと測定品質を改善することを混同しない。</p>
+<h2 id="71">7.1 点数を揃える前に目的を決める</h2>
+<p>1秒ごとの温度と0.001秒ごとの振動を同じ表へ入れたい。単純に両方を1秒周期にすれば扱いやすいが、振動波形はほとんど失われる。目的が熱状態と振動の強さの比較なら、1秒ごとのRMSやピークを作る方が適切かもしれない。目的が波形位相の比較なら、1秒周期への変更自体が不適切である。</p>
+<p>アップサンプリングは、観測の間へ新しい時刻を置くことだ。補間値を100倍増やしても、独立な測定情報は増えない。ダウンサンプリングは時刻間隔を広げることで、維持できる周波数帯域が狭くなる。集約は区間内の平均・最大・RMSなどを代表値にすることであり、瞬時値のサンプリングとは意味が異なる。</p>
+<h2 id="72">7.2 線形補間の式</h2>
+<p>時刻t₀、t₁の観測x₀、x₁に挟まれたtでは、<code>x̂(t)=x₀+(x₁−x₀)(t−t₀)/(t₁−t₀)</code> とする。0秒で20 °C、10秒で30 °Cなら、2秒の補間値は22 °Cだ。これは区間内が直線で変化したという仮定であり、実際に22 °Cを測定したという意味ではない。</p>
+<p>行番号を等間隔として線形補間する方法と、実時刻で補間する方法は違う。0、1、10秒の三点で中央が欠損なら、両端が0と10の場合、行番号の補間は5、時刻の補間は1となる。本書の補間関数は実時間を使う。</p>
+<p>前方補完は最後の状態が継続したと仮定するため、運転モードや設定値に向く場合がある。温度の急上昇中に前方補完すれば、上昇を遅らせる。スプラインや高次多項式は滑らかでも、観測範囲を越える値や振動を作ることがある。単調性を保存する補間も、未知の急変を再現する保証は持たない。</p>
+<h2 id="73">7.3 エイリアシングを数値で理解する</h2>
+<p>1000 Hzで取得した130 Hz成分を、4点に1点だけ抜いて250 Hzへ変える。新しいナイキスト周波数は125 Hzなので、130 Hzは120 Hzへ折り返す。370 Hz成分も250 Hzとの差で120 Hzに現れる。もとは異なる二つの成分が同じ周波数へ重なり、後から分離できなくなる。</p>
+<p>単純間引き後のスペクトルに120 Hzの山があっても、それを新しい共振と解釈してはいけない。エイリアシングを防ぐには、間引く前に新しいナイキスト周波数を超える帯域を十分に減衰させる必要がある。デジタル処理で防げるのは後段の間引きによる折り返しであり、ADC取得時点で既に折り返した成分は元に戻せない。</p>
+<h2 id="74">7.4 実装と境界</h2>
+<p>SciPyの <code>resample_poly(x, 1, 4)</code> は、低域通過FIR処理を含むレート変換を行う。<a href="../references/bibliography.html#r4">R4</a> 本章は等間隔、欠損なしの加速度データに適用する。非等間隔やNaNの入った値をそのまま渡す前提ではない。出力の境界は信号の外側をどう仮定するかに依存するので、全区間の統計だけでなく端部を確認する。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code07">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter07/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter07/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+from scipy.signal import resample_poly
+df=load(&#x27;03_vibration&#x27;);x=df[&#x27;測定値&#x27;].to_numpy()
+y=resample_poly(x,1,4);naive=x[::4]
+f=np.fft.rfftfreq(len(y),d=.004)
+amp=lambda z:2*np.abs(np.fft.rfft(z))/len(z)
+print(&#x27;入力/出力行数:&#x27;,len(x),len(y),&#x27;出力fs:&#x27;,250)
+print(&#x27;130 Hz成分は新Nyquist 125 Hzを超えるため保存できない。&#x27;)
+plot(7,f,{&#x27;単純間引き&#x27;:amp(naive),&#x27;低域通過後に間引き&#x27;:amp(y)},&#x27;片側振幅 [m/s²]&#x27;,xlabel=&#x27;周波数 [Hz]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">入力/出力行数: 4000 1000 出力fs: 250
+130 Hz成分は新Nyquist 125 Hzを超えるため保存できない。
+</code></pre></details><figure id="fig07"><img src="../assets/images/chapter07.svg" alt="図7-1 リサンプリングと補間の検証グラフ"><figcaption>図7-1　リサンプリングと補間。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="75-130-hz">7.5 130 Hzを残したい場合</h2>
+<p><a href="#fig07">図7-1</a>の処理後スペクトルで130 Hzに相当する成分が小さくなることは、設計通りの帯域制限である。しかし130 Hzの配管振動を評価する試験なら、重要な情報を失っている。サンプリングレートを250 Hzにしてはいけない。必要な通過帯域、遷移帯域、許容振幅誤差を決めてレートを選ぶ。</p>
+<p>「間引き前に平均したから安全」とも限らない。短い移動平均には阻止帯域で十分な減衰が得られない周波数がある。区間平均を使う場合も周波数応答を確認する。目的がゆっくりした平均温度なら、区間内の有効数・欠損率・最大値を併記すると情報の失い方を評価しやすい。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>教材を1000 Hzから250 Hzへ変換し、入力と出力の点数を確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>出力を500 Hzにするにはup、downをどう変えるか。130 Hzと370 Hzの取り扱いはどう変わるか。</p>
+<h3 id="_4">実務演習</h3>
+<p>圧力の最大値を確認するために、10秒ごとの平均値だけを保管する案が出た。代替の保存項目を設計する。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：4000点から1000点になる。処理後の点数が正しいことに加え、単純間引きとの差を確認する。</p>
+<p>応用：up=1、down=2。新Nyquistは250 Hzで、130 Hzは通過帯域として設計できる。370 Hzは除去対象になる。実際の減衰量はフィルタ特性と境界条件に依存する。</p>
+<p>実務：最大値・最小値・その時刻・有効数・欠損率・飽和フラグを保存し、重要区間では波形も残す。平均だけから最大値は復元できない。データ容量削減の目的と設計判定の要求を明確に分ける。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>レート変更は情報を増やしたり失ったりする操作である。何を保存すべきかを先に決め、帯域、補間仮定、端点処理を確認する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter06.html">← 第6章</a><a href="chapter08.html">第8章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

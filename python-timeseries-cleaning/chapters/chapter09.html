@@ -1,0 +1,46 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第9章 欠損値の種類と発生原因 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="current" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第III部　欠損値と異常値を扱う / 第09章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#91">9.1 空白は一種類ではない</a></li><li><a href="#92">9.2 ゼロを欠損へ変えない</a></li><li><a href="#93">9.3 点の数から区間の長さへ</a></li><li><a href="#94-mcarmarmnar">9.4 MCAR・MAR・MNARを実務へ引き寄せる</a></li><li><a href="#code09">実行するコードと結果</a></li><li><a href="#95">9.5 欠損の図を作る</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">欠損値の種類と発生原因</h1>
+<h2 id="_2">学習目標</h2>
+<p>NaN、空白、ゼロ、欠損コードの意味を分け、連続欠損を区間として記述する。欠損メカニズムの仮説を立て、データだけでは確定できないことを理解する。</p>
+<h2 id="91">9.1 空白は一種類ではない</h2>
+<p>ある試験では温度の空欄が通信切断を意味し、別の試験では運転停止中に測定しなかったことを意味する。センサーが上限を超えたときに9999を返す機器もある。「空欄を全部線でつなぐ」という操作では、原因の違いを表現できない。</p>
+<p>本書の温度教材には短い3点欠損と長い30点欠損があり、停止を含む教材には計画的な無測定区間がある。<code>NaN</code> は数値列の欠損表現、<code>None</code> はPythonの値がない状態、<code>pd.NA</code> はpandasの欠損表現の一つである。表現の違いを統一することと、発生理由を統一することは別だ。</p>
+<h2 id="92">9.2 ゼロを欠損へ変えない</h2>
+<p>電流0 Aは停止中の有効な測定値かもしれない。加速度0 m/s²は振動のゼロ交差に現れる。温度0 °Cも実在する。機器仕様に「0が欠損コード」と明記されていない限り、ゼロを一括欠損化しない。逆に、欠損を0へ置き換えると、平均やRMSに強い影響が出る。</p>
+<p>9999というコードも、列によっては有効値になり得る。欠損コードは列別・機器別に設定し、文字列の段階で分類する。<code>NA</code> が試験片IDに使われている場合、pandasの既定欠損解釈が識別子を消すことがある。<code>keep_default_na=False</code> で原文字列を守り、対象列で明示的に解釈する方法がある。<a href="../references/bibliography.html#r2">R2</a></p>
+<h2 id="93">9.3 点の数から区間の長さへ</h2>
+<p>欠損率が同じ1%でも、10000点の中に1点ずつ100回欠ける場合と、100点連続して欠ける場合は異なる。補間可能性は、変化の速さと欠損の時間幅に依存する。欠損の開始時刻、終了時刻、欠損点数、前後の観測間隔、運転モードを一覧にする。</p>
+<p>本章のコードは、欠損か否かが切り替わるたびにグループ番号を増やして連続区間を求める。<code>missing.ne(missing.shift()).cumsum()</code> はこの処理を列単位で表す。初めて見る場合は、True/Falseの列を紙に書き、前の行と違う場所に1を置いて足し合わせると理解しやすい。</p>
+<h2 id="94-mcarmarmnar">9.4 MCAR・MAR・MNARを実務へ引き寄せる</h2>
+<p>欠損メカニズムは、値が観測されるかどうかが何に依存するかで考える。Rを観測されたかの指標、Yを測定値とすると、MCARは欠損が観測・未観測のデータに依存しないモデルである。MARは観測済み情報で条件付ければ未観測値への依存が残らないモデル、MNARはその条件付け後も未観測値に依存するモデルだ。</p>
+<p>例えば、試験状態に関係なく偶発的に一部の通信パケットが落ちるならMCARの近似を考えられる。記録済みの運転モードで通信負荷が変わるなら、そのモードを条件に含めたMARを検討できる。温度が高すぎるとセンサーが応答を返さないなら、未観測の温度そのものに欠損が依存するMNARを疑う。</p>
+<p>これらはラベルを付ければ解決する分類ではない。同じ見かけの欠損パターンが異なる原因で生じる。観測されたデータだけでMARとMNARを完全に識別することは一般にできない。機器仕様、通信ログ、再試験、他のセンサーと照合し、仮定を明示する。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code09">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter09/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter09/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+df=load(&#x27;01_temperature&#x27;);missing=df[&#x27;測定値&#x27;].isna()
+group=missing.ne(missing.shift()).cumsum()
+runs=[len(g) for _,g in missing.groupby(group) if g.iloc[0]]
+print(&#x27;連続欠損の長さ:&#x27;,runs,&#x27;最長 [記録]:&#x27;,max(runs))
+print(&#x27;欠損原因は値だけでは確定しない。manifestは模擬データの出題情報。&#x27;)
+plot(9,seconds(df)/3600,{&#x27;欠損=1&#x27;:missing.astype(int)},&#x27;欠損フラグ [0/1]&#x27;,xlabel=&#x27;経過時間 [h]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">連続欠損の長さ: [3, 30] 最長 [記録]: 30
+欠損原因は値だけでは確定しない。manifestは模擬データの出題情報。
+</code></pre></details><figure id="fig09"><img src="../assets/images/chapter09.svg" alt="図9-1 欠損値の種類と発生原因の検証グラフ"><figcaption>図9-1　欠損値の種類と発生原因。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="95">9.5 欠損の図を作る</h2>
+<p><a href="#fig09">図9-1</a>は欠損点だけを1として描く。測定値の線だけでは、長い空白が白い背景へ紛れることがある。複数センサーでは、横軸を時間、縦軸をチャンネルとする欠損マップを作ると、一斉欠損か一つだけの欠損かを区別しやすい。一斉欠損なら共通電源やロガー、局所欠損なら個別配線という仮説を立てられるが、図だけで確定はしない。</p>
+<p>欠損直前の値、傾き、運転モード、通信負荷を非欠損区間と比較することも役立つ。ただし欠損後の情報だけでリアルタイム予測器を作ると、未来の情報を使うことになる。欠損の説明と運用時の推定で使える情報を区別する。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>温度データの連続欠損長を列挙し、予定周期を使って前後の観測間隔へ換算する。</p>
+<h3 id="_3">応用演習</h3>
+<p>欠損をゼロへ置換した平均値と、観測値だけの平均値を比較する。どちらも真の平均とは限らない理由を述べる。</p>
+<h3 id="_4">実務演習</h3>
+<p>高温時だけ欠損が増えるが、温度の上限超過と通信負荷増大が同時に起こる。原因を調べる試験を提案する。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：3点と30点。周期60秒なら、前後の有効観測を結ぶ間隔はそれぞれ240秒と1860秒。欠損点数×周期と、補間の両端間隔を区別する。</p>
+<p>応用：ゼロ置換は未知の温度を0 °Cと仮定して平均を下げる。観測値平均も欠損が高温に集中すれば低く偏る。欠損機構の評価が必要である。</p>
+<p>実務：通信負荷を固定して温度を変える、温度を固定して通信負荷を変える、別系統の温度計を併設するなど、原因を分離する。上限を超える値を補間で隠さない。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>欠損は「値がない」だけでなく、測定の仕組みに関する情報でもある。補完の前に、いつ、どの列で、どの条件下で欠けたのかを調べる。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter08.html">← 第8章</a><a href="chapter10.html">第10章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

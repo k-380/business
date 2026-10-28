@@ -1,0 +1,90 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>はじめに・環境構築 | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="assets/css/book.css"></head><body data-base="" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="getting-started.html">はじめに・環境構築</a><a href="labs.html">実践補講6題</a><a href="downloads.html">教材ダウンロード</a><a href="glossary.html">用語集・索引</a><a href="references/bibliography.html">参考文献</a><a href="verification.html">検証と未完了項目</a></nav></aside><main id="main"><h1 id="_1">はじめに・環境構築</h1>
+<p>データクリーニングとは、異常な値を都合よく削除することではない。測定値の意味を保全しながら、解析可能な状態へ変換する技術である。本書はExcelを使う技術者が、測定の意味を確かめながらPythonを学ぶための教材として制作した。</p>
+<h2 id="_2">この版の到達点</h2>
+<p>全24章の本文、実行可能な例、実行結果、図、72題の三段階演習、10題材のデータ、CLIと自動テストを収録した実行検証版である。依頼された400〜500ページ相当の長編版には達しておらず、完成版とは表記していない。未完了項目は検証ページに明示する。</p>
+<h2 id="30">最初の30分</h2>
+<ol>
+<li>教材ダウンロードページでZIPを取得し、展開する。ZIPの中から直接実行しない。</li>
+<li>index.htmlをブラウザで開き、第1章を読む。</li>
+<li>Python 3.12の環境を用意し、下記の仮想環境へ依存関係を入れる。</li>
+<li>examples/chapter01/run.pyを実行し、原本を残したまま候補が付くことを確認する。</li>
+<li>数字と図が掲載結果に一致したら第2章へ進む。</li>
+</ol>
+<h2 id="python">Pythonを実行する場所</h2>
+<p>ブラウザの教科書はPythonを実行するアプリではない。読書、検索、コードコピーはブラウザで行い、計算は自分のPCのPythonで行う。コードを貼る場所は、WindowsのPowerShellやmacOSのターミナルである。<code>python ...</code>というコマンドをPythonの対話画面の<code>&gt;&gt;&gt;</code>へ入力しない。</p>
+<p>Pythonは公式配布元から3.12系を用意する。検証には3.12.14を使用した。OSの管理ポリシーがある業務PCでは、それに従ってインストールする。まず <code>python --version</code> またはWindowsの <code>py -3.12 --version</code> で対象を確認する。</p>
+<h2 id="windows-powershell">Windows PowerShell</h2>
+<p>以下は、展開したフォルダの一つ上から始める。仮想環境を有効化する操作を省き、実行するPythonの場所を毎回明示するので、実行ポリシーの変更は不要である。</p>
+<pre><code class="language-powershell">cd python-timeseries-cleaning
+py -3.12 -m venv .venv
+.venv\Scripts\python -m pip install -r requirements-lock.txt
+.venv\Scripts\python examples/chapter01/run.py
+</code></pre>
+<h2 id="macos-linux">macOS / Linux</h2>
+<pre><code class="language-bash">cd python-timeseries-cleaning
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements-lock.txt
+.venv/bin/python examples/chapter01/run.py
+</code></pre>
+<p>仮想環境は、この教材で使うライブラリを他の仕事から分離するためのフォルダである。インストール時にはネットワーク接続が必要だが、教材を取得し依存関係を入れた後は、サンプル実行に外部通信は不要である。<a href="references/bibliography.html#r10">Python公式資料</a>も参照してほしい。</p>
+<h2 id="_3">フォルダとパス</h2>
+<p><code>datasets/raw/02_pressure.csv</code> は、現在の作業フォルダから見た相対パスである。コマンドを実行する場所が違うと見つからない。サンプルプログラムは自身の場所から教材のルートを求めるため、データ参照は安定する。CLIの引数は利用者が指定するため、現在位置からのパスまたは絶対パスを書く。空白を含むパスは引用符で囲む。</p>
+<h2 id="python_1">読み進めるためのPython最小知識</h2>
+<table>
+<thead>
+<tr>
+<th>表記</th>
+<th>意味</th>
+<th>測定データでの用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x = 3</td>
+<td>名前xへ値を割り当てる</td>
+<td>周期や閾値の設定</td>
+</tr>
+<tr>
+<td>df['温度']</td>
+<td>表から列を取り出す</td>
+<td>温度だけを検査</td>
+</tr>
+<tr>
+<td>df.iloc[10]</td>
+<td>位置で11行目を取り出す</td>
+<td>問題箇所の確認</td>
+</tr>
+<tr>
+<td>df.loc[mask]</td>
+<td>条件がTrueの行を取り出す</td>
+<td>候補一覧の作成</td>
+</tr>
+<tr>
+<td>a &amp; b</td>
+<td>真偽の列の両方を満たす</td>
+<td>同一モードかつ欠損</td>
+</tr>
+<tr>
+<td>x[2:5]</td>
+<td>2以上5未満の位置を取り出す</td>
+<td>区間抽出</td>
+</tr>
+<tr>
+<td>def name(...):</td>
+<td>再利用する処理を定義する</td>
+<td>検出関数を作る</td>
+</tr>
+<tr>
+<td>assert condition</td>
+<td>条件が偽なら止める</td>
+<td>計算結果の確認</td>
+</tr>
+</tbody>
+</table>
+<p>Pythonの位置は0から数え、スライスの終端は含まない。本文の異常位置も、明示がなければ0始まりである。Excelの行番号は1始まりなのでsource_rowで別に保存する。インデントは処理のまとまりを表すため、先頭の空白を勝手に消さない。列に対する条件式では <code>(x&gt;0) &amp; (x&lt;10)</code> のように括弧を付ける。</p>
+<h2 id="_4">エラーが出たとき</h2>
+<p>最後の行だけでなく、どのファイルの何行目で止まったかを読む。ModuleNotFoundErrorなら実行環境とpipの対象が一致しているか、FileNotFoundErrorなら作業フォルダとファイル名、KeyErrorなら列名と見出し行を確認する。ValueErrorはデータの前提違反を意図的に通知している場合がある。コードの検査を削除して先へ進まない。</p>
+<p>各章の掲載コードは <code>examples/chapterXX/run.py</code> の全体で、共通処理は <code>examples/common.py</code> と <code>tsclean/core.py</code> にある。コードコピーだけで別フォルダへ移すと、この構成が失われる。最初はフォルダ全体を取得して実行する。共通処理の全ソースは実装資料で読める。</p>
+<h2 id="_5">学習順と判断の原則</h2>
+<p>まず第I部で読み込みと意味の確認、第II部で時間軸、第III部で欠損と候補判定、第IV部でセンサーと信号、第V部で統合と記録、第VI部で自動化へ進む。各章は単独実行できるが、第24章の出力を正しく評価するには前の原則が必要である。</p>
+<p>すべてのデータは模擬である。正解情報は処理結果の検証に使い、実データの未知の真値を自動で知る手段と考えない。本書の最終的な問いは、「このデータを、この目的に使ってよい根拠は何か」である。</p><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="assets/js/search-index.js"></script><script src="assets/js/book.js"></script></body></html>

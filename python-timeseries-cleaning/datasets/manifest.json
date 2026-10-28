@@ -1,0 +1,288 @@
+{
+  "seed": 20261028,
+  "datasets": [
+    {
+      "id": "01_temperature",
+      "seed": 20261028,
+      "n": 1440,
+      "unit": "degC",
+      "model": "25+35(1-exp(-t/1200))+0.8sin(2πt/86400); τ=1200 s; noise σ=.06 degC",
+      "events": [
+        {
+          "start": 120,
+          "stop": 123,
+          "kind": "missing_short"
+        },
+        {
+          "start": 600,
+          "stop": 630,
+          "kind": "missing_long"
+        },
+        {
+          "start": 721,
+          "stop": 1440,
+          "kind": "sensor_drift",
+          "slope_per_second": 3e-05
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "01_temperature.csv",
+      "truth_file": "01_temperature_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "02_pressure",
+      "seed": 20261028,
+      "n": 600,
+      "unit": "MPa",
+      "model": "1.4+.04sin(2π .3t)+.55exp(-((t-35)/.45)^2); true pressure pulse",
+      "events": [
+        {
+          "start": 90,
+          "stop": 91,
+          "kind": "measurement_spike"
+        },
+        {
+          "start": 270,
+          "stop": 271,
+          "kind": "measurement_spike"
+        },
+        {
+          "start": 338,
+          "stop": 363,
+          "kind": "real_pressure_pulse",
+          "action": "preserve"
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "02_pressure.csv",
+      "truth_file": "02_pressure_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "03_vibration",
+      "seed": 20261028,
+      "n": 4000,
+      "unit": "m/s2",
+      "model": "40 Hz structural motion +130 Hz component; 370 Hz interference; fs=1000 Hz",
+      "events": [
+        {
+          "start": 0,
+          "stop": 4000,
+          "kind": "high_frequency_interference",
+          "frequency_hz": 370
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "03_vibration.csv",
+      "truth_file": "03_vibration_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "04_current",
+      "seed": 20261028,
+      "n": 4000,
+      "unit": "A",
+      "model": "(5+13exp(-t/.08))sin(2π50t); ADC limit ±12 A",
+      "events": [
+        {
+          "indices": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            47,
+            48,
+            49,
+            50,
+            51,
+            52,
+            53,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            89,
+            90,
+            91
+          ],
+          "kind": "saturation",
+          "rails": [
+            -12,
+            12
+          ]
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "04_current.csv",
+      "truth_file": "04_current_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "05_sync",
+      "seed": 20261028,
+      "n": 500,
+      "unit": "V",
+      "model": "Two common injected trigger pulses at 10 s and 30 s; logger B clock tB=1.0002t+.7",
+      "events": [
+        {
+          "start": 0,
+          "stop": 500,
+          "kind": "clock_error",
+          "offset_s": 0.7,
+          "scale": 1.0002
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "05_sync.csv",
+      "truth_file": "05_sync_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "06_durability",
+      "seed": 20261028,
+      "n": 1000,
+      "unit": "mm/s",
+      "model": "RMS vibration grows .0006 mm/s per hour; sensor drift after 500 h; independent reference available",
+      "events": [
+        {
+          "start": 0,
+          "stop": 1000,
+          "kind": "real_degradation",
+          "slope_per_hour": 0.0006
+        },
+        {
+          "start": 501,
+          "stop": 1000,
+          "kind": "sensor_drift",
+          "slope_per_hour": 0.0008
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "06_durability.csv",
+      "truth_file": "06_durability_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "07_modes",
+      "seed": 20261028,
+      "n": 600,
+      "unit": "degC",
+      "model": "First-order heating/cooling with stop at 2000 s and restart at 3000 s",
+      "events": [
+        {
+          "start": 200,
+          "stop": 300,
+          "kind": "stopped_operation"
+        },
+        {
+          "start": 205,
+          "stop": 295,
+          "kind": "planned_no_measurement"
+        },
+        {
+          "start": 400,
+          "stop": 402,
+          "kind": "missing_short"
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "07_modes.csv",
+      "truth_file": "07_modes_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "08_restart",
+      "seed": 20261028,
+      "n": 200,
+      "unit": "degC",
+      "model": "Physical temperature slope .02 degC/s; acquisition sequence monotonic, recorded clock reset",
+      "events": [
+        {
+          "start": 50,
+          "stop": 51,
+          "kind": "duplicate_timestamp"
+        },
+        {
+          "start": 100,
+          "stop": 101,
+          "kind": "clock_reset",
+          "offset_s": -80
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "08_restart.csv",
+      "truth_file": "08_restart_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "09_prototypes",
+      "seed": 20261028,
+      "n": 400,
+      "unit": "degC",
+      "model": "Prototype A temperature approaches 45 degC; prototype B +.8 degC, alternate sampling",
+      "events": [
+        {
+          "start": 199,
+          "stop": 220,
+          "kind": "sensor_freeze"
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "09_prototypes.csv",
+      "truth_file": "09_prototypes_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    },
+    {
+      "id": "10_irregular_excel",
+      "seed": 20261028,
+      "n": 40,
+      "unit": "degC",
+      "model": "Linear ramp .01 degC/s; irregular workbook has title merge, header metadata, blank row, serial dates",
+      "events": [
+        {
+          "start": 4,
+          "stop": 5,
+          "kind": "missing_code"
+        },
+        {
+          "start": 8,
+          "stop": 9,
+          "kind": "invalid_token"
+        },
+        {
+          "start": 10,
+          "stop": 11,
+          "kind": "unit_suffix"
+        },
+        {
+          "start": 15,
+          "stop": 16,
+          "kind": "blank_cell"
+        }
+      ],
+      "index_convention": "zero-based, inclusive start, exclusive stop",
+      "raw_file": "10_irregular_excel.csv",
+      "truth_file": "10_irregular_excel_truth.csv",
+      "note": "Synthetic; latent_signal excludes measurement noise. Truth is unavailable in real tests."
+    }
+  ],
+  "workbook_note": "CSV sample i maps to Excel row i+5 before i=13, i+6 afterwards. Excel row 18 is blank; source_row preserves it."
+}

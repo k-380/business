@@ -1,0 +1,360 @@
+{
+  "browser": "134.0.6998.35",
+  "offline": true,
+  "page_layout_checks": 68,
+  "widths": [
+    1280,
+    390
+  ],
+  "javascript_errors": [],
+  "external_requests": [],
+  "search": "pass",
+  "answer_toggle": "pass",
+  "copy_file_protocol": "pass",
+  "dark_mode": "pass",
+  "print_pages_A4": 172,
+  "print_text_checks": "pass",
+  "screenshots_internal": "/tmp/tsclean-browser-qa",
+  "details": [
+    {
+      "path": "index.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "getting-started.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "labs.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "downloads.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "glossary.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "verification.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "datasets.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "implementation.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "references/bibliography.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter01.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter02.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter03.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter04.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter05.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter06.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter07.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter08.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter09.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter10.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter11.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter12.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter13.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter14.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter15.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter16.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter17.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter18.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter19.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter20.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter21.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter22.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter23.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter24.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "single-file.html",
+      "width": 1280,
+      "layout": "pass"
+    },
+    {
+      "path": "index.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "getting-started.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "labs.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "downloads.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "glossary.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "verification.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "datasets.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "implementation.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "references/bibliography.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter01.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter02.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter03.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter04.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter05.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter06.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter07.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter08.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter09.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter10.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter11.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter12.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter13.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter14.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter15.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter16.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter17.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter18.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter19.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter20.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter21.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter22.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter23.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "chapters/chapter24.html",
+      "width": 390,
+      "layout": "pass"
+    },
+    {
+      "path": "single-file.html",
+      "width": 390,
+      "layout": "pass"
+    }
+  ]
+}

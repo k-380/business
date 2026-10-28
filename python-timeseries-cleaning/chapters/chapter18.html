@@ -1,0 +1,49 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第18章 試験条件の変更・運転モードを識別する | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="current" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第V部　複数データの統合と品質管理 / 第18章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#181">18.1 全期間を一つの分布にしない</a></li><li><a href="#182">18.2 イベントログを状態へ展開する</a></li><li><a href="#183">18.3 定常状態の操作的定義</a></li><li><a href="#184">18.4 ヒステリシスと持続条件</a></li><li><a href="#code18">実行するコードと結果</a></li><li><a href="#185">18.5 モード別の比較</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">試験条件の変更・運転モードを識別する</h1>
+<h2 id="_2">学習目標</h2>
+<p>イベントログから連続した運転区間を作り、定常・過渡を目的に応じて定義する。モードをまたぐ補間や外れ値判定を防ぐ。</p>
+<h2 id="181">18.1 全期間を一つの分布にしない</h2>
+<p>温度試験には起動、昇温、保持、停止、冷却がある。全期間の平均と標準偏差から外れ値を探すと、正しい起動温度が異常扱いになることがある。運転中の正常範囲と停止中の正常範囲は異なる。</p>
+<p>教材 <code>07_modes.csv</code> は2000秒で停止し、3000秒で再起動する。停止中の温度は冷却するが、その多くは測定されていない。二つのrun区間を同じ名前だからと連結して補間すれば、停止中をまたいでしまう。モード名と連続区間IDを別に持つ必要がある。</p>
+<h2 id="182">18.2 イベントログを状態へ展開する</h2>
+<p>イベント時刻と新しい状態の表がある場合、観測時刻に対して過去の最後のイベントを割り当てる。変更時刻を含む区間を <code>[変更時刻, 次の変更時刻)</code> とするかなど、境界を定義する。試験開始前の状態が不明なら、最初のイベントより前をunknownとする。後のイベントで埋め戻すと、未来の状態を過去へ割り当ててしまう。</p>
+<p>ログにない停止を波形から推定する場合もあるが、推定モードと確定イベントを区別する。電流ゼロだけでは停電、センサー断線、通信欠損が区別できない。複数信号や装置状態と照合する。</p>
+<h2 id="183">18.3 定常状態の操作的定義</h2>
+<p>定常とは、何も変わらないという絶対的な状態ではない。必要な評価時間内に、対象量の平均や変動幅が許容範囲に収まる状態として定義する。例えば「120秒の窓で温度変化率の最大絶対値が0.03 °C/s未満」は一つの演習規則だが、厳密な統計的定常性や規格の安定条件を保証しない。</p>
+<p>差分で傾きを計算するとノイズが増幅される。温度の測定誤差が独立で標準偏差σなら、差分の誤差標準偏差は√2σ、さらに時間差で割ると√2σ/Δtになる。短いΔtほど傾きのノイズが大きい。窓内の直線回帰の傾きや、一定時間の最大−最小を併用する方法がある。</p>
+<h2 id="184">18.4 ヒステリシスと持続条件</h2>
+<p>閾値近くで状態が毎秒切り替わるなら、入る閾値と出る閾値を分けるヒステリシス、または条件が連続して成立する時間を設ける。例えば電流1.0 A超が3秒続けばrun、0.5 A未満が5秒続けばstopという規則を作れる。ただし値は装置ごとに検証する演習設定である。</p>
+<p>変化点検出では、平均、分散、傾きなどの変化を探す。変化点が検出されても、試験条件の変更、製品異常、センサー異常のどれかは別に判断する。解析全体から最適な区間を決めるオフライン手法は、リアルタイムの検出時刻と一致しないことがある。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code18">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter18/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter18/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+df=load(&#x27;07_modes&#x27;);segment=df[&#x27;mode&#x27;].ne(df[&#x27;mode&#x27;].shift()).cumsum()
+print(df.assign(segment=segment).groupby([&#x27;segment&#x27;,&#x27;mode&#x27;])[&#x27;測定値&#x27;].agg([&#x27;count&#x27;,&#x27;mean&#x27;,&#x27;max&#x27;]).to_string())
+dt=10;rate=df[&#x27;測定値&#x27;].diff()/dt
+steady=rate.abs().rolling(12,min_periods=12).max().lt(.03)&amp;df[&#x27;mode&#x27;].eq(&#x27;run&#x27;)
+print(&#x27;演習基準の定常候補点数:&#x27;,int(steady.sum()))
+plot(18,seconds(df),{&#x27;温度&#x27;:df[&#x27;測定値&#x27;],&#x27;定常候補&#x27;:df[&#x27;測定値&#x27;].where(steady)},&#x27;温度 [°C]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">              count       mean        max
+segment mode                             
+1       run     200  45.973092  49.961706
+2       stop     10  39.745374  49.983835
+3       run     298  47.294873  50.071068
+演習基準の定常候補点数: 386
+</code></pre></details><figure id="fig18"><img src="../assets/images/chapter18.svg" alt="図18-1 試験条件の変更・運転モードを識別するの検証グラフ"><figcaption>図18-1　試験条件の変更・運転モードを識別する。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="185">18.5 モード別の比較</h2>
+<p><a href="#fig18">図18-1</a>の定常候補は、値が有効で演習の傾き条件を満たす区間に付く。停止中に欠けた値は定常とは判定しない。再起動後のrunを最初のrunと比較するときは、開始後の経過時間、環境温度、負荷条件も合わせる。</p>
+<p>条件変更の直後にはセンサー応答遅れや制御の過渡がある。イベント時刻で区切るだけで、その直後を定常と認めてはいけない。除外する立ち上がり時間は対象の応答と試験目的に基づき、結果が都合よくなるまで変えない。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>連続区間IDが三つになり、run、stop、runの順であることを確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>定常判定の窓を12点から30点へ変えた場合、判定開始時刻と未評価範囲はどう変わるか。</p>
+<h3 id="_4">実務演習</h3>
+<p>負荷を変更した記録があるが、装置へ実際に反映されたのは数秒後だった。どちらを境界時刻として保存するか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：三つの区間になる。runを二つの連続区間に分けることが重要である。</p>
+<p>応用：より長い履歴を要求するため、開始直後の評価待ちが長くなる。長い窓は一時的な乱れを含みやすく、定常判定が遅れることもある。</p>
+<p>実務：指令時刻と実反映時刻を別列で保存する。制御の応答評価には両者が必要で、都合のよい方だけを残さない。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>モードはクリーニングの条件であると同時に、解析対象の一部でもある。ログ由来と推定を区別し、連続区間と境界の意味を保存する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter17.html">← 第17章</a><a href="chapter19.html">第19章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

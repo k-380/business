@@ -1,0 +1,6 @@
+ffill RMSE [degC]= 0.751345 max abs= 1.3009
+linear RMSE [degC]= 0.051386 max abs= 0.080559
+pchip RMSE [degC]= 0.067146 max abs= 0.10724
+cubic_spline RMSE [degC]= 0.100842 max abs= 0.176305
+local_cubic_polynomial RMSE [degC]= 0.050882 max abs= 0.061182
+この比較はrun区間の人工欠損のみ。停止中を橋渡しする推定は採用しない。

@@ -1,0 +1,93 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第19章 クリーニング前後の差異を検証する | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="current" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第V部　複数データの統合と品質管理 / 第19章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#191">19.1 きれいなグラフは合格条件ではない</a></li><li><a href="#192">19.2 同じ対象点で比較する</a></li><li><a href="#193-rms">19.3 ピーク、RMS、面積</a></li><li><a href="#194">19.4 分布と周波数を見る</a></li><li><a href="#code19">実行するコードと結果</a></li><li><a href="#195">19.5 受け入れ条件の例</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">クリーニング前後の差異を検証する</h1>
+<h2 id="_2">学習目標</h2>
+<p>平均、標準偏差、ピーク、周波数、対応時刻の変化を評価し、処理の受け入れ条件を定める。観測母集団が変わった比較を見抜く。</p>
+<h2 id="191">19.1 きれいなグラフは合格条件ではない</h2>
+<p>起動電流を移動平均すると、波形は滑らかになり、標準偏差も小さくなる。しかし起動ピークや50 Hz成分が減っていれば、電流評価に使うべきデータではなくなる。処理の目的と、変えてよい特徴・変えてはいけない特徴を先に定める。</p>
+<p>本章では21点の中央移動平均を電流教材へ適用し、前後の統計を比較する。これは不適切な平滑化の影響を観察するための実験であり、推奨する電流クリーニングではない。2000 Hzで21点は約10.5 msの窓に相当し、50 Hz波形の20 ms周期に対して無視できない。</p>
+<h2 id="192">19.2 同じ対象点で比較する</h2>
+<p>欠損を埋めると、処理後の平均には処理前になかった時刻が加わる。平均差には、値の修正と比較母集団の変化の両方が入る。そのため、全有効値による前後統計と、両方に値がある共通時刻だけの差を分ける。</p>
+<p>本書の <code>compare()</code> はbeforeとafterの件数、平均、標本標準偏差、最小・最大、共通有効点数、共通点の最大絶対差、補間点数を返す。長さが違う配列は拒否する。リサンプリングで長さが変わった場合は、比較可能な時間領域と指標を別途定義する必要がある。</p>
+<h2 id="193-rms">19.3 ピーク、RMS、面積</h2>
+<p>ピーク保持率を <code>P = max|y| / max|x|</code> と定義できる。分母が0なら未定義として別扱いにする。最大値の時刻差も重要であり、同じ高さでも遅れて現れれば制御や同期の評価は変わる。複数ピークがある場合は、全体の最大一点だけでなく、対応するイベントの局所ピークを比較する。</p>
+<p>RMSは <code>sqrt(mean(x²))</code> であり、交流成分の標準偏差とは異なる。直流成分がある場合、RMS²は平均²と母分散の和になる。エネルギーや負荷積分は、サンプル間隔が一定か、欠損をどう扱ったかによって変わる。面積が保たれてもピークが保たれるとは限らない。</p>
+<h2 id="194">19.4 分布と周波数を見る</h2>
+<p>ヒストグラムの裾が縮んだことは、ノイズを除いた結果かもしれないし、重要な極値を削った結果かもしれない。分位点、上下限超過時間、波形のイベント別分布を比べる。平均と標準偏差だけでは形の違いを十分に表現できない。</p>
+<p>周波数の比較では、同じ長さ、窓関数、正規化、サンプル周期を使う。フィルタ後に特定の周波数帯が落ちるのは想定通りか、残すべき成分を消したのかを検討する。相関の上昇も、共通の平滑化が作った見かけの改善かもしれない。独立な検証用イベントを使う。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code19">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter19/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter19/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+df=load(&#x27;04_current&#x27;);x=df[&#x27;測定値&#x27;];y=x.rolling(21,center=True,min_periods=21).mean()
+import json
+print(json.dumps(compare(x,y),ensure_ascii=False,indent=2))
+print(&#x27;ピーク保持率:&#x27;,y.abs().max()/x.abs().max())
+plot(19,seconds(df)[:300],{&#x27;観測値&#x27;:x[:300],&#x27;21点移動平均&#x27;:y[:300]},&#x27;電流 [A]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">{
+  &quot;before&quot;: {
+    &quot;n&quot;: 4000,
+    &quot;mean&quot;: 0.015252405978357227,
+    &quot;std_ddof1&quot;: 4.033581843425158,
+    &quot;min&quot;: -12.0,
+    &quot;max&quot;: 12.0
+  },
+  &quot;after&quot;: {
+    &quot;n&quot;: 3980,
+    &quot;mean&quot;: 0.0015523392623631811,
+    &quot;std_ddof1&quot;: 2.4265072285852867,
+    &quot;min&quot;: -8.47524818139762,
+    &quot;max&quot;: 8.749036680802286
+  },
+  &quot;paired_n&quot;: 3980,
+  &quot;paired_max_abs_change&quot;: 6.124009872592381,
+  &quot;filled_n&quot;: 0
+}
+ピーク保持率: 0.7290863900668572
+</code></pre></details><figure id="fig19"><img src="../assets/images/chapter19.svg" alt="図19-1 クリーニング前後の差異を検証するの検証グラフ"><figcaption>図19-1　クリーニング前後の差異を検証する。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="195">19.5 受け入れ条件の例</h2>
+<p><a href="#fig19">図19-1</a>では、起動時の波形が明らかに変形する。受け入れ条件は処理後の図を見てから都合よく決めるのではなく、測定目的から事前に決める。</p>
+<table>
+<thead>
+<tr>
+<th>用途</th>
+<th>評価する項目</th>
+<th>例示する判断の方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平均温度比較</td>
+<td>共通区間平均差、補間割合</td>
+<td>許容温度差に対する処理影響を抑える</td>
+</tr>
+<tr>
+<td>最大圧力評価</td>
+<td>ピーク値、ピーク時刻、飽和</td>
+<td>未知ピークを含む区間は評価不能</td>
+</tr>
+<tr>
+<td>振動モード確認</td>
+<td>帯域振幅、位相、同期残差</td>
+<td>注目帯域を減衰させない</td>
+</tr>
+<tr>
+<td>品質監査</td>
+<td>変更件数、根拠、追跡可能性</td>
+<td>未承認の変更をゼロにする</td>
+</tr>
+</tbody>
+</table>
+<p>「平均差1%以内」などの数値は、物理量や要求仕様によって意味が変わる。ゼロ近くの量では相対差が不安定なので、絶対差を使う。測定不確かさや設計余裕と比較して判断する。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>掲載出力から、移動平均後の有効点数とピーク保持率を読み取る。</p>
+<h3 id="_3">応用演習</h3>
+<p>21点平均を5点平均へ変える。ピーク保持率だけでなく、50 Hz成分と端点欠損数を比較する。</p>
+<h3 id="_4">実務演習</h3>
+<p>処理後の平均温度は変わらなかったが、最大値が4 °C下がった。平均温度による性能比較と最高温度による部品耐熱評価を、同じ結論にしてよいか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：完全窓を要求するため、最初と最後の10点ずつが未評価になり、4000点から3980点になる。ピークの比は掲載出力で確認する。</p>
+<p>応用：窓が短くなれば変形は一般に小さくなるが、必要な許容誤差に入るかは別問題である。端点未評価は2点ずつになる。</p>
+<p>実務：同じ結論にはできない。平均の保存だけでは最高温度が保存されていない。耐熱評価には原波形や検証済みの補正だけを使い、ピーク減衰の理由を調べる。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>クリーニングの検証は、エラーなく実行できたかでは終わらない。解析目的に必要な特徴が、許容範囲内で保たれているかを評価する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter18.html">← 第18章</a><a href="chapter20.html">第20章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

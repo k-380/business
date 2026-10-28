@@ -1,0 +1,133 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第23章 データ品質レポートを自動生成する | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="current" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第VI部　実務の自動化 / 第23章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#231">23.1 レポートの読み手を決める</a></li><li><a href="#232">23.2 必要な情報</a></li><li><a href="#233">23.3 図の軸と欠損</a></li><li><a href="#234-excel">23.4 Excel出力の意味</a></li><li><a href="#code23">実行するコードと結果</a></li><li><a href="#235-html">23.5 HTMLを安全に組み立てる</a></li><li><a href="#236">23.6 レポート自体を検査する</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">データ品質レポートを自動生成する</h1>
+<h2 id="_2">学習目標</h2>
+<p>件数、警告、候補一覧、前後比較、適用ルールをまとめたレポートを作る。表示用の抜粋と全件データを分け、未評価や処理失敗が見えるようにする。</p>
+<h2 id="231">23.1 レポートの読み手を決める</h2>
+<p>解析者は詳細な数値を知りたいが、設計レビューの参加者は「この結果をどこまで信頼できるか」を知りたい。両者のために、最初に対象と判定状態、次に品質指標と主な警告、さらに候補一覧と図、最後に設定と追跡情報を置く。</p>
+<p>本書のレポートは製品合否判定を行わない。<code>REVIEW_REQUIRED</code> は要確認のデータがある状態、<code>NO_RULE_VIOLATION_DETECTED</code> は設定規則で違反候補を検出しなかった状態である。測定の妥当性や校正の適切さまで自動判定したとは表示しない。</p>
+<h2 id="232">23.2 必要な情報</h2>
+<table>
+<thead>
+<tr>
+<th>区分</th>
+<th>載せる内容</th>
+<th>誤解を避ける工夫</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>対象</td>
+<td>入力ファイル、シート、行数、期間</td>
+<td>処理対象外を明示</td>
+</tr>
+<tr>
+<td>品質</td>
+<td>欠損、変換不能、時刻異常、候補数</td>
+<td>分母と未評価範囲を併記</td>
+</tr>
+<tr>
+<td>変更</td>
+<td>補間数、変更位置、前後差</td>
+<td>検出のみと修正を区別</td>
+</tr>
+<tr>
+<td>図</td>
+<td>原観測と解析値、候補位置</td>
+<td>単位、時刻または記録順を明示</td>
+</tr>
+<tr>
+<td>根拠</td>
+<td>設定、版、環境、原本ハッシュ</td>
+<td>再実行できる形で残す</td>
+</tr>
+</tbody>
+</table>
+<p>候補件数が多い場合、HTMLに全行を埋め込むと読みにくくなる。本アプリは候補一覧を先頭200行に制限し、全件はExcelへ出力する。200行しか異常がないという意味ではないため、表示上限を明記する。</p>
+<h2 id="233">23.3 図の軸と欠損</h2>
+<p>時刻が逆転しているデータを時間軸へ折れ線で描くと、線が戻って読みにくい。本アプリの品質確認図は取得順のレコード番号を横軸に使う。正式な物理現象の解析図には、検査済みの時間軸を別途用いる。横軸が何を表すかを省略しない。</p>
+<p>欠損の前後を自動的につないで描くと、未知の区間を観測済みのように見せる。NaNはそのまま線を切り、補間した点はマーカーで示す。大きなファイルを描くために単純間引きすると、狭いピークが消えることがある。表示点数を制限するなら、区間の最小最大などピークを保持する表示用集約と、その方法の明示が必要である。</p>
+<h2 id="234-excel">23.4 Excel出力の意味</h2>
+<p><code>clean_data.xlsx</code> には原値、数値化値、解析値、由来、単位を並べる。<code>quality_flags.xlsx</code> は同じsource_file、sheet、source_rowで対応付けられる。タイムゾーン付き日時はExcelのネイティブ日時として保持しにくいため、本アプリはUTCオフセットを含むISO文字列として出力する。Excel上で日時計算する場合は、UTCであることを明示した別列へ変換する。</p>
+<p>文字列が <code>=</code> で始まるとExcelが数式として解釈することがある。原文字列を保存するときは文字列セルとして書き出し、勝手に式を実行させない。本書の出力関数にはこの処理と自動テストを含めた。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code23">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter23/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter23/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+import yaml,json
+from tsclean.app import process_frame
+c=yaml.safe_load((ROOT/&#x27;configs/01_temperature.yaml&#x27;).read_text(encoding=&#x27;utf-8&#x27;))
+df=load(&#x27;01_temperature&#x27;);out,flags,logs,summary=process_frame(df,c)
+print(json.dumps(summary,ensure_ascii=False,indent=2,default=str))
+counts=summary[&#x27;flag_counts&#x27;];names=list(counts);v=list(counts.values())
+plot(23,np.arange(len(v)),{&#x27;フラグ件数&#x27;:v},&#x27;件数 [点]&#x27;,xlabel=&#x27;フラグ番号（標準出力の順）&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">{
+  &quot;status&quot;: &quot;REVIEW_REQUIRED&quot;,
+  &quot;rows&quot;: 1440,
+  &quot;warnings&quot;: [],
+  &quot;statistics&quot;: {
+    &quot;value&quot;: {
+      &quot;before&quot;: {
+        &quot;n&quot;: 1407,
+        &quot;mean&quot;: 59.81230601901209,
+        &quot;std_ddof1&quot;: 3.053879973843546,
+        &quot;min&quot;: 24.98781757,
+        &quot;max&quot;: 61.33584856
+      },
+      &quot;after&quot;: {
+        &quot;n&quot;: 1407,
+        &quot;mean&quot;: 59.81230601901209,
+        &quot;std_ddof1&quot;: 3.053879973843546,
+        &quot;min&quot;: 24.98781757,
+        &quot;max&quot;: 61.33584856
+      },
+      &quot;paired_n&quot;: 1407,
+      &quot;paired_max_abs_change&quot;: 0.0,
+      &quot;filled_n&quot;: 0
+    }
+  },
+  &quot;quality_metrics&quot;: {
+    &quot;value&quot;: {
+      &quot;denominator_received_rows&quot;: 1440,
+      &quot;missing_fraction_received_rows&quot;: 0.022916666666666665,
+      &quot;invalid_fraction_received_rows&quot;: 0.0,
+      &quot;hampel_assessed_n&quot;: 1377,
+      &quot;hampel_unassessed_n&quot;: 63,
+      &quot;candidate_fraction_assessed&quot;: 0.0196078431372549
+    }
+  },
+  &quot;flag_counts&quot;: {
+    &quot;time_invalid&quot;: 0,
+    &quot;time_duplicate&quot;: 0,
+    &quot;time_reverse&quot;: 0,
+    &quot;interval_irregular&quot;: 0,
+    &quot;value__missing&quot;: 33,
+    &quot;value__invalid_token&quot;: 0,
+    &quot;value__bounds_candidate&quot;: 0,
+    &quot;value__outlier_candidate&quot;: 27,
+    &quot;value__hampel_assessed&quot;: 1377,
+    &quot;value__spike_candidate&quot;: 26,
+    &quot;value__freeze_candidate&quot;: 0,
+    &quot;value__saturation_candidate&quot;: 0,
+    &quot;value__interpolated&quot;: 0
+  }
+}
+</code></pre></details><figure id="fig23"><img src="../assets/images/chapter23.svg" alt="図23-1 データ品質レポートを自動生成するの検証グラフ"><figcaption>図23-1　データ品質レポートを自動生成する。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="235-html">23.5 HTMLを安全に組み立てる</h2>
+<p>ファイル名や元セルに <code>&lt;</code> や <code>&amp;</code> が含まれていても、HTMLの構造として解釈しないようエスケープする。Pythonでは <code>html.escape</code>、pandasの表出力では <code>escape=True</code> を使う。試験名の文字列をそのままscriptタグの近くへ埋め込まない。</p>
+<p>本アプリのレポートは外部の画像、CSS、JavaScriptを読み込まず、SVGを内部へ埋め込む。受け取った人がオフラインで開ける。巨大な図でレポートが重くなった場合も、データを削って軽くする前に、表示方法と全件の保存先を検討する。</p>
+<h2 id="236">23.6 レポート自体を検査する</h2>
+<p>元の行数と出力行数、フラグ件数、補間件数、候補一覧の表示上限を照合する。全欠損列なら平均を空欄または未評価にし、正常と表示しない。あるファイルが処理失敗した場合、レポートが作られていないこともバッチ一覧で分かるようにする。</p>
+<p>図23-1のフラグ番号は、標準出力に列挙した順番に対応する。出版用の比較図と、実行時に任意列数へ対応する汎用レポートでは見せ方が異なる。読み手が元の候補行へ戻れることを優先する。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>温度教材のレポート集計でmissingが33であることを確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>全欠損の列を入力し、警告と判定がどう変わるかを確認する。</p>
+<h3 id="_4">実務演習</h3>
+<p>HTMLの一覧に200行あるため、「異常は200件」と報告された。誤解を防ぐ表示を提案する。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：missingは33。候補フラグは重複し得るので合計を異常行数としない。</p>
+<p>応用：NO_VALID_VALUESの警告が付き、REVIEW_REQUIREDになる。Hampelで候補が出ないことを正常と解釈しない。</p>
+<p>実務：「候補全件数X、表示200件、残りはquality_flags.xlsx」と明示する。表の省略を欠落と誤認しないよう、全件へのリンクを近くに置く。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>レポートは処理の説明書である。結果の読みやすさとともに、限界、未評価、元データへの戻り方を提供する。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter22.html">← 第22章</a><a href="chapter24.html">第24章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

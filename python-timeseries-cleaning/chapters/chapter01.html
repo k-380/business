@@ -1,0 +1,81 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第1章 なぜ測定データは汚れるのか | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="current" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第I部　生データを理解する / 第01章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#11">1.1 圧力のピークを消してよいか</a></li><li><a href="#12">1.2 値が生まれる経路</a></li><li><a href="#13">1.3 生データ、正規化データ、解析用データ</a></li><li><a href="#14-python">1.4 Pythonの表を初めて扱う</a></li><li><a href="#code01">実行するコードと結果</a></li><li><a href="#15">1.5 図と結果を読む</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">なぜ測定データは汚れるのか</h1>
+<h2 id="_2">学習目標</h2>
+<p>測定対象の変動と測定系の不具合を区別して考え、原本を残したまま調査用の表を作れるようになる。読み終えたら、「大きな値だから消す」という処理の何が危険かを、圧力試験を例に説明できることを目標にする。</p>
+<h2 id="11">1.1 圧力のピークを消してよいか</h2>
+<p>圧縮機の試験で、普段1.4 MPa付近にある圧力が一瞬上昇した。担当者はグラフを見やすくするため、平均との差が大きい値を削除した。ところが、削除した点の一部は通信ノイズではなく、弁の切り替わりで実際に発生した圧力上昇だった。この例は本書で作った仮想事例であり、実在の事故報告ではない。最大圧力を設計評価に使うなら、その処理は評価対象そのものを消している。</p>
+<p>教材 <code>02_pressure.csv</code> には、単発の測定不具合と、幅を持つ物理的な圧力パルスを両方入れた。前者は9.0秒と27.0秒、後者は35秒付近にある。生成器が正解を知っていることと、測定データだけから正解を判定できることは別である。読者はまず正解ファイルを見ず、候補と判断根拠を書き分けてほしい。</p>
+<h2 id="12">1.2 値が生まれる経路</h2>
+<p>測定対象からExcelに数値が届くまでには、センサー、信号調整器、ADC、通信、ロガー、ファイル変換、表計算ソフトが介在する。センサーの温度依存性は緩やかな偏りを作る。ADCの範囲を超えると上限に張り付く。通信が途切れると、空欄になる機器も、前回値を再送する機器もある。CSV変換で時刻の小数部を落とせば、異なる取得時刻が同じ文字列になる。</p>
+<p>したがって「値が不自然」という一つの症状から、原因を一つに決めることはできない。まず測定量、単位、基準時刻、センサー位置、レンジ、取得周期、校正日、ファームウェアの版、試験イベントを集める。後からコードを高度にしても、失われた測定条件は自動的には戻らない。</p>
+<table>
+<thead>
+<tr>
+<th>段階</th>
+<th>典型的な不具合</th>
+<th>確認する証拠</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>物理量→電気信号</td>
+<td>接触不良、感度変化</td>
+<td>結線、校正、別センサー</td>
+</tr>
+<tr>
+<td>電気信号→数字</td>
+<td>飽和、量子化</td>
+<td>レンジ、ADCビット数</td>
+</tr>
+<tr>
+<td>通信→レコード</td>
+<td>欠落、再送、固定値</td>
+<td>シーケンス番号、通信ログ</td>
+</tr>
+<tr>
+<td>レコード→帳票</td>
+<td>単位の誤変換、時刻丸め</td>
+<td>変換設定、元ファイル</td>
+</tr>
+</tbody>
+</table>
+<h2 id="13">1.3 生データ、正規化データ、解析用データ</h2>
+<p>生データとは、受領したファイルの内容を指す。本書ではこれを変更しない。正規化データは、文字列を数値に変換し、単位や日時の表現を統一したものだ。解析用データは、目的と承認済みルールに基づく補間や補正を適用したものだ。三者を同じ「データ」と呼ぶと、どこで何が変わったのか分からなくなる。</p>
+<p>観測値を簡単に表すと、<code>記録値 = 真の測定量に対する応答 + 系統的な偏り + ランダムな変動</code> となる。ただし、飽和や誤記録はこの加法モデルだけでは表現できない。真の値は通常未知であり、滑らかな線を真値と呼んではいけない。本書の <code>latent_signal</code> は生成器が持つ模擬真値で、実務で得られる列ではない。</p>
+<h2 id="14-python">1.4 Pythonの表を初めて扱う</h2>
+<p>Pythonは、ファイルに書いた命令を上から順に実行する。<code>import pandas as pd</code> はpandasを <code>pd</code> という短い名前で使う宣言だ。DataFrameは行と列を持つ表、Seriesは一列のデータと考えると出発しやすい。<code>df['測定値']</code> で一列を取り出し、<code>raw.gt(2.5)</code> で各行について2.5より大きいかを判定する。結果はTrue/Falseの列であり、値の削除ではない。</p>
+<p><code>candidate</code> は候補を示す変数名である。<code>view = df.assign(candidate=candidate)</code> は列を追加した新しい表を作る。<code>assert df.equals(before)</code> は元の表が変わっていないことを実行時に確かめる。エラーで止まることは、検査が働いた結果でもある。分からないエラーを無視して次のセルへ進むと、以前の計算結果を新しい結果と思い込む危険がある。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code01">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter01/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter01/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+df=load(&#x27;02_pressure&#x27;)
+before=df.copy(deep=True)
+raw=df[&#x27;測定値&#x27;]
+candidate=raw.gt(2.5)|raw.lt(0)
+view=df.assign(candidate=candidate)
+assert df.equals(before)
+print(&#x27;原本行数:&#x27;,len(df),&#x27;範囲外候補:&#x27;,int(candidate.sum()))
+print(view.loc[candidate].to_string(index=False))
+plot(1,seconds(df),{&#x27;観測値&#x27;:raw,&#x27;確認対象&#x27;:raw.where(candidate)},&#x27;圧力 [MPa]&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">原本行数: 600 範囲外候補: 2
+                       時刻  測定値  candidate
+2026-01-01 09:00:09+09:00  3.8       True
+2026-01-01 09:00:27+09:00 -0.8       True
+</code></pre></details><figure id="fig01"><img src="../assets/images/chapter01.svg" alt="図1-1 なぜ測定データは汚れるのかの検証グラフ"><figcaption>図1-1　なぜ測定データは汚れるのか。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="15">1.5 図と結果を読む</h2>
+<p><a href="#fig01">図1-1</a>では、広い幅を持つ35秒付近の山と、孤立した極端な点を見分けられる。掲載コードの0〜2.5 MPaという範囲は、この演習の確認対象を絞る設定であり、圧縮機一般の正常範囲ではない。2.5 MPaを下回るピークにも、設計上重要な現象が含まれる。</p>
+<p>「候補なし」は「正常の証明」ではない。今回の規則が見つけなかったという意味に限定する。判定は、未確認、測定不具合確認、実現象確認、判断不能といった状態で管理し、変更する場合には証拠と担当者を記録する。NISTも外れ値のラベル付けと、誤った観測であることの特定を区別している。<a href="../references/bibliography.html#r7">R7</a></p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>コードを実行し、候補の行数、元の行数、35秒付近のピークが残っているかを確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>上限を1.6 MPaに下げると、候補の意味はどう変わるか。候補数が増えたことを検出性能の改善と呼べるか。</p>
+<h3 id="_4">実務演習</h3>
+<p>別の圧力センサーも同時に上昇し、弁の切替ログがある。一方、片方だけ負圧を記録した。両者に同じ削除規則を適用するか。必要な追加確認を三つ挙げる。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：全600行を残し、範囲外候補は2点になる。35秒付近の実現象は残る。候補を抽出した表だけを元データとして保存しない。</p>
+<p>応用：本当に起きた圧力パルスも候補になる。感度は上がり得るが、誤検出も増える。正解ラベルとの比較なしに性能改善とはいえない。</p>
+<p>実務：同時上昇には物理現象の証拠がある。負圧も直ちに測定不具合とは断定せず、ゲージ圧か絶対圧か、センサーの測定範囲、配管内の局所現象と時刻同期を確認する。判断不能なら値を保持し、解析結果を採否の両方で比較する。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>クリーニングの出発点は、何を測り、何を評価したいかを明確にすることだ。ファイルを保全し、候補を記録し、原因の判定と値の変更を別の工程にする。この順序が本書全体の基準になる。</p><nav class="chapter-nav" aria-label="章間移動"><a href="../getting-started.html">← はじめに</a><a href="chapter02.html">第2章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

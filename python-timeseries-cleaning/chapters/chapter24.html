@@ -1,0 +1,105 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第24章 汎用データクリーニングツールを完成させる | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="current" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第VI部　実務の自動化 / 第24章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_2">学習目標</a></li><li><a href="#241">24.1 道具としての到達点</a></li><li><a href="#242">24.2 最初の実行</a></li><li><a href="#243-excel">24.3 Excel帳票の実行</a></li><li><a href="#244">24.4 条件付き補間を有効にする</a></li><li><a href="#245">24.5 コードの構成を読む</a></li><li><a href="#code24">実行するコードと結果</a></li><li><a href="#246">24.6 複数ファイルと終了コード</a></li><li><a href="#247">24.7 検証してから使う</a></li><li><a href="#248">24.8 業務へ移すときの判断</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="_1">汎用データクリーニングツールを完成させる</h1>
+<h2 id="_2">学習目標</h2>
+<p>本書のCLIを実行し、設定、出力、ログ、自動テストを理解する。新しい測定へ適用する前に、入力の意味と処理の適用範囲を確認できるようになる。</p>
+<h2 id="241">24.1 道具としての到達点</h2>
+<p>ここまでの原則を、Excel・CSV入力、列設定、日時検査、欠損分類、外れ値候補、スパイク候補、飽和候補、固定値候補、条件付き補間、比較、レポート、履歴へまとめる。初期設定では値を補間・平滑化・削除しない。単位と型の正規化は別列へ行い、原ファイルを上書きしない。</p>
+<p>「汎用」はあらゆる機器にそのまま適用できるという意味ではない。本アプリは対応するCSVと.xlsxの表形式を設定で扱う教材実装である。複数行見出しの自動判定、任意数式の再計算、非標準なバイナリ形式、機器固有プロトコルは含まない。第2章の考え方で入力アダプターを追加する。</p>
+<h2 id="242">24.2 最初の実行</h2>
+<p>ZIPを展開し、<code>python-timeseries-cleaning</code> フォルダを作業ディレクトリにする。はじめにの手順でPythonと依存関係を準備した後、次を実行する。Windows PowerShellでは一行で入力できる。</p>
+<pre><code class="language-bash">python clean_timeseries.py --input datasets/raw/02_pressure.csv --config configs/02_pressure.yaml --output results/pressure_review
+</code></pre>
+<p>出力は入力ごとのサブフォルダに分かれる。今回なら <code>results/pressure_review/000_00_02_pressure/</code> に次のファイルができる。</p>
+<table>
+<thead>
+<tr>
+<th>ファイル</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>clean_data.xlsx</td>
+<td>原値、数値化値、解析値、由来、単位</td>
+</tr>
+<tr>
+<td>quality_flags.xlsx</td>
+<td>時刻・値の品質フラグ</td>
+</tr>
+<tr>
+<td>quality_report.html</td>
+<td>品質指標、比較図、候補抜粋、設定</td>
+</tr>
+<tr>
+<td>processing_log.csv</td>
+<td>変更内容。変更なしならinspection_only</td>
+</tr>
+<tr>
+<td>run_manifest.json</td>
+<td>環境、ハッシュ、設定、統計</td>
+</tr>
+</tbody>
+</table>
+<p>一段上には <code>index.html</code> と <code>batch_summary.json</code> ができ、成功・失敗を一覧できる。複数ファイルや複数シートで同名出力が衝突しないための構成である。既存の非空出力ディレクトリは拒否するので、再実行では別名を指定する。</p>
+<h2 id="243-excel">24.3 Excel帳票の実行</h2>
+<pre><code class="language-bash">python clean_timeseries.py --input datasets/raw/10_irregular_excel.xlsx --config configs/10_workbook.yaml --output results/workbook_review
+</code></pre>
+<p>この設定は測定シートの4行目を見出しとし、数値日時を1900日付システムとして扱う。内部の空白行は消さず、時刻不正と欠損を付ける。source_rowはExcelでの実際の行番号を保持する。単位付き文字列は数値化するが、「故障」を補間しない。</p>
+<p>複数シートを同じ構造として読む場合、reader.sheetをnullにできる。ただし条件履歴など別構造のシートが混ざればエラーになる。シートごとに役割を確認して対象を指定する方が安全である。</p>
+<h2 id="244">24.4 条件付き補間を有効にする</h2>
+<p>停止教材の設定をコピーし、次の項目を追加・変更する。理由と承認者は演習用の例であり、実務では自分の組織の判断を記入する。</p>
+<pre><code class="language-yaml">mode_column: mode
+allowed_modes: [run]
+interpolation:
+  enabled: true
+  max_gap_seconds: 30
+  reason: &quot;演習：同一運転区間内の短い記録欠損を直線補間&quot;
+  approved_by: &quot;教材の検証規則&quot;
+</code></pre>
+<p>条件は、時刻が有効・一意・増加、欠損コードとして認識された空欄、同一連続モード、両端が候補異常でない、区間長が規定以下、である。変換不能文字列は対象にしない。未確認の外れ値を欠損化して補間する機能もない。</p>
+<h2 id="245">24.5 コードの構成を読む</h2>
+<p><code>clean_timeseries.py</code> が引数を受ける入口、<code>tsclean/app.py</code> が読み込み・設定検査・出力、<code>tsclean/core.py</code> が数値変換や検出・補間の共通関数である。各関数は第3、5、10、11、15、19章で説明した処理に対応する。全ソースは教材ZIPに含まれ、<a href="../implementation.html">API・実装の読み方</a>から閲覧できる。</p>
+<p>processing_logは変更があった行に、元の値、補間後の値、ルール、理由、承認者、実行UTC時刻、原本・設定ハッシュを記録する。単位正規化はrawとnumericの列差、およびeffective_rulesに残り、補間変更ログと分けて管理する。検出条件が増えたら、レポートの説明とテストも一緒に更新する。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code24">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter24/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter24/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+from tempfile import TemporaryDirectory
+from tsclean.app import main
+with TemporaryDirectory() as folder:
+    code=main([&#x27;--input&#x27;,str(ROOT/&#x27;datasets/raw/02_pressure.csv&#x27;),&#x27;--config&#x27;,str(ROOT/&#x27;configs/02_pressure.yaml&#x27;),&#x27;--output&#x27;,str(Path(folder)/&#x27;result&#x27;)])
+    assert code==0
+    p=Path(folder)/&#x27;result/000_00_02_pressure/clean_data.xlsx&#x27;
+    df=pd.read_excel(p)
+    assert df.value__numeric.equals(df.value__analysis)
+    print(&#x27;Excel再読込:&#x27;,len(df),&#x27;行。初期設定で値の変更なし。&#x27;)
+    plot(24,np.arange(len(df)),{&#x27;数値化した元データ&#x27;:df.value__numeric,&#x27;解析用データ&#x27;:df.value__analysis},&#x27;圧力 [MPa]&#x27;,xlabel=&#x27;取得順序&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">{&quot;processed&quot;: 1, &quot;errors&quot;: 0}
+Excel再読込: 600 行。初期設定で値の変更なし。
+</code></pre></details><figure id="fig24"><img src="../assets/images/chapter24.svg" alt="図24-1 汎用データクリーニングツールを完成させるの検証グラフ"><figcaption>図24-1　汎用データクリーニングツールを完成させる。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="246">24.6 複数ファイルと終了コード</h2>
+<pre><code class="language-bash">python clean_timeseries.py --input trial_A.csv trial_B.csv --config cleaning_rules.yaml --output results/batch_01
+</code></pre>
+<p>この例のtrial_A.csv、trial_B.csv、cleaning_rules.yamlは利用者が用意する実ファイル名に置き換える。教材で試す場合は同じ構造の <code>datasets/raw/prototype_part1.csv</code>、<code>prototype_part2.csv</code> と <code>configs/09_prototypes.yaml</code> を指定できる。各ファイルは独立に処理し、境界をまたぐ結合・補間はしない。連続試験の一体処理には第15・21章の境界検査を追加する。</p>
+<p>正常に対象を処理した場合の終了コードは0、入力エラーが一つでもあった場合は2である。データに品質候補があるだけなら処理自体は成功しており、終了コード0でもREVIEW_REQUIREDとなる。プログラムの成否とデータの品質を区別する。</p>
+<h2 id="247">24.7 検証してから使う</h2>
+<pre><code class="language-bash">python -m pytest tests -q
+</code></pre>
+<p>自動テストは空データ、全欠損、重複、逆転、不規則間隔、候補なし、極端値、文字列混入、異長系列の結合、25万行CSVのチャンク集計などを検査する。Hampelの尺度や補間の結果は、既知の小さな数値例で独立に確認する。出力Excelを再読込し、既定設定で数値が変わらないことも確かめる。</p>
+<p>図24-1はCLIが出力したExcelを読み直して作った比較図である。「保存できた」だけではなく、再読込した値が想定通りかを確認する。本書の検証環境以外のOSやライブラリ版へ移す場合、同じテストを実行する。Windows・macOSでのネイティブ実行をこの制作環境で検証したとは扱わない。</p>
+<h2 id="248">24.8 業務へ移すときの判断</h2>
+<p>最初は既知の少量データへ適用し、担当者が原帳票と照合する。次に過去の代表データ、異常事例、機器更新前後、試験条件の境界を含むデータで確認する。候補数が少ないことを成功条件にしない。見逃してはいけない事象を保持し、処理履歴から説明できることを確認する。</p>
+<p>本ツールには認証付き承認画面、データベース、監視サーバー、ストリーミングの状態管理はない。大量運用へ進むなら、入出力保管、権限、並列実行、異常通知、バックアップ、データ保持期間を別途設計する。基礎となる検出・保全の原則は変わらない。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2--2">基礎演習</h3>
+<p>圧力教材でCLIを実行し、5種類の出力と上位のバッチ一覧を確認する。元CSVのハッシュが実行前後で同じかも確かめる。</p>
+<h3 id="_3">応用演習</h3>
+<p>停止教材の補間設定を有効化し、2点だけがinterpolatedになること、停止中の90点が残ることを確認する。</p>
+<h3 id="_4">実務演習</h3>
+<p>自分の測定器を想定し、列名、単位、周期、欠損コード、候補規則、補間しない条件、受け入れ検査を設定仕様として書く。分からない項目は推測で埋めず、確認先を明記する。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：rawの内容は保持され、numericとanalysisが一致する。候補フラグが付いても値は自動修正されない。入力ファイルのハッシュは変わらない。</p>
+<p>応用：補間区間が30秒以内で同一run区間にある2点だけが対象になる。変更行はprocessing_logへ記録される。時間軸が不正な別入力では補間が止まることも確認する。</p>
+<p>実務：唯一の設定はない。測定器仕様、試験条件、評価量、許容誤差、独立の確認手段に基づいて採否を説明できることを評価する。「前と同じだから」は根拠として不十分である。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>使えるツールとは、値を整えるだけでなく、分からないことを分からないと示せる道具である。原本を残し、候補と確定を分け、処理の影響を検証し、結果の由来を説明する。本書のコードを、その判断を支える土台として使ってほしい。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter23.html">← 第23章</a><a href="../glossary.html">用語集 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

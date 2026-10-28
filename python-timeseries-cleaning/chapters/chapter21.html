@@ -1,0 +1,50 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="測定値の意味を保全する時系列データクリーニング。全24章の実行検証版。"><title>第21章 大量のExcel・CSVを一括処理する | Pythonではじめる時系列データクリーニング</title><link rel="stylesheet" href="../assets/css/book.css"></head><body data-base="../" data-single="false"><a class="skip" href="#main">本文へ</a><header><a class="brand" href="../index.html">Pythonではじめる<br>時系列データクリーニング</a><div class="tools"><button id="menu-toggle" aria-expanded="false" type="button">目次</button><button id="search-toggle" type="button">全文検索</button><button id="theme-toggle" type="button">明暗切替</button></div></header><section id="search-panel" class="search-panel" aria-label="全文検索"><div><label for="search-input">全24章・補講を検索（複数語はスペースで区切る）</label><input id="search-input" type="search" placeholder="例：補間 欠損"><div id="search-results" class="search-results" aria-live="polite"></div></div></section><div class="layout"><aside><nav aria-label="全章目次"><a href="../index.html">表紙・全体目次</a><p class="part">第I部 生データを理解する</p><a class="" href="../chapters/chapter01.html">01　なぜ測定データは汚れるのか</a><a class="" href="../chapters/chapter02.html">02　Excel・CSVデータの構造を調べる</a><a class="" href="../chapters/chapter03.html">03　データ型・日時・単位を統一する</a><a class="" href="../chapters/chapter04.html">04　データ品質を数値化する</a><p class="part">第II部 時間軸を修復する</p><a class="" href="../chapters/chapter05.html">05　日時の欠損・重複・逆転</a><a class="" href="../chapters/chapter06.html">06　不規則なサンプリング間隔</a><a class="" href="../chapters/chapter07.html">07　リサンプリングと補間</a><a class="" href="../chapters/chapter08.html">08　複数計測器の時刻同期</a><p class="part">第III部 欠損値と異常値を扱う</p><a class="" href="../chapters/chapter09.html">09　欠損値の種類と発生原因</a><a class="" href="../chapters/chapter10.html">10　欠損値の補完と補完してはいけない場面</a><a class="" href="../chapters/chapter11.html">11　外れ値の検出と判定</a><a class="" href="../chapters/chapter12.html">12　突発ノイズ・スパイクの除去</a><p class="part">第IV部 センサーデータ特有の問題</p><a class="" href="../chapters/chapter13.html">13　センサーのゼロ点ずれとドリフト</a><a class="" href="../chapters/chapter14.html">14　飽和・レンジオーバー・量子化</a><a class="" href="../chapters/chapter15.html">15　通信異常・値の固定・データ飛び</a><a class="" href="../chapters/chapter16.html">16　フィルタリングと波形の保全</a><p class="part">第V部 複数データの統合と品質管理</p><a class="" href="../chapters/chapter17.html">17　異なる周期のデータを結合する</a><a class="" href="../chapters/chapter18.html">18　試験条件の変更・運転モードを識別する</a><a class="" href="../chapters/chapter19.html">19　クリーニング前後の差異を検証する</a><a class="" href="../chapters/chapter20.html">20　修正履歴とデータの追跡可能性</a><p class="part">第VI部 実務の自動化</p><a class="current" href="../chapters/chapter21.html">21　大量のExcel・CSVを一括処理する</a><a class="" href="../chapters/chapter22.html">22　クリーニングルールを設定ファイル化する</a><a class="" href="../chapters/chapter23.html">23　データ品質レポートを自動生成する</a><a class="" href="../chapters/chapter24.html">24　汎用データクリーニングツールを完成させる</a><a href="../getting-started.html">はじめに・環境構築</a><a href="../labs.html">実践補講6題</a><a href="../downloads.html">教材ダウンロード</a><a href="../glossary.html">用語集・索引</a><a href="../references/bibliography.html">参考文献</a><a href="../verification.html">検証と未完了項目</a></nav></aside><main id="main"><p class="eyebrow">第VI部　実務の自動化 / 第21章</p><details id="page-toc"><summary>この章の節</summary><ul><li><a href="#_1">学習目標</a></li><li><a href="#211">21.1 百個のファイルには百通りの問題がある</a></li><li><a href="#212">21.2 スキーマを契約として扱う</a></li><li><a href="#213">21.3 チャンク処理の基本</a></li><li><a href="#code21">実行するコードと結果</a></li><li><a href="#214">21.4 窓処理の境界を引き継ぐ</a></li><li><a href="#215">21.5 メモリと出力形式</a></li><li><a href="#216">21.6 部分成功を報告する</a></li><li><a href="#_1">演習</a></li><li><a href="#_1">章末まとめ</a></li></ul></details><h1 id="excelcsv">大量のExcel・CSVを一括処理する</h1>
+<h2 id="_1">学習目標</h2>
+<p>ファイルごとの読込条件を管理し、処理失敗を記録してバッチを実行する。チャンク処理で計算できる量と、境界状態を必要とする量を区別する。</p>
+<h2 id="211">21.1 百個のファイルには百通りの問題がある</h2>
+<p>一つのExcelが読めても、フォルダ全体を処理できるとは限らない。途中で見出しが変わる、単位が変わる、別試験のファイルが混ざる、保存中の一時ファイルがある、といった問題が出る。まずファイル一覧、サイズ、更新日時、試験ID、列構成を点検する。</p>
+<p><code>Path(folder).glob('*.csv')</code> はCSV候補を列挙する。大文字の拡張子、サブフォルダ、Excelの <code>~$</code> で始まるロックファイルをどう扱うかも決める。最終アプリは明示指定したファイル、または指定ディレクトリ直下の.csvと.xlsxを対象にする。再帰探索を暗黙に行わず、出力を入力として再処理しない構造にする。</p>
+<h2 id="212">21.2 スキーマを契約として扱う</h2>
+<p>スキーマは列名、型、単位、必須項目などの定義である。「温度」と「温度[℃]」が同じ測定位置を指すなら、設定ファイルで同じ内部名へ対応させられる。しかし「入口温度」と「出口温度」は似た名前でも別の量である。文字列の近さだけで自動統合しない。</p>
+<p>同じバッチ内の入力は同じ設定に適合する必要がある。最終アプリでは必要列が欠けたファイルをエラーとして記録する。異なる機器形式が混在する場合は、形式ごとの設定を使って別実行する。自動判別を追加するなら、判別根拠と曖昧時の停止条件も必要だ。</p>
+<h2 id="213">21.3 チャンク処理の基本</h2>
+<p>CSVは <code>pd.read_csv(..., chunksize=8192)</code> のように分割して読める。全体をメモリへ載せずに、件数や合計などを集計できる。全体の平均は「各チャンクの平均の単純平均」ではなく、合計値の総和を有効件数の総和で割る。最後のチャンクだけ短い場合、単純平均は重みを誤る。</p>
+<p>標準偏差は各チャンクの標準偏差の平均では求められない。件数n、平均μ、偏差平方和M2を持ち、二群A、Bの差δ=μB−μAに対して、<code>M2 = M2A + M2B + δ² nA nB/(nA+nB)</code> で結合する方法がある。巨大な値の平方和から平均平方を引く計算は桁落ちしやすい。</p><p class="note">関連する詳細実験は<a href="../labs.html">実践補講</a>に掲載。入力形式・同期・補間・校正・多変量・チャンク境界を扱う。</p><h2 id="code21">実行するコードと結果</h2><p class="source-link"><a href="../examples/chapter21/run.py" download>run.py</a> · <a href="../implementation.html">共通処理の全ソース</a><br>教材フォルダで <code>python examples/chapter21/run.py</code> を実行。以下は省略のないスクリプト。共通モジュールは教材一式に含む。</p><pre><code class="language-python">from pathlib import Path
+import sys
+ROOT=Path(__file__).resolve().parents[2]
+sys.path.insert(0,str(ROOT))
+sys.path.insert(0,str(ROOT/&#x27;examples&#x27;))
+import numpy as np
+import pandas as pd
+from common import load,truth,seconds,plot
+from tsclean.core import numeric,timestamps,time_flags,hampel,freeze_candidates,interpolate_short,compare
+
+from tempfile import TemporaryDirectory
+with TemporaryDirectory() as folder:
+    p=Path(folder)/&#x27;large.csv&#x27;;n=250000
+    pd.DataFrame({&#x27;id&#x27;:np.arange(n),&#x27;value&#x27;:np.arange(n)%100}).to_csv(p,index=False)
+    count=0;total=0.;sizes=[]
+    for chunk in pd.read_csv(p,chunksize=8192):
+        count+=len(chunk);total+=chunk.value.sum();sizes.append(len(chunk))
+    print(&#x27;処理件数:&#x27;,count,&#x27;平均:&#x27;,total/count,&#x27;チャンク数:&#x27;,len(sizes))
+    assert count==n and total/count==49.5
+plot(21,np.arange(len(sizes)),{&#x27;チャンク行数&#x27;:sizes},&#x27;行数 [行]&#x27;,xlabel=&#x27;チャンク番号&#x27;)
+</code></pre><details><summary>検証環境での実行結果を開く</summary><pre><code class="language-text">処理件数: 250000 平均: 49.5 チャンク数: 31
+</code></pre></details><figure id="fig21"><img src="../assets/images/chapter21.svg" alt="図21-1 大量のExcel・CSVを一括処理するの検証グラフ"><figcaption>図21-1　大量のExcel・CSVを一括処理する。掲載スクリプトから生成。軸と単位は図中に記載し、線種・マーカーを併用。すべて模擬データ。</figcaption></figure><h2 id="214">21.4 窓処理の境界を引き継ぐ</h2>
+<p>11点の中央Hampelをチャンクごとに独立に適用すると、各境界の前後5点が未評価になる。連続欠損が境界をまたいだ場合、各チャンクでは短く見える。固定値検出や時刻差分も、前チャンクの最後の状態が必要である。</p>
+<p>窓半幅だけ重複して読む方法では、重複領域を二重出力しないようにする。補間では、欠損区間の終端が次チャンクに来るまで保留する必要がある。単純なチャンク化は、任意のアルゴリズムを自動的に省メモリ化しない。本章のコードは件数と合計に限定し、境界をまたぐクリーニングを実装したとは扱わない。</p>
+<h2 id="215">21.5 メモリと出力形式</h2>
+<p>数値が100万個ならfloat64本体は約8 MBだが、DataFrameの索引、文字列、複製、出力時の処理には追加メモリが必要になる。<code>memory_usage(deep=True)</code> は見積りに役立つが、プロセス全体のピークメモリではない。必要列だけを読む、列型を確定する、中間の不要な複製を避ける方法を検討する。</p>
+<p>Excelの一シートには行数上限があり、巨大データの交換や処理には向かない場合がある。本アプリは既定で一入力20万行まで、設定上限100万行で停止する。これは実装上の安全弁で、100万行の処理性能を保証するものではない。大規模処理にはCSVのチャンク集計やParquetなど、別の出力設計を検討する。</p>
+<h2 id="216">21.6 部分成功を報告する</h2>
+<p>100ファイル中98が成功しても、残り2を黙って飛ばせば全体の結論を誤る。本アプリは <code>batch_summary.json</code> と一覧HTMLに成功・失敗を残し、一つでも入力エラーがあれば終了コード2を返す。原ファイルは動かさない。途中生成されたフォルダがある場合も、一覧の結果を確認して採用可否を判断する。</p>
+<h2 id="_1--2">演習</h2>
+<h3 id="_2">基礎演習</h3>
+<p>25万行のCSVを8192行ずつ読み、総件数25万と平均49.5を確認する。</p>
+<h3 id="_3">応用演習</h3>
+<p>最後のチャンクの件数を調べ、チャンク平均の単純平均が一般には正しくない理由を数値例で示す。</p>
+<h3 id="_4">実務演習</h3>
+<p>欠損がチャンク末尾2点と次の先頭2点にまたがる。許容欠損は3点以下だった。独立処理と連続処理で何が起きるか。</p><details class="answers"><summary>演習解答・解説を表示する</summary><p>基礎：図21-1で最後のチャンクだけ短いことを確認する。チャンク数は31、最後は4240行となる。</p>
+<p>応用：例えば100行平均10と1行平均100なら、単純平均55に対し全体平均は1100/101≈10.89となる。</p>
+<p>実務：独立処理すると各2点として補完を許す危険がある。全体では4点の連続欠損なので補完対象外とすべきで、区間状態を引き継ぐ必要がある。</p></details><h2 id="_1--3">章末まとめ</h2>
+<p>一括処理では形式の違いと境界条件を管理する。省メモリ化は計算の意味を変えずに行い、失敗した入力を結果から消さない。</p><nav class="chapter-nav" aria-label="章間移動"><a href="chapter20.html">← 第20章</a><a href="chapter22.html">第22章 →</a></nav><footer>Pythonではじめる時系列データクリーニング · 実行検証版0.1 · 2026-10-28<br>測定データはすべて模擬。閾値は演習設定。長編教科書への拡充は継続中。</footer></main></div><script src="../assets/js/search-index.js"></script><script src="../assets/js/book.js"></script></body></html>

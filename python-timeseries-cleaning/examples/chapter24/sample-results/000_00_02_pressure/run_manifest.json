@@ -1,0 +1,93 @@
+{
+  "summary": {
+    "status": "REVIEW_REQUIRED",
+    "rows": 600,
+    "warnings": [],
+    "statistics": {
+      "value": {
+        "before": {
+          "n": 600,
+          "mean": 1.4077489269916668,
+          "std_ddof1": 0.14610135064386334,
+          "min": -0.8,
+          "max": 3.8
+        },
+        "after": {
+          "n": 600,
+          "mean": 1.4077489269916668,
+          "std_ddof1": 0.14610135064386334,
+          "min": -0.8,
+          "max": 3.8
+        },
+        "paired_n": 600,
+        "paired_max_abs_change": 0.0,
+        "filled_n": 0
+      }
+    },
+    "quality_metrics": {
+      "value": {
+        "denominator_received_rows": 600,
+        "missing_fraction_received_rows": 0.0,
+        "invalid_fraction_received_rows": 0.0,
+        "hampel_assessed_n": 590,
+        "hampel_unassessed_n": 10,
+        "candidate_fraction_assessed": 0.003389830508474576
+      }
+    },
+    "flag_counts": {
+      "time_invalid": 0,
+      "time_duplicate": 0,
+      "time_reverse": 0,
+      "interval_irregular": 0,
+      "value__missing": 0,
+      "value__invalid_token": 0,
+      "value__bounds_candidate": 2,
+      "value__outlier_candidate": 2,
+      "value__hampel_assessed": 590,
+      "value__spike_candidate": 2,
+      "value__freeze_candidate": 0,
+      "value__saturation_candidate": 0,
+      "value__interpolated": 0
+    }
+  },
+  "environment": {
+    "run_utc": "2026-10-28T01:20:33.797360+00:00",
+    "source_sha256": "8d2cf2fb71b15de1ceb0a041b6a5eed7514ece600c0f90cd117c5d94ce54b6b7",
+    "config_sha256": "ca050480e7cf9125793320575fe8571725908f908fb3c1e531dfc500a305af11",
+    "config_version": "teaching-1",
+    "python": "3.12.14",
+    "packages": {
+      "numpy": "2.3.5",
+      "pandas": "2.2.3",
+      "scipy": "1.17.0",
+      "matplotlib": "3.10.8",
+      "openpyxl": "3.1.5",
+      "PyYAML": "6.0.3"
+    }
+  },
+  "effective_rules": {
+    "version": "teaching-1",
+    "time": {
+      "column": "時刻",
+      "format": "ISO8601",
+      "timezone": "Asia/Tokyo"
+    },
+    "columns": {
+      "value": {
+        "source": "測定値",
+        "unit": "MPa",
+        "window": 11,
+        "k": 3.5,
+        "floor": 0.01,
+        "freeze_run": 8,
+        "lower": 0,
+        "upper": 2.5
+      }
+    },
+    "interpolation": {
+      "enabled": false
+    },
+    "max_rows": 200000,
+    "expected_dt": 0.1
+  }
+}
