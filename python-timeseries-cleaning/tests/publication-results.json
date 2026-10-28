@@ -1,0 +1,418 @@
+{
+  "base_url": "https://k-380.github.io/business/",
+  "book_url": "https://k-380.github.io/business/python-timeseries-cleaning/index.html",
+  "checked_files": 68,
+  "root_index_link": "pass",
+  "all_bytes_match_local": true,
+  "zip_crc": "pass",
+  "files": [
+    {
+      "path": "index.html",
+      "http_status": 200,
+      "bytes": 9120,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "getting-started.html",
+      "http_status": 200,
+      "bytes": 11193,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "labs.html",
+      "http_status": 200,
+      "bytes": 37462,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "downloads.html",
+      "http_status": 200,
+      "bytes": 5596,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "glossary.html",
+      "http_status": 200,
+      "bytes": 10401,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "datasets.html",
+      "http_status": 200,
+      "bytes": 25571,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "implementation.html",
+      "http_status": 200,
+      "bytes": 41898,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "verification.html",
+      "http_status": 200,
+      "bytes": 11863,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "single-file.html",
+      "http_status": 200,
+      "bytes": 2057147,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "references/bibliography.html",
+      "http_status": 200,
+      "bytes": 10018,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter01.html",
+      "http_status": 200,
+      "bytes": 15047,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter02.html",
+      "http_status": 200,
+      "bytes": 15570,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter03.html",
+      "http_status": 200,
+      "bytes": 14886,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter04.html",
+      "http_status": 200,
+      "bytes": 13634,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter05.html",
+      "http_status": 200,
+      "bytes": 13459,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter06.html",
+      "http_status": 200,
+      "bytes": 13369,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter07.html",
+      "http_status": 200,
+      "bytes": 13406,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter08.html",
+      "http_status": 200,
+      "bytes": 13407,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter09.html",
+      "http_status": 200,
+      "bytes": 13815,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter10.html",
+      "http_status": 200,
+      "bytes": 13456,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter11.html",
+      "http_status": 200,
+      "bytes": 13552,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter12.html",
+      "http_status": 200,
+      "bytes": 13739,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter13.html",
+      "http_status": 200,
+      "bytes": 12987,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter14.html",
+      "http_status": 200,
+      "bytes": 12797,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter15.html",
+      "http_status": 200,
+      "bytes": 13087,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter16.html",
+      "http_status": 200,
+      "bytes": 14096,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter17.html",
+      "http_status": 200,
+      "bytes": 13141,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter18.html",
+      "http_status": 200,
+      "bytes": 13159,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter19.html",
+      "http_status": 200,
+      "bytes": 13845,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter20.html",
+      "http_status": 200,
+      "bytes": 14518,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter21.html",
+      "http_status": 200,
+      "bytes": 13849,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter22.html",
+      "http_status": 200,
+      "bytes": 13299,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter23.html",
+      "http_status": 200,
+      "bytes": 15493,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "chapters/chapter24.html",
+      "http_status": 200,
+      "bytes": 17812,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/css/book.css",
+      "http_status": 200,
+      "bytes": 6979,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/js/book.js",
+      "http_status": 200,
+      "bytes": 3621,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/js/search-index.js",
+      "http_status": 200,
+      "bytes": 154091,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter01.svg",
+      "http_status": 200,
+      "bytes": 51689,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter02.svg",
+      "http_status": 200,
+      "bytes": 39998,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter03.svg",
+      "http_status": 200,
+      "bytes": 39447,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter04.svg",
+      "http_status": 200,
+      "bytes": 33831,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter05.svg",
+      "http_status": 200,
+      "bytes": 40648,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter06.svg",
+      "http_status": 200,
+      "bytes": 38286,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter07.svg",
+      "http_status": 200,
+      "bytes": 60846,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter08.svg",
+      "http_status": 200,
+      "bytes": 41209,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter09.svg",
+      "http_status": 200,
+      "bytes": 33476,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter10.svg",
+      "http_status": 200,
+      "bytes": 67805,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter11.svg",
+      "http_status": 200,
+      "bytes": 50691,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter12.svg",
+      "http_status": 200,
+      "bytes": 65504,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter13.svg",
+      "http_status": 200,
+      "bytes": 123998,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter14.svg",
+      "http_status": 200,
+      "bytes": 57512,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter15.svg",
+      "http_status": 200,
+      "bytes": 49447,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter16.svg",
+      "http_status": 200,
+      "bytes": 57076,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter17.svg",
+      "http_status": 200,
+      "bytes": 51205,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter18.svg",
+      "http_status": 200,
+      "bytes": 60574,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter19.svg",
+      "http_status": 200,
+      "bytes": 53962,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter20.svg",
+      "http_status": 200,
+      "bytes": 54229,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter21.svg",
+      "http_status": 200,
+      "bytes": 34251,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter22.svg",
+      "http_status": 200,
+      "bytes": 38964,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter23.svg",
+      "http_status": 200,
+      "bytes": 37603,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter24.svg",
+      "http_status": 200,
+      "bytes": 63794,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter25.svg",
+      "http_status": 200,
+      "bytes": 41337,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter26.svg",
+      "http_status": 200,
+      "bytes": 41059,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter27.svg",
+      "http_status": 200,
+      "bytes": 62652,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter28.svg",
+      "http_status": 200,
+      "bytes": 45226,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter29.svg",
+      "http_status": 200,
+      "bytes": 70396,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "assets/images/chapter30.svg",
+      "http_status": 200,
+      "bytes": 38422,
+      "sha256_matches_local": true
+    },
+    {
+      "path": "python-timeseries-cleaning.zip",
+      "http_status": 200,
+      "bytes": 2215906,
+      "sha256_matches_local": true
+    }
+  ]
+}
